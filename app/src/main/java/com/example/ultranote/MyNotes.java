@@ -9,6 +9,7 @@ public class MyNotes extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mynotes);
+        this.setTitle("My Notes");
 
     }
 }

@@ -7,15 +7,15 @@
     tools:context=".MainActivity">
 
     <Button
+        android:id="@+id/homeBtn"
         android:layout_width="match_parent"
         android:layout_height="85dp"
-        android:id="@+id/homeBtn"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="185dp"
         android:text="@string/home"
-        android:textSize="35sp"
         android:textAllCaps="false"
+        android:textSize="35sp"
         android:onClick="openHome"
         app:cornerRadius="0dp" />
 

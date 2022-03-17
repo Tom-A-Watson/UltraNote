@@ -9,6 +9,7 @@ public class CreateNote extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.createnote);
+        this.setTitle("Create a Note");
 
     }
 }
