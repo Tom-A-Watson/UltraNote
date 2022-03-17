@@ -18,11 +18,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Home"></activity>
-        <activity android:name=".MyNotes"></activity>
-        <activity android:name=".CreateNote"></activity>
-        <activity android:name=".Categories"></activity>
-        <activity android:name=".Settings"></activity>
+        <activity android:name=".Home" />
+        <activity android:name=".MyNotes" />
+        <activity android:name=".CreateNote" />
+        <activity android:name=".Categories" />
+        <activity android:name=".Settings" />
     </application>
 
 </manifest>
