@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">UltraNote</string>
+    <string name="home">Home</string>
+    <string name="my_notes">My Notes</string>
+    <string name="create_note">Create Note</string>
+    <string name="categories">Categories</string>
+    <string name="settings">Settings</string>
+</resources>
