@@ -9,7 +9,6 @@ public class Categories extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.categories);
-        this.setTitle("Categories");
 
     }
 }
