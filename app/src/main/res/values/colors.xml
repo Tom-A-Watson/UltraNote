@@ -6,8 +6,6 @@
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="searchIconColor">#C6C6C6</color>
-    <color name="searchHintColor">#7B7B7B</color>
-    <color name="searchBackground">#5A5A5A</color>
     <color name="revertColor">#FFEB3B</color>
     <color name="deleteColor">#F44336</color>
     <color name="confirmColor">#4CAF50</color>

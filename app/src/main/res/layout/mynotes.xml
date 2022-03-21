@@ -23,20 +23,50 @@
 
     <LinearLayout
         android:id="@+id/searchLayout"
-        android:layout_width="@dimen/_160sdp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:background="@color/searchBackground"
+        android:layout_width="@dimen/_294sdp"
+        android:layout_height="@dimen/_24sdp"
+        android:layout_marginTop="72dp"
+        android:background="@color/primaryColorLight"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="@dimen/_10sdp"
         android:paddingEnd="@dimen/_10sdp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.921"
+        app:layout_constraintHorizontal_bias="0.551"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ImageView
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:contentDescription="@string/search_icon"
+            android:src="@drawable/ic_search"
+            app:tint="@color/searchIconColor" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_35sdp"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:background="@null"
+            android:fontFamily="@font/ubuntu_regular"
+            android:hint="@string/search_notes"
+            android:imeOptions="actionDone"
+            android:importantForAutofill="no"
+            android:includeFontPadding="false"
+            android:inputType="text"
+            android:textColorHint="@color/white"
+            android:textSize="@dimen/_13ssp" />
 
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/addNoteBtn"
+        android:layout_width="@dimen/_32sdp"
+        android:layout_height="@dimen/_32sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:layout_marginEnd="@dimen/_22sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/add_note_button"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
