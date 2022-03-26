@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primaryColor"
-    tools:context=".MyNotes">
+    tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/myNotesText"
@@ -29,7 +29,7 @@
         android:background="@color/primaryColorLight"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/_10sdp"
+        android:paddingStart="@dimen/_8sdp"
         android:paddingEnd="@dimen/_10sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.551"
@@ -55,18 +55,43 @@
             android:includeFontPadding="false"
             android:inputType="text"
             android:textColorHint="@color/white"
+            android:textColor="@color/white"
             android:textSize="@dimen/_13ssp" />
 
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/addNoteBtn"
+        android:id="@+id/createNoteBtn"
         android:layout_width="@dimen/_32sdp"
         android:layout_height="@dimen/_32sdp"
         android:layout_marginTop="@dimen/_12sdp"
         android:layout_marginEnd="@dimen/_22sdp"
+        android:src="@drawable/ic_add"
+        android:background="@drawable/add_note_button"
+        android:contentDescription="@string/add_notes_button"
+        android:onClick="openCreateNote"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/add_note_button"/>
+        app:tint="@color/primaryColor" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/notesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="4dp"
+        android:clipToPadding="false"
+        android:paddingStart="0dp"
+        android:paddingEnd="@dimen/_12sdp"
+        android:paddingBottom="@dimen/_12sdp"
+        app:layout_constraintTop_toBottomOf="@+id/searchLayout"
+        app:layout_constraintBottom_toTopOf="@id/sortAndSelectNotes"/>
+
+    <LinearLayout
+        android:id="@+id/sortAndSelectNotes"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_54sdp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
