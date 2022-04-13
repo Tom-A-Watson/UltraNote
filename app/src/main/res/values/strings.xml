@@ -8,4 +8,9 @@
     <string name="search_icon">search icon</string>
     <string name="search_notes">Search notes</string>
     <string name="add_notes_button">Add notes button</string>
+    <string name="note_title">Note Title</string>
+    <string name="note_subtitle_optional">Note Subtitle (optional)</string>
+    <string name="type_your_note_here">Type your note here...</string>
+    <string name="text_note">Text</string>
+    <string name="note_creation_question">What kind of note would you like to create?</string>
 </resources>

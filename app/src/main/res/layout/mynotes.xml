@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primaryColor"
+    android:background="@color/primaryColour"
     tools:context=".MainActivity">
 
     <TextView
@@ -26,7 +26,7 @@
         android:layout_width="@dimen/_294sdp"
         android:layout_height="@dimen/_24sdp"
         android:layout_marginTop="72dp"
-        android:background="@color/primaryColorLight"
+        android:background="@color/primaryColourLight"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="@dimen/_8sdp"
@@ -41,7 +41,7 @@
             android:layout_height="@dimen/_20sdp"
             android:contentDescription="@string/search_icon"
             android:src="@drawable/ic_search"
-            app:tint="@color/searchIconColor" />
+            app:tint="@color/textHintColour" />
 
         <EditText
             android:layout_width="match_parent"
@@ -72,7 +72,7 @@
         android:onClick="openCreateNote"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/primaryColor" />
+        app:tint="@color/primaryColour" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notesRecyclerView"

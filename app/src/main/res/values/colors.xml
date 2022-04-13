@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primaryColor">#202020</color>
-    <color name="primaryColorLight">#333333</color>
+    <color name="primaryColour">#202020</color>
+    <color name="primaryColourLight">#333333</color>
     <color name="accent">#72FFFA</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
-    <color name="searchIconColor">#C6C6C6</color>
-    <color name="revertColor">#FFEB3B</color>
-    <color name="deleteColor">#F44336</color>
-    <color name="confirmColor">#4CAF50</color>
+    <color name="textHintColour">#C6C6C6</color>
+    <color name="revertColour">#FFEB3B</color>
+    <color name="deleteColour">#F44336</color>
+    <color name="confirmColour">#4CAF50</color>
 </resources>
