@@ -1,7 +1,9 @@
-package com.example.ultranote;
+package com.example.ultranote.activities;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.ultranote.R;
 
 public class Home extends AppCompatActivity {
 

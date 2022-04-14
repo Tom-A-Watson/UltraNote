@@ -1,10 +1,12 @@
-package com.example.ultranote;
+package com.example.ultranote.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+
+import com.example.ultranote.R;
 
 public class CreateNoteActivity extends AppCompatActivity {
 
