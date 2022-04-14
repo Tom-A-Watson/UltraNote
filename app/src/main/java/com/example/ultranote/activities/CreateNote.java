@@ -1,13 +1,17 @@
 package com.example.ultranote.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.ultranote.R;
+import java.util.List;
+import database.NotesDatabase;
+import entities.Note;
 
 public class CreateNote extends AppCompatActivity {
 
@@ -28,5 +32,27 @@ public class CreateNote extends AppCompatActivity {
                 );
             }
         });
+
+        getNotes();
+    }
+
+    private void getNotes() {
+
+        @SuppressLint("StaticFieldLeak")
+        class GetNotesTask extends AsyncTask<Void, Void, List<Note>> {
+
+            @Override
+            protected List<Note> doInBackground(Void... voids) {
+                return NotesDatabase.getDatabase(getApplicationContext()).noteDao().getAllNotes();
+            }
+
+            @Override
+            protected void onPostExecute(List<Note> notes) {
+                super.onPostExecute(notes);
+                Log.d("MY_NOTES", notes.toString());
+            }
+        }
+
+        new GetNotesTask().execute();
     }
 }

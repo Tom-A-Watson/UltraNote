@@ -21,10 +21,8 @@ public class MyNotes extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mynotes);
-        new LoadNotes().execute();
 
         ImageView createNote = (ImageView) findViewById(R.id.createNoteBtn);
-
         createNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -32,16 +30,6 @@ public class MyNotes extends AppCompatActivity {
             }
         });
 
-    }
-
-    public class LoadNotes extends AsyncTask<Void, Void, Integer> {
-
-        @Override
-        protected Integer doInBackground(Void... params) {
-            List<Note> allNotes = NotesDatabase.getDatabase(getApplicationContext()).noteDao().getAllNotes();
-            System.out.println("*******" + allNotes);
-            return 1;
-        }
     }
 
     private void openCreateNote() {
