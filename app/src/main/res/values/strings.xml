@@ -13,4 +13,5 @@
     <string name="type_your_note_here">Type your note here...</string>
     <string name="text_note">Text</string>
     <string name="note_creation_question">What kind of note would you like to create?</string>
+    <string name="search_favourites">Search Favourites</string>
 </resources>
