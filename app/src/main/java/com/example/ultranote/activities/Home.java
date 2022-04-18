@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -60,13 +59,15 @@ public class Home extends AppCompatActivity {
             @Override
             protected void onPostExecute(List<Note> notes) {
                 super.onPostExecute(notes);
-                if (noteList.size() == 0) {
+
+                if (noteList.isEmpty()) {
                     noteList.addAll(notes);
                     notesAdapter.notifyDataSetChanged();
                 } else {
                     noteList.add(0, notes.get(0));
                     notesAdapter.notifyItemInserted(0);
                 }
+
                 favsRecyclerView.smoothScrollToPosition(0);
             }
         }
