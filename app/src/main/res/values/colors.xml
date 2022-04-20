@@ -9,4 +9,5 @@
     <color name="revertColour">#FFEB3B</color>
     <color name="deleteColour">#F44336</color>
     <color name="confirmColour">#4CAF50</color>
+    <color name="defaultNoteColour">#2C2C2C</color>
 </resources>
