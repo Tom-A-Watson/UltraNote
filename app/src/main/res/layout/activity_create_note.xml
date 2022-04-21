@@ -46,13 +46,21 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/backButton" />
 
+            <View
+                android:id="@+id/noteColourIndicator"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:background="@drawable/note_colour_indicator"
+                app:layout_constraintBottom_toTopOf="@+id/noteTitleInput"/>
+
             <EditText
                 android:id="@+id/noteTitleInput"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_35sdp"
                 android:layout_marginStart="@dimen/_12sdp"
-                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_30sdp"
                 android:layout_marginEnd="@dimen/_12sdp"
+                android:paddingTop="@dimen/_8sdp"
                 android:background="@null"
                 android:fontFamily="@font/ubuntu_bold"
                 android:hint="@string/note_title"
@@ -75,7 +83,7 @@
                 android:textSize="@dimen/_10ssp"
                 app:layout_constraintEnd_toEndOf="@id/noteTitleInput"
                 app:layout_constraintStart_toStartOf="@id/noteTitleInput"
-                app:layout_constraintBottom_toBottomOf="@id/noteTitleInput" />
+                app:layout_constraintTop_toBottomOf="@id/noteTitleInput" />
 
             <EditText
                 android:id="@+id/noteSubtitleInput"

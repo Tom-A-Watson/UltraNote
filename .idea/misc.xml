@@ -35,12 +35,13 @@
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/note_background_colour_8.xml" value="0.11954397394136808" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/note_background_colour_9.xml" value="0.11954397394136808" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/note_colour_background.xml" value="0.11" />
+        <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/note_colour_indicator.xml" value="0.11" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/note_widget.xml" value="0.12072368421052632" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/sort_by_button.xml" value="0.12072368421052632" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/subtitle_indicator.xml" value="0.12072368421052632" />
-        <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/layout/activity_create_note.xml" value="0.11" />
+        <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/layout/activity_create_note.xml" value="0.22333333333333336" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/layout/activity_main.xml" value="0.1" />
-        <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/layout/colourpicker.xml" value="0.16666666666666666" />
+        <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/layout/colourpicker.xml" value="0.22333333333333336" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/layout/createnotepage.xml" value="0.11052631578947368" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/layout/home.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/layout/mynotes.xml" value="0.11" />
