@@ -11,10 +11,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ultranote.R;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,6 +29,8 @@ public class CreateNoteActivity extends AppCompatActivity {
 
     private EditText noteTitleInput, noteSubtitleInput, noteInput;
     private TextView textDateTime;
+    LinearLayout colourPickerLayout;
+    BottomSheetBehavior<LinearLayout> bottomSheetBehavior;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,9 @@ public class CreateNoteActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        colourPickerLayout = findViewById(R.id.colourPickerLayout);
+        bottomSheetBehavior = BottomSheetBehavior.from(colourPickerLayout);
 
         noteTitleInput = findViewById(R.id.noteTitleInput);
         noteSubtitleInput = findViewById(R.id.noteSubtitleInput);
@@ -59,6 +66,8 @@ public class CreateNoteActivity extends AppCompatActivity {
             }
         });
 
+        initColourPicker();
+
     }
 
     private void saveNote() {
@@ -77,7 +86,8 @@ public class CreateNoteActivity extends AppCompatActivity {
         note.setDateTime(textDateTime.getText().toString());
 
         @SuppressLint("StaticFieldLeak")
-        class SaveNoteTask extends AsyncTask<Void, Void, Void> {
+        class SaveNoteTask extends AsyncTask<Void, Void, Void>
+        {
 
             @Override
             protected Void doInBackground(Void... voids) {
@@ -96,4 +106,22 @@ public class CreateNoteActivity extends AppCompatActivity {
 
         new SaveNoteTask().execute();
     }
+
+    private void initColourPicker()
+    {
+
+
+
+        colourPickerLayout.findViewById(R.id.colourPickerText).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                } else {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                }
+            }
+        });
+    }
+
 }

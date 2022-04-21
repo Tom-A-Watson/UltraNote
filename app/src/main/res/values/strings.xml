@@ -14,5 +14,5 @@
     <string name="text_note">Text</string>
     <string name="note_creation_question">What kind of note would you like to create?</string>
     <string name="search_favourites">Search Favourites</string>
-    <string name="colour_picker">Colour Picker</string>
+    <string name="pick_a_colour">Pick a colour</string>
 </resources>
