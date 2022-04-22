@@ -10,7 +10,7 @@
     <color name="deleteColour">#F44336</color>
     <color name="confirmColour">#4CAF50</color>
     <color name="defaultNoteColour">#2C2C2C</color>
-    <color name="colourPickerBG">#1B1B1B</color>
+    <color name="colourPickerBG">#131313</color>
     <color name="noteColour2">#FF2929</color>
     <color name="noteColour3">#FF5722</color>
     <color name="noteColour4">#FF9800</color>
