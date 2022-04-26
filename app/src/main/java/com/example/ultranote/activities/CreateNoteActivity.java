@@ -25,6 +25,7 @@ public class CreateNoteActivity extends AppCompatActivity {
     private EditText noteTitleInput, noteSubtitleInput, noteInput;
     private TextView textDateTime;
     private View noteColourIndicator;
+    final Note note = new Note();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +71,6 @@ public class CreateNoteActivity extends AppCompatActivity {
             return;
         }
 
-        final Note note = new Note();
         note.setTitle(noteTitleInput.getText().toString());
         note.setSubtitle(noteSubtitleInput.getText().toString());
         note.setNoteText(noteInput.getText().toString());
@@ -135,6 +135,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             public void onClick(View view) {
                 tickSelected(imageColours, 1);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#333333"));
+                note.setColour("#333333");
             }
         });
         colourPickerLayout.findViewById(R.id.viewColour2).setOnClickListener(new View.OnClickListener() {
@@ -142,6 +143,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             public void onClick(View view) {
                 tickSelected(imageColours, 2);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#FF2929"));
+                note.setColour("#FF2929");
             }
         });
         colourPickerLayout.findViewById(R.id.viewColour3).setOnClickListener(new View.OnClickListener() {
@@ -149,6 +151,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             public void onClick(View view) {
                 tickSelected(imageColours, 3);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#FF5722"));
+                note.setColour("#FF5722");
             }
         });
         colourPickerLayout.findViewById(R.id.viewColour4).setOnClickListener(new View.OnClickListener() {
@@ -156,6 +159,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             public void onClick(View view) {
                 tickSelected(imageColours, 4);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#FF9800"));
+                note.setColour("#FF9800");
             }
         });
         colourPickerLayout.findViewById(R.id.viewColour5).setOnClickListener(new View.OnClickListener() {
@@ -163,6 +167,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             public void onClick(View view) {
                 tickSelected(imageColours, 5);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#FFE719"));
+                note.setColour("#FFE719");
             }
         });
         colourPickerLayout.findViewById(R.id.viewColour6).setOnClickListener(new View.OnClickListener() {
@@ -170,6 +175,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             public void onClick(View view) {
                 tickSelected(imageColours, 6);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#8BC34A"));
+                note.setColour("#8BC34A");
             }
         });
         colourPickerLayout.findViewById(R.id.viewColour7).setOnClickListener(new View.OnClickListener() {
@@ -177,6 +183,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             public void onClick(View view) {
                 tickSelected(imageColours, 7);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#4CAF50"));
+                note.setColour("#4CAF50");
             }
         });
         colourPickerLayout.findViewById(R.id.viewColour8).setOnClickListener(new View.OnClickListener() {
@@ -184,6 +191,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             public void onClick(View view) {
                 tickSelected(imageColours, 8);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#00BCD4"));
+                note.setColour("#00BCD4");
             }
         });
         colourPickerLayout.findViewById(R.id.viewColour9).setOnClickListener(new View.OnClickListener() {
@@ -191,6 +199,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             public void onClick(View view) {
                 tickSelected(imageColours, 9);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#2196F3"));
+                note.setColour("#2196F3");
             }
         });
         colourPickerLayout.findViewById(R.id.viewColour10).setOnClickListener(new View.OnClickListener() {
@@ -198,6 +207,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             public void onClick(View view) {
                 tickSelected(imageColours, 10);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#3F51B5"));
+                note.setColour("#3F51B5");
             }
         });
         colourPickerLayout.findViewById(R.id.viewColour11).setOnClickListener(new View.OnClickListener() {
@@ -205,6 +215,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             public void onClick(View view) {
                 tickSelected(imageColours, 11);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#673AB7"));
+                note.setColour("#673AB7");
             }
         });
         colourPickerLayout.findViewById(R.id.viewColour12).setOnClickListener(new View.OnClickListener() {
@@ -212,6 +223,8 @@ public class CreateNoteActivity extends AppCompatActivity {
             public void onClick(View view) {
                 tickSelected(imageColours, 12);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#9C27B0"));
+                note.setColour("#9C27B0");
+
             }
         });
         colourPickerLayout.findViewById(R.id.viewColour13).setOnClickListener(new View.OnClickListener() {
@@ -219,6 +232,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             public void onClick(View view) {
                 tickSelected(imageColours, 13);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#E91E63"));
+                note.setColour("#E91E63");
             }
         });
     }

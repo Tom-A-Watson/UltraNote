@@ -70,6 +70,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
             }
 
             textDateTime.setText(note.getDateTime());
+            widgetLayout = itemView.findViewById(R.id.widgetLayout);
 
             GradientDrawable gd = (GradientDrawable) widgetLayout.getBackground();
             if (note.getColour() != null) {
