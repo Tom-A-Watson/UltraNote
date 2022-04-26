@@ -1,6 +1,7 @@
 package com.example.ultranote.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -30,7 +31,8 @@ public class Home extends AppCompatActivity {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onBackPressed();
+                Intent menu = new Intent(Home.this, MainActivity.class);
+                startActivity(menu);
             }
         });
 
