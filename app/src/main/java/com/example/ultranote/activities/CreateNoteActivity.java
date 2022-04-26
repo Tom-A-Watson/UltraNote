@@ -239,7 +239,6 @@ public class CreateNoteActivity extends AppCompatActivity {
     }
 
     private void chooseColour(ImageView[] colours, int colourNumber) {
-
         for (int i = 0; i < colours.length; i++) {
             if (i == colourNumber - 1) {
                 colours[i].setImageResource(R.drawable.ic_done);
