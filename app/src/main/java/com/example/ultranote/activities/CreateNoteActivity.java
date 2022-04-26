@@ -79,7 +79,6 @@ public class CreateNoteActivity extends AppCompatActivity {
         @SuppressLint("StaticFieldLeak")
         class SaveNoteTask extends AsyncTask<Void, Void, Void>
         {
-
             @Override
             protected Void doInBackground(Void... voids) {
                 NotesDatabase.getDatabase(getApplicationContext()).noteDao().insertNote(note);
@@ -90,8 +89,11 @@ public class CreateNoteActivity extends AppCompatActivity {
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 Intent intent = new Intent();
+                Intent homePage = new Intent(CreateNoteActivity.this, Home.class);
+
                 setResult(RESULT_OK, intent);
-                finish();
+                homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getApplicationContext().startActivity(homePage);
             }
         }
 
@@ -100,40 +102,39 @@ public class CreateNoteActivity extends AppCompatActivity {
 
     private void initColourPicker() {
         final LinearLayout colourPickerLayout = findViewById(R.id.colourPickerLayout);
-        final BottomSheetBehavior<LinearLayout> bottomSheetBehavior = BottomSheetBehavior.from(colourPickerLayout);
+        final BottomSheetBehavior<LinearLayout> bsb = BottomSheetBehavior.from(colourPickerLayout);
 
         colourPickerLayout.findViewById(R.id.colourPickerText).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                if (bsb.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+                    bsb.setState(BottomSheetBehavior.STATE_EXPANDED);
                 } else {
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    bsb.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 }
             }
         });
 
-        final ImageView imageColour1 = colourPickerLayout.findViewById(R.id.imageColour1);
-        final ImageView imageColour2 = colourPickerLayout.findViewById(R.id.imageColour2);
-        final ImageView imageColour3 = colourPickerLayout.findViewById(R.id.imageColour3);
-        final ImageView imageColour4 = colourPickerLayout.findViewById(R.id.imageColour4);
-        final ImageView imageColour5 = colourPickerLayout.findViewById(R.id.imageColour5);
-        final ImageView imageColour6 = colourPickerLayout.findViewById(R.id.imageColour6);
-        final ImageView imageColour7 = colourPickerLayout.findViewById(R.id.imageColour7);
-        final ImageView imageColour8 = colourPickerLayout.findViewById(R.id.imageColour8);
-        final ImageView imageColour9 = colourPickerLayout.findViewById(R.id.imageColour9);
-        final ImageView imageColour10 = colourPickerLayout.findViewById(R.id.imageColour10);
-        final ImageView imageColour11 = colourPickerLayout.findViewById(R.id.imageColour11);
-        final ImageView imageColour12 = colourPickerLayout.findViewById(R.id.imageColour12);
-        final ImageView imageColour13 = colourPickerLayout.findViewById(R.id.imageColour13);
-        final ImageView[] imageColours = new ImageView[]{imageColour1, imageColour2, imageColour3,
-                imageColour4, imageColour5, imageColour6, imageColour7, imageColour8, imageColour9,
-                imageColour10, imageColour11, imageColour12, imageColour13};
+        final ImageView grey = colourPickerLayout.findViewById(R.id.imageColour1);
+        final ImageView red = colourPickerLayout.findViewById(R.id.imageColour2);
+        final ImageView orange = colourPickerLayout.findViewById(R.id.imageColour3);
+        final ImageView lightOrange = colourPickerLayout.findViewById(R.id.imageColour4);
+        final ImageView yellow = colourPickerLayout.findViewById(R.id.imageColour5);
+        final ImageView lightGreen = colourPickerLayout.findViewById(R.id.imageColour6);
+        final ImageView green = colourPickerLayout.findViewById(R.id.imageColour7);
+        final ImageView lightBlue = colourPickerLayout.findViewById(R.id.imageColour8);
+        final ImageView blue = colourPickerLayout.findViewById(R.id.imageColour9);
+        final ImageView indigo = colourPickerLayout.findViewById(R.id.imageColour10);
+        final ImageView purple = colourPickerLayout.findViewById(R.id.imageColour11);
+        final ImageView violet = colourPickerLayout.findViewById(R.id.imageColour12);
+        final ImageView lightMaroon = colourPickerLayout.findViewById(R.id.imageColour13);
+        final ImageView[] colours = new ImageView[] { grey, red, orange, lightOrange, yellow, lightGreen,
+                green, lightBlue, blue, indigo, purple, violet, lightMaroon };
 
         colourPickerLayout.findViewById(R.id.viewColour1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tickSelected(imageColours, 1);
+                chooseColour(colours, 1);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#333333"));
                 note.setColour("#333333");
             }
@@ -141,7 +142,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tickSelected(imageColours, 2);
+                chooseColour(colours, 2);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#FF2929"));
                 note.setColour("#FF2929");
             }
@@ -149,7 +150,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tickSelected(imageColours, 3);
+                chooseColour(colours, 3);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#FF5722"));
                 note.setColour("#FF5722");
             }
@@ -157,7 +158,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour4).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tickSelected(imageColours, 4);
+                chooseColour(colours, 4);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#FF9800"));
                 note.setColour("#FF9800");
             }
@@ -165,7 +166,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour5).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tickSelected(imageColours, 5);
+                chooseColour(colours, 5);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#FFE719"));
                 note.setColour("#FFE719");
             }
@@ -173,7 +174,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour6).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tickSelected(imageColours, 6);
+                chooseColour(colours, 6);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#8BC34A"));
                 note.setColour("#8BC34A");
             }
@@ -181,7 +182,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour7).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tickSelected(imageColours, 7);
+                chooseColour(colours, 7);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#4CAF50"));
                 note.setColour("#4CAF50");
             }
@@ -189,7 +190,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour8).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tickSelected(imageColours, 8);
+                chooseColour(colours, 8);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#00BCD4"));
                 note.setColour("#00BCD4");
             }
@@ -197,7 +198,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour9).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tickSelected(imageColours, 9);
+                chooseColour(colours, 9);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#2196F3"));
                 note.setColour("#2196F3");
             }
@@ -205,7 +206,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour10).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tickSelected(imageColours, 10);
+                chooseColour(colours, 10);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#3F51B5"));
                 note.setColour("#3F51B5");
             }
@@ -213,7 +214,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour11).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tickSelected(imageColours, 11);
+                chooseColour(colours, 11);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#673AB7"));
                 note.setColour("#673AB7");
             }
@@ -221,7 +222,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour12).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tickSelected(imageColours, 12);
+                chooseColour(colours, 12);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#9C27B0"));
                 note.setColour("#9C27B0");
 
@@ -230,22 +231,22 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour13).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tickSelected(imageColours, 13);
+                chooseColour(colours, 13);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#E91E63"));
                 note.setColour("#E91E63");
             }
         });
     }
 
-    private void tickSelected(ImageView[] imageColours, int colourNumber) {
+    private void chooseColour(ImageView[] colours, int colourNumber) {
 
-        for (int i = 0; i < imageColours.length; i++) {
+        for (int i = 0; i < colours.length; i++) {
             if (i == colourNumber - 1) {
-                imageColours[i].setImageResource(R.drawable.ic_done);
+                colours[i].setImageResource(R.drawable.ic_done);
                 continue;
             }
 
-            imageColours[i].setImageResource(0);
+            colours[i].setImageResource(0);
         }
     }
 
