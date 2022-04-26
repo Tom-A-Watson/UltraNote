@@ -32,6 +32,31 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_note"
+                android:layout_marginStart="@dimen/_6sdp"
+                android:layout_marginEnd="@dimen/_6sdp"
+                android:fontFamily="@font/roboto_bold"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_20ssp"
+                app:layout_constraintStart_toEndOf="@id/backButton"
+                app:layout_constraintTop_toTopOf="@id/backButton"
+                app:layout_constraintBottom_toBottomOf="@id/backButton" />
+
+            <ImageView
+                android:id="@+id/addImageButton"
+                android:layout_width="@dimen/_26sdp"
+                android:layout_height="@dimen/_26sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/ic_image"
+                app:tint="@color/textHintColour"
+                app:layout_constraintEnd_toStartOf="@id/saveButton"
+                app:layout_constraintBottom_toBottomOf="@id/saveButton"
+                app:layout_constraintTop_toTopOf="@id/saveButton"/>
+
             <ImageView
                 android:id="@+id/saveButton"
                 android:layout_width="@dimen/_24sdp"
@@ -77,6 +102,7 @@
                 android:id="@+id/textDateTime"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:paddingTop="@dimen/_2sdp"
                 android:fontFamily="@font/ubuntu_regular"
                 android:includeFontPadding="false"
                 android:textColor="@color/white"
@@ -117,6 +143,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/noteSubtitleInput" />
 
+            <ImageView
+                android:id="@+id/noteImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/noteSubtitleInput" />
+
             <EditText
                 android:id="@+id/noteInput"
                 android:layout_width="match_parent"
@@ -137,7 +175,7 @@
                 android:textColorHint="@color/textHintColour"
                 android:textSize="@dimen/_13ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/noteSubtitleInput" />
+                app:layout_constraintTop_toBottomOf="@id/noteImage" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
