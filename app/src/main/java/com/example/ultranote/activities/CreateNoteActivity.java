@@ -85,7 +85,7 @@ public class CreateNoteActivity extends AppCompatActivity {
                     ) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(
                             CreateNoteActivity.this,
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
                             REQUEST_CODE_STORAGE_PERMISSION
                     );
                 } else {
