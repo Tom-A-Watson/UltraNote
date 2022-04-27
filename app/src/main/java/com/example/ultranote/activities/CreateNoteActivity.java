@@ -9,6 +9,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -38,6 +39,7 @@ public class CreateNoteActivity extends AppCompatActivity {
     private TextView textDateTime;
     private View noteColourIndicator;
     private ImageView noteImage;
+    private String selectedImagePath;
     final Note note = new Note();
 
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
@@ -62,6 +64,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         textDateTime = findViewById(R.id.textDateTime);
         noteColourIndicator = findViewById(R.id.noteColourIndicator);
         noteImage = findViewById(R.id.noteImage);
+        selectedImagePath = "";
 
         textDateTime.setText(
                 new SimpleDateFormat("EEEE dd MMMM yyyy HH:mm a",
@@ -111,6 +114,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         note.setSubtitle(noteSubtitleInput.getText().toString());
         note.setNoteText(noteInput.getText().toString());
         note.setDateTime(textDateTime.getText().toString());
+        note.setImagePath(selectedImagePath);
 
         @SuppressLint("StaticFieldLeak")
         class SaveNoteTask extends AsyncTask<Void, Void, Void>
@@ -320,6 +324,7 @@ public class CreateNoteActivity extends AppCompatActivity {
                         Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                         noteImage.setImageBitmap(bitmap);
                         noteImage.setVisibility(View.VISIBLE);
+                        selectedImagePath = getPathFromUri(selectedImageUri);
 
                     } catch (Exception e) {
                         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -329,5 +334,19 @@ public class CreateNoteActivity extends AppCompatActivity {
         }
     }
 
+    private String getPathFromUri(Uri contentUri) {
+        String filePath;
+        Cursor cursor = getContentResolver()
+                .query(contentUri, null, null, null, null);
 
+        if (cursor == null) {
+            filePath = contentUri.getPath();
+        } else {
+            cursor.moveToFirst();
+            int index = cursor.getColumnIndex("_data");
+            filePath = cursor.getString(index);
+            cursor.close();
+        }
+        return filePath;
+    }
 }
