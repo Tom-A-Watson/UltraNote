@@ -57,6 +57,7 @@
         android:layout_width="@dimen/_220sdp"
         android:layout_height="@dimen/_30sdp"
         android:inputType="text"
+        android:fontFamily="@font/ubuntu_regular"
         android:textColor="@color/white"
         android:textSize="@dimen/_12ssp"
         android:hint="@string/type_item_names_here"
