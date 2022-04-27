@@ -15,4 +15,7 @@
     <string name="note_creation_question">What kind of note would you like to create?</string>
     <string name="search_favourites">Search Favourites</string>
     <string name="pick_a_colour">Pick a colour</string>
+    <string name="add_checklist">Add Checklist (optional)</string>
+    <string name="add_item">Add Item</string>
+    <string name="type_item_names_here">Type item names here</string>
 </resources>

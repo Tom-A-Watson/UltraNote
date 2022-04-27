@@ -8,6 +8,7 @@
     tools:context=".activities.CreateNoteActivity">
 
     <ScrollView
+        android:id="@+id/noteScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/_40sdp"
@@ -44,6 +45,19 @@
                 app:layout_constraintStart_toEndOf="@id/backButton"
                 app:layout_constraintTop_toTopOf="@id/backButton"
                 app:layout_constraintBottom_toBottomOf="@id/backButton" />
+
+            <ImageView
+                android:id="@+id/addChecklistButton"
+                android:layout_width="@dimen/_28sdp"
+                android:layout_height="@dimen/_32sdp"
+                android:layout_marginEnd="@dimen/_4sdp"
+                android:contentDescription="@string/app_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_checklist"
+                app:tint="@color/textHintColour"
+                app:layout_constraintEnd_toStartOf="@id/addImageButton"
+                app:layout_constraintBottom_toBottomOf="@id/addImageButton"
+                app:layout_constraintTop_toTopOf="@id/addImageButton"/>
 
             <ImageView
                 android:id="@+id/addImageButton"
