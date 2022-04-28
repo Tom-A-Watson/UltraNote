@@ -47,13 +47,12 @@
                 app:layout_constraintBottom_toBottomOf="@id/backButton" />
 
             <ImageView
-                android:id="@+id/addChecklistButton"
-                android:layout_width="@dimen/_28sdp"
-                android:layout_height="@dimen/_32sdp"
-                android:layout_marginEnd="@dimen/_4sdp"
+                android:id="@+id/addURLButton"
+                android:layout_width="@dimen/_26sdp"
+                android:layout_height="@dimen/_26sdp"
+                android:layout_marginEnd="@dimen/_6sdp"
                 android:contentDescription="@string/app_name"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_checklist"
+                android:src="@drawable/ic_weblink"
                 app:tint="@color/textHintColour"
                 app:layout_constraintEnd_toStartOf="@id/addImageButton"
                 app:layout_constraintBottom_toBottomOf="@id/addImageButton"
@@ -169,6 +168,30 @@
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/noteSubtitleInput" />
 
+            <LinearLayout
+                android:id="@+id/webUrlLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/noteImage">
+
+                <TextView
+                    android:id="@+id/webUrl"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:autoLink="web"
+                    android:fontFamily="@font/ubuntu_regular"
+                    android:includeFontPadding="false"
+                    android:textSize="@dimen/_13ssp" />
+
+            </LinearLayout>
+
             <EditText
                 android:id="@+id/noteInput"
                 android:layout_width="match_parent"
@@ -189,7 +212,7 @@
                 android:textColorHint="@color/textHintColour"
                 android:textSize="@dimen/_13ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/noteImage" />
+                app:layout_constraintTop_toBottomOf="@id/webUrlLayout" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

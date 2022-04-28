@@ -2,6 +2,7 @@ package com.example.ultranote.activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -13,11 +14,15 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,10 +41,12 @@ import entities.Note;
 public class CreateNoteActivity extends AppCompatActivity {
 
     private EditText noteTitleInput, noteSubtitleInput, noteInput;
-    private TextView textDateTime;
+    private TextView textDateTime, webURL;
     private View noteColourIndicator;
     private ImageView noteImage;
     private String selectedImagePath;
+    private LinearLayout webURLLayout;
+    private AlertDialog addURLDialog;
     final Note note = new Note();
 
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
@@ -65,6 +72,8 @@ public class CreateNoteActivity extends AppCompatActivity {
         noteColourIndicator = findViewById(R.id.noteColourIndicator);
         noteImage = findViewById(R.id.noteImage);
         selectedImagePath = "";
+        webURL = findViewById(R.id.webUrl);
+        webURLLayout = findViewById(R.id.webUrlLayout);
 
         textDateTime.setText(
                 new SimpleDateFormat("EEEE dd MMMM yyyy HH:mm a",
@@ -94,7 +103,14 @@ public class CreateNoteActivity extends AppCompatActivity {
                 } else {
                     selectImage();
                 }
+            }
+        });
 
+        ImageView addURLBtn = findViewById(R.id.addURLButton);
+        addURLBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAddURLDialog();
             }
         });
 
@@ -115,6 +131,10 @@ public class CreateNoteActivity extends AppCompatActivity {
         note.setNoteText(noteInput.getText().toString());
         note.setDateTime(textDateTime.getText().toString());
         note.setImagePath(selectedImagePath);
+
+        if (webURLLayout.getVisibility() == View.VISIBLE) {
+            note.setWebLink(webURL.getText().toString());
+        }
 
         @SuppressLint("StaticFieldLeak")
         class SaveNoteTask extends AsyncTask<Void, Void, Void>
@@ -174,7 +194,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chooseColour(colours, 1);
+                selectColour(colours, 1);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#333333"));
                 note.setColour("#333333");
             }
@@ -182,7 +202,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chooseColour(colours, 2);
+                selectColour(colours, 2);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#FF2929"));
                 note.setColour("#FF2929");
             }
@@ -190,7 +210,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chooseColour(colours, 3);
+                selectColour(colours, 3);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#FF5722"));
                 note.setColour("#FF5722");
             }
@@ -198,7 +218,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour4).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chooseColour(colours, 4);
+                selectColour(colours, 4);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#FF9800"));
                 note.setColour("#FF9800");
             }
@@ -206,7 +226,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour5).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chooseColour(colours, 5);
+                selectColour(colours, 5);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#FFE719"));
                 note.setColour("#FFE719");
             }
@@ -214,7 +234,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour6).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chooseColour(colours, 6);
+                selectColour(colours, 6);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#8BC34A"));
                 note.setColour("#8BC34A");
             }
@@ -222,7 +242,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour7).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chooseColour(colours, 7);
+                selectColour(colours, 7);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#4CAF50"));
                 note.setColour("#4CAF50");
             }
@@ -230,7 +250,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour8).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chooseColour(colours, 8);
+                selectColour(colours, 8);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#00BCD4"));
                 note.setColour("#00BCD4");
             }
@@ -238,7 +258,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour9).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chooseColour(colours, 9);
+                selectColour(colours, 9);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#2196F3"));
                 note.setColour("#2196F3");
             }
@@ -246,7 +266,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour10).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chooseColour(colours, 10);
+                selectColour(colours, 10);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#3F51B5"));
                 note.setColour("#3F51B5");
             }
@@ -254,7 +274,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour11).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chooseColour(colours, 11);
+                selectColour(colours, 11);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#673AB7"));
                 note.setColour("#673AB7");
             }
@@ -262,7 +282,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour12).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chooseColour(colours, 12);
+                selectColour(colours, 12);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#9C27B0"));
                 note.setColour("#9C27B0");
 
@@ -271,14 +291,14 @@ public class CreateNoteActivity extends AppCompatActivity {
         colourPickerLayout.findViewById(R.id.viewColour13).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chooseColour(colours, 13);
+                selectColour(colours, 13);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#E91E63"));
                 note.setColour("#E91E63");
             }
         });
     }
 
-    private void chooseColour(ImageView[] colours, int colourNumber) {
+    private void selectColour(ImageView[] colours, int colourNumber) {
         for (int i = 0; i < colours.length; i++) {
             if (i == colourNumber - 1) {
                 colours[i].setImageResource(R.drawable.ic_done);
@@ -347,6 +367,51 @@ public class CreateNoteActivity extends AppCompatActivity {
             filePath = cursor.getString(index);
             cursor.close();
         }
+
         return filePath;
     }
+
+    private void showAddURLDialog() {
+        if (addURLDialog == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(CreateNoteActivity.this);
+            View view = LayoutInflater.from(this).inflate(
+                    R.layout.add_url_layout,
+                    (ViewGroup) findViewById(R.id.addURLLayout)
+            );
+            builder.setView(view);
+
+            addURLDialog = builder.create();
+            if (addURLDialog.getWindow() != null) {
+                addURLDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            }
+
+            final EditText inputURL = view.findViewById(R.id.inputURL);
+            inputURL.requestFocus();
+
+            view.findViewById(R.id.textAdd).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (inputURL.getText().toString().trim().isEmpty()) {
+                        Toast.makeText(CreateNoteActivity.this, "Enter a URL", Toast.LENGTH_SHORT).show();
+                    } else if (!Patterns.WEB_URL.matcher(inputURL.getText().toString()).matches()) {
+                        Toast.makeText(CreateNoteActivity.this, "Enter a valid URL", Toast.LENGTH_SHORT).show();
+                    } else {
+                        webURL.setText(inputURL.getText().toString());
+                        webURLLayout.setVisibility(View.VISIBLE);
+                        addURLDialog.dismiss();
+                    }
+                }
+            });
+
+            view.findViewById(R.id.textCancel).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    addURLDialog.dismiss();
+                }
+            });
+        }
+
+        addURLDialog.show();
+    }
+
 }

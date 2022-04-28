@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">UltraNote</string>
     <string name="home">Home</string>
     <string name="my_notes">My Notes</string>
@@ -10,12 +10,15 @@
     <string name="add_notes_button">Add notes button</string>
     <string name="note_title">Note Title</string>
     <string name="note_subtitle_optional">Note Subtitle (optional)</string>
-    <string name="type_your_note_here">Type your note here...</string>
+    <string name="type_your_note_here">Type your note here…</string>
     <string name="text_note">Text</string>
     <string name="note_creation_question">What kind of note would you like to create?</string>
     <string name="search_favourites">Search Favourites</string>
     <string name="pick_a_colour">Pick a colour</string>
-    <string name="add_checklist">Add Checklist (optional)</string>
     <string name="add_item">Add Item</string>
     <string name="type_item_names_here">Type item names here</string>
+    <string name="add_url">Add URL</string>
+    <string name="enter_url_here">Enter URL here…</string>
+    <string name="add">ADD</string>
+    <string name="cancel" tools:ignore="ButtonCase">CANCEL</string>
 </resources>
