@@ -47,6 +47,7 @@ public class CreateNoteActivity extends AppCompatActivity {
     private String selectedImagePath;
     private LinearLayout webURLLayout;
     private AlertDialog addURLDialog;
+    private Note existingNote;
     final Note note = new Note();
 
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
@@ -56,14 +57,6 @@ public class CreateNoteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_note);
-
-        ImageView backBtn = findViewById(R.id.backButton);
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
 
         noteTitleInput = findViewById(R.id.noteTitleInput);
         noteSubtitleInput = findViewById(R.id.noteSubtitleInput);
@@ -80,11 +73,27 @@ public class CreateNoteActivity extends AppCompatActivity {
                         Locale.getDefault()).format((new Date()))
         );
 
+        ImageView backBtn = findViewById(R.id.backButton);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+
         ImageView saveBtn = findViewById(R.id.saveButton);
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 saveNote();
+            }
+        });
+
+        ImageView addURLBtn = findViewById(R.id.addURLButton);
+        addURLBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAddURLDialog();
             }
         });
 
@@ -106,15 +115,30 @@ public class CreateNoteActivity extends AppCompatActivity {
             }
         });
 
-        ImageView addURLBtn = findViewById(R.id.addURLButton);
-        addURLBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showAddURLDialog();
-            }
-        });
+        if (getIntent().getBooleanExtra("isViewOrUpdate", false)) {
+            existingNote = (Note) getIntent().getSerializableExtra("note");
+            setViewOrUpdateNote();
+        }
 
         initColourPicker();
+    }
+
+    private void setViewOrUpdateNote() {
+        noteTitleInput.setText(existingNote.getTitle());
+        noteSubtitleInput.setText(existingNote.getSubtitle());
+        noteInput.setText(existingNote.getNoteText());
+        textDateTime.setText(existingNote.getDateTime());
+
+        if (existingNote.getImagePath() != null && !existingNote.getImagePath().trim().isEmpty()) {
+            noteImage.setImageBitmap(BitmapFactory.decodeFile(existingNote.getImagePath()));
+            noteImage.setVisibility(View.VISIBLE);
+            selectedImagePath = existingNote.getImagePath();
+        }
+
+        if (existingNote.getWebLink() != null && !existingNote.getWebLink().trim().isEmpty()) {
+            webURL.setText(existingNote.getWebLink());
+            webURLLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     private void saveNote() {
@@ -134,6 +158,10 @@ public class CreateNoteActivity extends AppCompatActivity {
 
         if (webURLLayout.getVisibility() == View.VISIBLE) {
             note.setWebLink(webURL.getText().toString());
+        }
+
+        if (existingNote != null) {
+            note.setId(existingNote.getId());
         }
 
         @SuppressLint("StaticFieldLeak")
@@ -174,6 +202,48 @@ public class CreateNoteActivity extends AppCompatActivity {
                 }
             }
         });
+
+        if (existingNote != null && existingNote.getColour() != null
+                && !existingNote.getColour().trim().isEmpty()) {
+            switch (existingNote.getColour()) {
+                case "#FF2929":
+                    noteColourIndicator.setBackgroundColor(Color.parseColor("#FF2929"));
+                    note.setColour("#FF2929");
+                case "#FF5722":
+                    noteColourIndicator.setBackgroundColor(Color.parseColor("#FF5722"));
+                    note.setColour("#FF5722");
+                case "#FF9800":
+                    noteColourIndicator.setBackgroundColor(Color.parseColor("#FF9800"));
+                    note.setColour("#FF9800");
+                case "#FFE719":
+                    noteColourIndicator.setBackgroundColor(Color.parseColor("#FFE719"));
+                    note.setColour("#FFE719");
+                case "#8BC34A":
+                    noteColourIndicator.setBackgroundColor(Color.parseColor("#8BC34A"));
+                    note.setColour("#8BC34A");
+                case "#4CAF50":
+                    noteColourIndicator.setBackgroundColor(Color.parseColor("#4CAF50"));
+                    note.setColour("#4CAF50");
+                case "#00BCD4":
+                    noteColourIndicator.setBackgroundColor(Color.parseColor("#00BCD4"));
+                    note.setColour("#00BCD4");
+                case "#2196F3":
+                    noteColourIndicator.setBackgroundColor(Color.parseColor("#2196F3"));
+                    note.setColour("#2196F3");
+                case "#3F51B5":
+                    noteColourIndicator.setBackgroundColor(Color.parseColor("#3F51B5"));
+                    note.setColour("#3F51B5");
+                case "#673AB7":
+                    noteColourIndicator.setBackgroundColor(Color.parseColor("#673AB7"));
+                    note.setColour("#673AB7");
+                case "#9C27B0":
+                    noteColourIndicator.setBackgroundColor(Color.parseColor("#9C27B0"));
+                    note.setColour("#9C27B0");
+                case "#E91E63":
+                    noteColourIndicator.setBackgroundColor(Color.parseColor("#E91E63"));
+                    note.setColour("#E91E63");
+            }
+        }
 
         final ImageView grey = colourPickerLayout.findViewById(R.id.imageColour1);
         final ImageView red = colourPickerLayout.findViewById(R.id.imageColour2);
