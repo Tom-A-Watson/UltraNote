@@ -57,12 +57,13 @@
             app:tint="@color/textHintColour" />
 
         <EditText
+            android:id="@+id/searchNotesInput"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_35sdp"
             android:layout_marginStart="@dimen/_8sdp"
             android:background="@null"
             android:fontFamily="@font/ubuntu_regular"
-            android:hint="@string/search_favourites"
+            android:hint="@string/search_notes"
             android:imeOptions="actionDone"
             android:importantForAutofill="no"
             android:includeFontPadding="false"
@@ -74,18 +75,17 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/sortByBtn"
-        android:layout_width="@dimen/_38sdp"
+        android:id="@+id/createNoteBtn"
+        android:layout_width="@dimen/_30sdp"
         android:layout_height="@dimen/_30sdp"
-        android:layout_marginTop="@dimen/_12sdp"
-        android:layout_marginEnd="@dimen/_22sdp"
-        android:src="@drawable/ic_sortbyarrows"
-        android:background="@drawable/sort_by_button"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:src="@drawable/ic_add"
+        android:background="@drawable/add_note_button"
         android:contentDescription="@string/add_notes_button"
-        android:rotation="90"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/black" />
+        app:layout_constraintTop_toTopOf="@id/homeText"
+        app:layout_constraintBottom_toBottomOf="@id/homeText"
+        app:tint="@color/primaryColour" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/favsRecyclerView"
@@ -97,14 +97,18 @@
         android:paddingEnd="@dimen/_12sdp"
         android:paddingBottom="@dimen/_12sdp"
         app:layout_constraintTop_toBottomOf="@+id/searchLayout"
-        app:layout_constraintBottom_toTopOf="@id/sortAndSelectNotes"/>
+        app:layout_constraintBottom_toTopOf="@id/quickActions"/>
 
     <LinearLayout
-        android:id="@+id/sortAndSelectNotes"
+        android:id="@+id/quickActions"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_54sdp"
+        android:layout_height="@dimen/_46sdp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent">
+
+
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
