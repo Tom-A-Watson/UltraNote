@@ -208,40 +208,40 @@ public class CreateNoteActivity extends AppCompatActivity {
             switch (existingNote.getColour()) {
                 case "#FF2929":
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#FF2929"));
-                    note.setColour("#FF2929");
+                    note.setColour("#FF2929"); break;
                 case "#FF5722":
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#FF5722"));
-                    note.setColour("#FF5722");
+                    note.setColour("#FF5722"); break;
                 case "#FF9800":
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#FF9800"));
-                    note.setColour("#FF9800");
+                    note.setColour("#FF9800"); break;
                 case "#FFE719":
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#FFE719"));
-                    note.setColour("#FFE719");
+                    note.setColour("#FFE719"); break;
                 case "#8BC34A":
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#8BC34A"));
-                    note.setColour("#8BC34A");
+                    note.setColour("#8BC34A"); break;
                 case "#4CAF50":
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#4CAF50"));
-                    note.setColour("#4CAF50");
+                    note.setColour("#4CAF50"); break;
                 case "#00BCD4":
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#00BCD4"));
-                    note.setColour("#00BCD4");
+                    note.setColour("#00BCD4"); break;
                 case "#2196F3":
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#2196F3"));
-                    note.setColour("#2196F3");
+                    note.setColour("#2196F3"); break;
                 case "#3F51B5":
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#3F51B5"));
-                    note.setColour("#3F51B5");
+                    note.setColour("#3F51B5"); break;
                 case "#673AB7":
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#673AB7"));
-                    note.setColour("#673AB7");
+                    note.setColour("#673AB7"); break;
                 case "#9C27B0":
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#9C27B0"));
-                    note.setColour("#9C27B0");
+                    note.setColour("#9C27B0"); break;
                 case "#E91E63":
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#E91E63"));
-                    note.setColour("#E91E63");
+                    note.setColour("#E91E63"); break;
             }
         }
 

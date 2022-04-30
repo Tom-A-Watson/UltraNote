@@ -82,6 +82,7 @@
         android:src="@drawable/ic_add"
         android:background="@drawable/add_note_button"
         android:contentDescription="@string/add_notes_button"
+        android:onClick="openCreateNote"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/homeText"
         app:layout_constraintBottom_toBottomOf="@id/homeText"
