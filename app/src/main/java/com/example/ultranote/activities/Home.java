@@ -35,15 +35,6 @@ public class Home extends AppCompatActivity implements NotesListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home);
 
-        ImageView backBtn = findViewById(R.id.backButton);
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent menu = new Intent(Home.this, MainActivity.class);
-                startActivity(menu);
-            }
-        });
-
         notesRecyclerView = findViewById(R.id.favsRecyclerView);
         notesRecyclerView.setLayoutManager(
                 new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
@@ -52,6 +43,15 @@ public class Home extends AppCompatActivity implements NotesListener {
         noteList = new ArrayList<>();
         notesAdapter = new NotesAdapter(noteList, this);
         notesRecyclerView.setAdapter(notesAdapter);
+
+        ImageView backBtn = findViewById(R.id.backButton);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent menu = new Intent(Home.this, MainActivity.class);
+                startActivity(menu);
+            }
+        });
 
         getNotes(REQUEST_CODE_SHOW_NOTE);
     }
@@ -101,6 +101,7 @@ public class Home extends AppCompatActivity implements NotesListener {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == REQUEST_CODE_ADD_NOTE && resultCode == RESULT_OK) {
             getNotes(REQUEST_CODE_ADD_NOTE);
         } else if (requestCode == REQUEST_CODE_UPDATE_NOTE && resultCode == RESULT_OK) {
