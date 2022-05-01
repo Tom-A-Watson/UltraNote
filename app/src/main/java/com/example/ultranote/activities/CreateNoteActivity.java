@@ -115,6 +115,24 @@ public class CreateNoteActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.deleteWebURL).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                webURL.setText(null);
+                webURLLayout.setVisibility(View.GONE);
+            }
+        });
+
+        findViewById(R.id.deleteImage).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                noteImage.setImageBitmap(null);
+                noteImage.setVisibility(View.GONE);
+                findViewById(R.id.deleteImage).setVisibility(View.GONE);
+                selectedImagePath = "";
+            }
+        });
+
         if (getIntent().getBooleanExtra("isViewOrUpdate", false)) {
             existingNote = (Note) getIntent().getSerializableExtra("note");
             setViewOrUpdateNote();
@@ -133,6 +151,8 @@ public class CreateNoteActivity extends AppCompatActivity {
             noteImage.setImageBitmap(BitmapFactory.decodeFile(existingNote.getImagePath()));
             noteImage.setVisibility(View.VISIBLE);
             selectedImagePath = existingNote.getImagePath();
+
+            findViewById(R.id.deleteImage).setVisibility(View.VISIBLE);
         }
 
         if (existingNote.getWebLink() != null && !existingNote.getWebLink().trim().isEmpty()) {
@@ -415,6 +435,8 @@ public class CreateNoteActivity extends AppCompatActivity {
                         noteImage.setImageBitmap(bitmap);
                         noteImage.setVisibility(View.VISIBLE);
                         selectedImagePath = getPathFromUri(selectedImageUri);
+
+                        findViewById(R.id.deleteImage).setVisibility(View.VISIBLE);
 
                     } catch (Exception e) {
                         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
