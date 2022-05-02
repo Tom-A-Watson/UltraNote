@@ -1,31 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/colourPickerLayout"
+    android:id="@+id/noteOptionsLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/colourpicker_background"
+    android:background="@drawable/noteoptions_background"
     android:orientation="vertical"
     app:behavior_peekHeight="@dimen/_40sdp"
     app:layout_behavior="@string/bottom_sheet_behavior">
 
     <TextView
-        android:id="@+id/colourPickerText"
+        android:id="@+id/noteOptionsText"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp"
         android:fontFamily="@font/ubuntu_medium"
         android:gravity="center"
         android:includeFontPadding="false"
-        android:text="@string/pick_a_colour"
+        android:text="@string/note_options"
         android:textColor="@color/white"
+        android:textSize="@dimen/_14ssp" />
+
+    <TextView
+        android:id="@+id/colourPickerText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_35sdp"
+        android:fontFamily="@font/roboto_medium"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:text="@string/pick_a_colour"
+        android:textColor="@color/textHintColour"
         android:textSize="@dimen/_13ssp" />
 
     <LinearLayout
         android:id="@+id/coloursLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/_10sdp"
-        android:layout_marginRight="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_14sdp"
+        android:layout_marginEnd="@dimen/_6sdp"
         android:layout_marginTop="@dimen/_5sdp"
         android:layout_marginBottom="@dimen/_8sdp"
         android:gravity="center_vertical"
@@ -185,8 +196,8 @@
         android:id="@+id/coloursLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_30sdp"
-        android:layout_marginEnd="@dimen/_30sdp"
+        android:layout_marginStart="@dimen/_34sdp"
+        android:layout_marginEnd="@dimen/_26sdp"
         android:layout_marginBottom="@dimen/_14sdp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -316,6 +327,36 @@
                 app:tint="@color/white" />
 
         </FrameLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/deleteNoteLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_35sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="@dimen/_26sdp"
+            android:layout_height="@dimen/_26sdp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_deletenote"
+            app:tint="@color/deleteColour" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:layout_marginEnd="@dimen/_17sdp"
+            android:fontFamily="@font/ubuntu_medium"
+            android:includeFontPadding="false"
+            android:text="@string/delete_note"
+            android:textColor="@color/deleteColour"
+            android:textSize="@dimen/_13ssp" />
 
     </LinearLayout>
 

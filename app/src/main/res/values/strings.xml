@@ -21,4 +21,6 @@
     <string name="enter_url_here">Enter URL here…</string>
     <string name="add">ADD</string>
     <string name="cancel" tools:ignore="ButtonCase">CANCEL</string>
+    <string name="note_options">Note Options</string>
+    <string name="delete_note">Delete Note</string>
 </resources>
