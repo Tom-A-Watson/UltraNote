@@ -23,4 +23,5 @@
     <string name="cancel" tools:ignore="ButtonCase">CANCEL</string>
     <string name="note_options">Note Options</string>
     <string name="delete_note">Delete Note</string>
+    <string name="delete_confirmation_msg">Are you sure that you want to delete this note?</string>
 </resources>

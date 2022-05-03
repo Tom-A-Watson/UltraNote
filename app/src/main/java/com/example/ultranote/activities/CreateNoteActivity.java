@@ -30,7 +30,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.example.ultranote.R;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -46,7 +45,7 @@ public class CreateNoteActivity extends AppCompatActivity {
     private ImageView noteImage;
     private String selectedImagePath;
     private LinearLayout webURLLayout;
-    private AlertDialog addURLDialog;
+    private AlertDialog addURLDialog, deleteNoteDialog;
     private Note existingNote;
     final Note note = new Note();
 
@@ -139,26 +138,6 @@ public class CreateNoteActivity extends AppCompatActivity {
         }
 
         initNoteOptions();
-    }
-
-    private void setViewOrUpdateNote() {
-        noteTitleInput.setText(existingNote.getTitle());
-        noteSubtitleInput.setText(existingNote.getSubtitle());
-        noteInput.setText(existingNote.getNoteText());
-        textDateTime.setText(existingNote.getDateTime());
-
-        if (existingNote.getImagePath() != null && !existingNote.getImagePath().trim().isEmpty()) {
-            noteImage.setImageBitmap(BitmapFactory.decodeFile(existingNote.getImagePath()));
-            noteImage.setVisibility(View.VISIBLE);
-            selectedImagePath = existingNote.getImagePath();
-
-            findViewById(R.id.deleteImage).setVisibility(View.VISIBLE);
-        }
-
-        if (existingNote.getWebLink() != null && !existingNote.getWebLink().trim().isEmpty()) {
-            webURL.setText(existingNote.getWebLink());
-            webURLLayout.setVisibility(View.VISIBLE);
-        }
     }
 
     private void saveNote() {
@@ -355,38 +334,71 @@ public class CreateNoteActivity extends AppCompatActivity {
                     note.setColour("#FF2929"); break;
                 case "#FF5722":
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#FF5722"));
+                    colours[0].setImageResource(0);
+                    colours[2].setImageResource(R.drawable.ic_done);
                     note.setColour("#FF5722"); break;
                 case "#FF9800":
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#FF9800"));
+                    colours[0].setImageResource(0);
+                    colours[3].setImageResource(R.drawable.ic_done);
                     note.setColour("#FF9800"); break;
                 case "#FFE719":
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#FFE719"));
+                    colours[0].setImageResource(0);
+                    colours[4].setImageResource(R.drawable.ic_done);
                     note.setColour("#FFE719"); break;
                 case "#8BC34A":
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#8BC34A"));
+                    colours[0].setImageResource(0);
+                    colours[5].setImageResource(R.drawable.ic_done);
                     note.setColour("#8BC34A"); break;
                 case "#4CAF50":
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#4CAF50"));
+                    colours[0].setImageResource(0);
+                    colours[6].setImageResource(R.drawable.ic_done);
                     note.setColour("#4CAF50"); break;
                 case "#00BCD4":
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#00BCD4"));
+                    colours[0].setImageResource(0);
+                    colours[7].setImageResource(R.drawable.ic_done);
                     note.setColour("#00BCD4"); break;
                 case "#2196F3":
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#2196F3"));
+                    colours[0].setImageResource(0);
+                    colours[8].setImageResource(R.drawable.ic_done);
                     note.setColour("#2196F3"); break;
                 case "#3F51B5":
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#3F51B5"));
+                    colours[0].setImageResource(0);
+                    colours[9].setImageResource(R.drawable.ic_done);
                     note.setColour("#3F51B5"); break;
                 case "#673AB7":
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#673AB7"));
+                    colours[0].setImageResource(0);
+                    colours[10].setImageResource(R.drawable.ic_done);
                     note.setColour("#673AB7"); break;
                 case "#9C27B0":
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#9C27B0"));
+                    colours[0].setImageResource(0);
+                    colours[11].setImageResource(R.drawable.ic_done);
                     note.setColour("#9C27B0"); break;
                 case "#E91E63":
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#E91E63"));
+                    colours[0].setImageResource(0);
+                    colours[12].setImageResource(R.drawable.ic_done);
                     note.setColour("#E91E63"); break;
             }
+        }
+
+        if (existingNote != null) {
+            noteOptionsLayout.findViewById(R.id.deleteNote).setVisibility(View.VISIBLE);
+            noteOptionsLayout.findViewById(R.id.deleteNote).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    bsb.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    showDeleteNoteDialog();
+                }
+            });
         }
     }
 
@@ -473,8 +485,8 @@ public class CreateNoteActivity extends AppCompatActivity {
                     (ViewGroup) findViewById(R.id.addURLLayout)
             );
             builder.setView(view);
-
             addURLDialog = builder.create();
+
             if (addURLDialog.getWindow() != null) {
                 addURLDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
             }
@@ -506,5 +518,78 @@ public class CreateNoteActivity extends AppCompatActivity {
         }
 
         addURLDialog.show();
+    }
+
+    private void showDeleteNoteDialog() {
+        if (deleteNoteDialog == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(CreateNoteActivity.this);
+            View view = LayoutInflater.from(this).inflate(
+                    R.layout.delete_note_layout,
+                    (ViewGroup) findViewById(R.id.deleteNoteLayout)
+            );
+            builder.setView(view);
+            deleteNoteDialog = builder.create();
+
+            if (deleteNoteDialog.getWindow() != null) {
+                deleteNoteDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            }
+
+            view.findViewById(R.id.textDeleteNote).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    @SuppressLint("StaticFieldLeak")
+                    class DeleteNoteTask extends AsyncTask<Void, Void, Void>
+                    {
+                        @Override
+                        protected Void doInBackground(Void... voids) {
+                            NotesDatabase.getDatabase(getApplicationContext()).noteDao()
+                                    .deleteNote(existingNote);
+                            return null;
+                        }
+
+                        @Override
+                        protected void onPostExecute(Void aVoid) {
+                            super.onPostExecute(aVoid);
+                            Intent intent = new Intent();
+                            intent.putExtra("isNoteDeleted", true);
+                            setResult(RESULT_OK, intent);
+                            finish();
+                        }
+                    }
+
+                    new DeleteNoteTask().execute();
+                }
+            });
+
+            view.findViewById(R.id.textCancel).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    deleteNoteDialog.dismiss();
+                }
+            });
+        }
+
+        deleteNoteDialog.show();
+    }
+
+    private void setViewOrUpdateNote() {
+        noteTitleInput.setText(existingNote.getTitle());
+        noteSubtitleInput.setText(existingNote.getSubtitle());
+        noteInput.setText(existingNote.getNoteText());
+        textDateTime.setText(existingNote.getDateTime());
+
+        if (existingNote.getImagePath() != null && !existingNote.getImagePath().trim().isEmpty()) {
+            noteImage.setImageBitmap(BitmapFactory.decodeFile(existingNote.getImagePath()));
+            noteImage.setVisibility(View.VISIBLE);
+            selectedImagePath = existingNote.getImagePath();
+
+            findViewById(R.id.deleteImage).setVisibility(View.VISIBLE);
+        }
+
+        if (existingNote.getWebLink() != null && !existingNote.getWebLink().trim().isEmpty()) {
+            webURL.setText(existingNote.getWebLink());
+            webURLLayout.setVisibility(View.VISIBLE);
+        }
     }
 }
