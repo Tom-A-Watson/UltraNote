@@ -24,15 +24,15 @@
         android:id="@+id/homeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_22sdp"
-        android:layout_marginStart="@dimen/_40sdp"
-        android:fontFamily="@font/ubuntu_bold"
-        android:includeFontPadding="false"
         android:text="@string/home"
+        android:layout_marginStart="@dimen/_6sdp"
+        android:layout_marginEnd="@dimen/_6sdp"
+        android:fontFamily="@font/roboto_bold"
         android:textColor="@color/white"
         android:textSize="@dimen/_20ssp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/backButton"
+        app:layout_constraintTop_toTopOf="@id/backButton"
+        app:layout_constraintBottom_toBottomOf="@id/backButton" />
 
     <LinearLayout
         android:id="@+id/searchLayout"
@@ -59,7 +59,7 @@
         <EditText
             android:id="@+id/searchNotesInput"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_35sdp"
+            android:layout_height="@dimen/_40sdp"
             android:layout_marginStart="@dimen/_8sdp"
             android:background="@null"
             android:fontFamily="@font/ubuntu_regular"
@@ -70,7 +70,7 @@
             android:inputType="text"
             android:textColorHint="@color/white"
             android:textColor="@color/white"
-            android:textSize="@dimen/_13ssp" />
+            android:textSize="@dimen/_14ssp" />
 
     </LinearLayout>
 
@@ -103,11 +103,30 @@
     <LinearLayout
         android:id="@+id/quickActions"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_46sdp"
+        android:layout_height="@dimen/_44sdp"
+        android:background="@color/primaryColourLight"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/_20sdp"
+        android:paddingEnd="@dimen/_20sdp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent">
 
+        <ImageView
+            android:id="@+id/quickAddImage"
+            android:layout_width="@dimen/_26sdp"
+            android:layout_height="@dimen/_26sdp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_image"
+            app:tint="@color/textHintColour"/>
 
+        <ImageView
+            android:id="@+id/quickAddURL"
+            android:layout_width="@dimen/_26sdp"
+            android:layout_height="@dimen/_26sdp"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_weblink"
+            app:tint="@color/textHintColour" />
 
     </LinearLayout>
 

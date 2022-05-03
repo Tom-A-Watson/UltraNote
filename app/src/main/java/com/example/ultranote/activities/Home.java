@@ -38,14 +38,13 @@ public class Home extends AppCompatActivity implements NotesListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home);
 
+        noteList = new ArrayList<>();
+        notesAdapter = new NotesAdapter(noteList, this);
         notesRecyclerView = findViewById(R.id.favsRecyclerView);
+        notesRecyclerView.setAdapter(notesAdapter);
         notesRecyclerView.setLayoutManager(
                 new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         );
-
-        noteList = new ArrayList<>();
-        notesAdapter = new NotesAdapter(noteList, this);
-        notesRecyclerView.setAdapter(notesAdapter);
 
         ImageView backBtn = findViewById(R.id.backButton);
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -55,8 +54,6 @@ public class Home extends AppCompatActivity implements NotesListener {
                 startActivity(menu);
             }
         });
-
-        getNotes(REQUEST_CODE_SHOW_NOTES, false);
 
         EditText searchInput = findViewById(R.id.searchNotesInput);
         searchInput.addTextChangedListener(new TextWatcher() {
@@ -75,6 +72,8 @@ public class Home extends AppCompatActivity implements NotesListener {
                 }
             }
         });
+
+        getNotes(REQUEST_CODE_SHOW_NOTES, false);
     }
 
     @Override
