@@ -4,7 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
@@ -54,6 +57,24 @@ public class Home extends AppCompatActivity implements NotesListener {
         });
 
         getNotes(REQUEST_CODE_SHOW_NOTES, false);
+
+        EditText searchInput = findViewById(R.id.searchNotesInput);
+        searchInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                notesAdapter.cancelTimer();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (noteList.size() != 0) {
+                    notesAdapter.searchNotes(s.toString());
+                }
+            }
+        });
     }
 
     @Override
@@ -70,7 +91,6 @@ public class Home extends AppCompatActivity implements NotesListener {
         @SuppressLint("StaticFieldLeak")
         class GetNotesTask extends AsyncTask<Void, Void, List<Note>>
         {
-
             @Override
             protected List<Note> doInBackground(Void... voids) {
                 return NotesDatabase.getDatabase(getApplicationContext()).noteDao().getAllNotes();
