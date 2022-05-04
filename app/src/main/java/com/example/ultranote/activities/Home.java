@@ -86,17 +86,18 @@ public class Home extends AppCompatActivity implements NotesListener {
             }
         });
 
-        EditText quickNoteTitle = findViewById(R.id.quickNoteTitle);
-        quickNoteTitle.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        EditText quickTitleInput = findViewById(R.id.quickTitleInput);
+        quickTitleInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int action, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || action == EditorInfo.IME_ACTION_DONE) {
-                    String noteTitle = quickNoteTitle.getText().toString();
-                    Intent intent = new Intent(getApplicationContext(), CreateNoteActivity.class);
-                    intent.putExtra("isFromQuickActions", true);
-                    intent.putExtra("quickActionType", "title");
-                    intent.putExtra("enteredQuickTitle", noteTitle);
-                    startActivityForResult(intent, REQUEST_CODE_ADD_NOTE);
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
+                        || action == EditorInfo.IME_ACTION_DONE) {
+                    String quickTitle = quickTitleInput.getText().toString();
+                    Intent noteWithTitle = new Intent(getApplicationContext(), CreateNoteActivity.class);
+                    noteWithTitle.putExtra("isFromQuickActions", true);
+                    noteWithTitle.putExtra("quickActionType", "title");
+                    noteWithTitle.putExtra("enteredQuickTitle", quickTitle);
+                    startActivityForResult(noteWithTitle, REQUEST_CODE_ADD_NOTE);
                 }
 
                 return false;
@@ -107,8 +108,8 @@ public class Home extends AppCompatActivity implements NotesListener {
             @Override
             public void onClick(View view) {
                 if  (ContextCompat.checkSelfPermission(
-                        getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE
-                ) != PackageManager.PERMISSION_GRANTED) {
+                        getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(
                             Home.this,
                             new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
@@ -225,11 +226,11 @@ public class Home extends AppCompatActivity implements NotesListener {
                 if (selectedImageUri != null) {
                     try {
                         String selectedImagePath = getPathFromUri(selectedImageUri);
-                        Intent intent = new Intent(getApplicationContext(), CreateNoteActivity.class);
-                        intent.putExtra("isFromQuickActions", true);
-                        intent.putExtra("quickActionType", "image");
-                        intent.putExtra("imagePath", selectedImagePath);
-                        startActivityForResult(intent, REQUEST_CODE_ADD_NOTE);
+                        Intent noteWithImage = new Intent(getApplicationContext(), CreateNoteActivity.class);
+                        noteWithImage.putExtra("isFromQuickActions", true);
+                        noteWithImage.putExtra("quickActionType", "image");
+                        noteWithImage.putExtra("imagePath", selectedImagePath);
+                        startActivityForResult(noteWithImage, REQUEST_CODE_ADD_NOTE);
                     } catch (Exception e) {
                         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
