@@ -28,7 +28,7 @@
         android:fontFamily="@font/ubuntu_bold"
         android:includeFontPadding="false"
         android:textColor="@color/white"
-        android:textSize="@dimen/_13ssp" />
+        android:textSize="@dimen/_14ssp" />
 
     <TextView
         android:id="@+id/textSubtitle"
@@ -38,9 +38,9 @@
         android:layout_marginTop="@dimen/_4sdp"
         android:layout_marginEnd="@dimen/_8sdp"
         android:layout_marginBottom="@dimen/_4sdp"
-        android:fontFamily="@font/ubuntu_regular"
+        android:fontFamily="@font/ubuntu_medium"
         android:includeFontPadding="false"
-        android:textColor="@color/textHintColour"
+        android:textColor="@color/white"
         android:textSize="@dimen/_12ssp" />
 
     <TextView
@@ -53,8 +53,6 @@
         android:fontFamily="@font/ubuntu_regular"
         android:includeFontPadding="false"
         android:textColor="@color/white"
-        android:textSize="@dimen/_7ssp" />
-
-
+        android:textSize="@dimen/_10ssp" />
 
 </LinearLayout>

@@ -21,6 +21,7 @@
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/background.xml" value="0.1" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/background_delete.xml" value="0.12072368421052632" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/colourpicker_background.xml" value="0.12072368421052632" />
+        <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/dialog_background.xml" value="0.12072368421052632" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/done_button.xml" value="0.12072368421052632" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/ic_add.xml" value="0.12072368421052632" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/ic_checklist.xml" value="0.12072368421052632" />
@@ -44,6 +45,7 @@
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/note_colour_indicator.xml" value="0.11" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/note_widget.xml" value="0.12072368421052632" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/noteoptions_background.xml" value="0.12072368421052632" />
+        <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/quick_note_background.xml" value="0.12072368421052632" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/sort_by_button.xml" value="0.12072368421052632" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/subtitle_indicator.xml" value="0.12072368421052632" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/layout/activity_create_note.xml" value="0.16666666666666666" />
@@ -53,7 +55,7 @@
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/layout/colourpicker.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/layout/createnotepage.xml" value="0.11052631578947368" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/layout/delete_note_layout.xml" value="0.16666666666666666" />
-        <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/layout/home.xml" value="0.11" />
+        <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/layout/home.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/layout/mynotes.xml" value="0.11" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/layout/note_widget_item.xml" value="0.11" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/layout/noteoptions.xml" value="0.16666666666666666" />

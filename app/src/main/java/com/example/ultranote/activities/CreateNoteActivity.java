@@ -122,12 +122,12 @@ public class CreateNoteActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.deleteImage).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.deleteImageIcon).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 noteImage.setImageBitmap(null);
                 noteImage.setVisibility(View.GONE);
-                findViewById(R.id.deleteImage).setVisibility(View.GONE);
+                findViewById(R.id.deleteImageIcon).setVisibility(View.GONE);
                 selectedImagePath = "";
             }
         });
@@ -135,6 +135,21 @@ public class CreateNoteActivity extends AppCompatActivity {
         if (getIntent().getBooleanExtra("isViewOrUpdate", false)) {
             existingNote = (Note) getIntent().getSerializableExtra("note");
             setViewOrUpdateNote();
+        }
+
+        if (getIntent().getBooleanExtra("isFromQuickActions", false)) {
+            String type = getIntent().getStringExtra("quickActionType");
+
+            if (type != null) {
+                if (type.equals("image")) {
+                    selectedImagePath = getIntent().getStringExtra("imagePath");
+                    noteImage.setImageBitmap(BitmapFactory.decodeFile(selectedImagePath));
+                    noteImage.setVisibility(View.VISIBLE);
+                    findViewById(R.id.deleteImageIcon).setVisibility(View.VISIBLE);
+                } else if (type.equals("title")) {
+                    noteTitleInput.setText((getIntent().getStringExtra("enteredQuickTitle")));
+                }
+            }
         }
 
         initNoteOptions();
@@ -450,7 +465,7 @@ public class CreateNoteActivity extends AppCompatActivity {
                         noteImage.setVisibility(View.VISIBLE);
                         selectedImagePath = getPathFromUri(selectedImageUri);
 
-                        findViewById(R.id.deleteImage).setVisibility(View.VISIBLE);
+                        findViewById(R.id.deleteImageIcon).setVisibility(View.VISIBLE);
 
                     } catch (Exception e) {
                         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -584,7 +599,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             noteImage.setVisibility(View.VISIBLE);
             selectedImagePath = existingNote.getImagePath();
 
-            findViewById(R.id.deleteImage).setVisibility(View.VISIBLE);
+            findViewById(R.id.deleteImageIcon).setVisibility(View.VISIBLE);
         }
 
         if (existingNote.getWebLink() != null && !existingNote.getWebLink().trim().isEmpty()) {
