@@ -141,13 +141,17 @@ public class CreateNoteActivity extends AppCompatActivity {
             String type = getIntent().getStringExtra("quickActionType");
 
             if (type != null) {
-                if (type.equals("image")) {
-                    selectedImagePath = getIntent().getStringExtra("imagePath");
-                    noteImage.setImageBitmap(BitmapFactory.decodeFile(selectedImagePath));
-                    noteImage.setVisibility(View.VISIBLE);
-                    findViewById(R.id.deleteImageIcon).setVisibility(View.VISIBLE);
-                } else if (type.equals("title")) {
-                    noteTitleInput.setText((getIntent().getStringExtra("enteredQuickTitle")));
+                switch (type) {
+                    case "title":
+                        noteTitleInput.setText((getIntent().getStringExtra("quickTitle"))); break;
+                    case "image":
+                        selectedImagePath = getIntent().getStringExtra("imagePath");
+                        noteImage.setImageBitmap(BitmapFactory.decodeFile(selectedImagePath));
+                        noteImage.setVisibility(View.VISIBLE);
+                        findViewById(R.id.deleteImageIcon).setVisibility(View.VISIBLE); break;
+                    case "URL":
+                        webURL.setText(getIntent().getStringExtra("URL"));
+                        webURLLayout.setVisibility(View.VISIBLE); break;
                 }
             }
         }

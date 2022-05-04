@@ -5,14 +5,18 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Patterns;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -20,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -38,6 +43,7 @@ public class Home extends AppCompatActivity implements NotesListener {
     private RecyclerView notesRecyclerView;
     private List<Note> noteList;
     private NotesAdapter notesAdapter;
+    private AlertDialog addURLDialog;
     private int noteClickedPosition = -1;
 
     public static final int REQUEST_CODE_ADD_NOTE = 1;
@@ -92,11 +98,10 @@ public class Home extends AppCompatActivity implements NotesListener {
             public boolean onEditorAction(TextView textView, int action, KeyEvent event) {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
                         || action == EditorInfo.IME_ACTION_DONE) {
-                    String quickTitle = quickTitleInput.getText().toString();
                     Intent noteWithTitle = new Intent(getApplicationContext(), CreateNoteActivity.class);
                     noteWithTitle.putExtra("isFromQuickActions", true);
                     noteWithTitle.putExtra("quickActionType", "title");
-                    noteWithTitle.putExtra("enteredQuickTitle", quickTitle);
+                    noteWithTitle.putExtra("quickTitle", quickTitleInput.getText().toString());
                     startActivityForResult(noteWithTitle, REQUEST_CODE_ADD_NOTE);
                 }
 
@@ -121,7 +126,19 @@ public class Home extends AppCompatActivity implements NotesListener {
             }
         });
 
+        findViewById(R.id.quickAddURL).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAddURLDialog();
+            }
+        });
+
         getNotes(REQUEST_CODE_SHOW_NOTES, false);
+    }
+
+    public void openCreateNote(View view) {
+        Intent createNote = new Intent(this, CreateNote.class);
+        startActivity(createNote);
     }
 
     private void selectImage() {
@@ -239,8 +256,49 @@ public class Home extends AppCompatActivity implements NotesListener {
         }
     }
 
-    public void openCreateNote(View view) {
-        Intent createNote = new Intent(this, CreateNote.class);
-        startActivity(createNote);
+    private void showAddURLDialog() {
+        if (addURLDialog == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+            View view = LayoutInflater.from(this).inflate(
+                    R.layout.add_url_layout,
+                    (ViewGroup) findViewById(R.id.addURLLayout)
+            );
+            builder.setView(view);
+            addURLDialog = builder.create();
+
+            if (addURLDialog.getWindow() != null) {
+                addURLDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            }
+
+            final EditText inputURL = view.findViewById(R.id.inputURL);
+            inputURL.requestFocus();
+
+            view.findViewById(R.id.textAdd).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (inputURL.getText().toString().trim().isEmpty()) {
+                        Toast.makeText(Home.this, "Enter a URL", Toast.LENGTH_SHORT).show();
+                    } else if (!Patterns.WEB_URL.matcher(inputURL.getText().toString()).matches()) {
+                        Toast.makeText(Home.this, "Enter a valid URL", Toast.LENGTH_SHORT).show();
+                    } else {
+                        addURLDialog.dismiss();
+                        Intent noteWithURL = new Intent(getApplicationContext(), CreateNoteActivity.class);
+                        noteWithURL.putExtra("isFromQuickActions", true);
+                        noteWithURL.putExtra("quickActionType", "URL");
+                        noteWithURL.putExtra("URL", inputURL.getText().toString());
+                        startActivityForResult(noteWithURL, REQUEST_CODE_ADD_NOTE);
+                    }
+                }
+            });
+
+            view.findViewById(R.id.textCancel).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    addURLDialog.dismiss();
+                }
+            });
+        }
+
+        addURLDialog.show();
     }
 }
