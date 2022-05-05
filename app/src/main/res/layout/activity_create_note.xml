@@ -205,13 +205,13 @@
                     android:fontFamily="@font/ubuntu_regular"
                     android:includeFontPadding="false"
                     android:textSize="@dimen/_13ssp"
-                    android:textColor="@color/accent"/>
+                    android:textColorLink="@color/accent" />
 
                 <ImageView
                     android:id="@+id/deleteWebURL"
                     android:layout_width="@dimen/_24sdp"
                     android:layout_height="@dimen/_24sdp"
-                    android:layout_marginEnd="@dimen/_4sdp"
+                    android:layout_marginEnd="@dimen/_7sdp"
                     android:contentDescription="@string/app_name"
                     android:src="@drawable/ic_delete"
                     android:rotation="45"

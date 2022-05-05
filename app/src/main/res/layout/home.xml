@@ -118,7 +118,7 @@
             android:paddingStart="@dimen/_8sdp"
             android:paddingEnd="0dp"
             android:background="@drawable/quick_note_background"
-            android:fontFamily="@font/ubuntu_regular"
+            android:fontFamily="@font/ubuntu_bold"
             android:hint="@string/quick_note"
             android:imeOptions="actionDone"
             android:importantForAutofill="no"
