@@ -573,6 +573,8 @@ public class CreateNoteActivity extends AppCompatActivity {
                             Intent intent = new Intent();
                             intent.putExtra("isNoteDeleted", true);
                             setResult(RESULT_OK, intent);
+                            Toast.makeText(CreateNoteActivity.this,
+                                    "'" + existingNote.getTitle() + "'" + " deleted", Toast.LENGTH_LONG).show();
                             finish();
                         }
                     }
