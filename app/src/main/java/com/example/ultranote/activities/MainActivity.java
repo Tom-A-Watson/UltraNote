@@ -20,11 +20,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(homePage);
     }
 
-    public void openMyNotes(View view) {
-        Intent myNotesPage = new Intent(this, MyNotes.class);
-        startActivity(myNotesPage);
-    }
-
     public void openCreateNote(View view) {
         Intent createNotePage = new Intent(this, CreateNote.class);
         startActivity(createNotePage);

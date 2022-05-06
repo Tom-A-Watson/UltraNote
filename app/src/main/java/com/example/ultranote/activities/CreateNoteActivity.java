@@ -178,9 +178,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             note.setWebLink(webURL.getText().toString());
         }
 
-        if (existingNote != null) {
-            note.setId(existingNote.getId());
-        }
+        if (existingNote != null) { note.setId(existingNote.getId()); }
 
         @SuppressLint("StaticFieldLeak")
         class SaveNoteTask extends AsyncTask<Void, Void, Void>
@@ -331,7 +329,6 @@ public class CreateNoteActivity extends AppCompatActivity {
                 selectColour(colours, 12);
                 noteColourIndicator.setBackgroundColor(Color.parseColor("#9C27B0"));
                 note.setColour("#9C27B0");
-
             }
         });
         noteOptionsLayout.findViewById(R.id.viewColour13).setOnClickListener(new View.OnClickListener() {

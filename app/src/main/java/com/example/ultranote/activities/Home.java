@@ -40,6 +40,7 @@ import listeners.NotesListener;
 
 public class Home extends AppCompatActivity implements NotesListener {
 
+    private EditText quickTitleInput;
     private RecyclerView notesRecyclerView;
     private List<Note> noteList;
     private NotesAdapter notesAdapter;
@@ -59,7 +60,8 @@ public class Home extends AppCompatActivity implements NotesListener {
 
         noteList = new ArrayList<>();
         notesAdapter = new NotesAdapter(noteList, this);
-        notesRecyclerView = findViewById(R.id.favsRecyclerView);
+        notesRecyclerView = findViewById(R.id.notesRecyclerView);
+        quickTitleInput = findViewById(R.id.quickTitleInput);
         notesRecyclerView.setAdapter(notesAdapter);
         notesRecyclerView.setLayoutManager(
                 new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
@@ -92,7 +94,6 @@ public class Home extends AppCompatActivity implements NotesListener {
             }
         });
 
-        EditText quickTitleInput = findViewById(R.id.quickTitleInput);
         quickTitleInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int action, KeyEvent event) {
