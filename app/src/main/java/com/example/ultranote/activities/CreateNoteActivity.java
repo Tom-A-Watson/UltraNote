@@ -39,15 +39,18 @@ import entities.Note;
 
 public class CreateNoteActivity extends AppCompatActivity {
 
+    final Note note = new Note();
     private EditText noteTitleInput, noteSubtitleInput, noteInput;
-    private TextView textDateTime, webURL;
+    private TextView textDateTime;
+    private TextView webURL;
     private View noteColourIndicator;
     private ImageView noteImage;
     private String selectedImagePath;
     private LinearLayout webURLLayout;
     private AlertDialog addURLDialog, deleteNoteDialog;
     private Note existingNote;
-    final Note note = new Note();
+    private SimpleDateFormat singleLineDate = new SimpleDateFormat("EEEE dd MMMM yyyy HH:mm a",
+            Locale.getDefault());
 
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
     private static final int REQUEST_CODE_SELECT_IMAGE = 2;
@@ -61,16 +64,12 @@ public class CreateNoteActivity extends AppCompatActivity {
         noteSubtitleInput = findViewById(R.id.noteSubtitleInput);
         noteInput = findViewById(R.id.noteInput);
         textDateTime = findViewById(R.id.textDateTime);
+        textDateTime.setText(singleLineDate.format(new Date()));
         noteColourIndicator = findViewById(R.id.noteColourIndicator);
         noteImage = findViewById(R.id.noteImage);
         selectedImagePath = "";
         webURL = findViewById(R.id.webUrl);
         webURLLayout = findViewById(R.id.webUrlLayout);
-
-        textDateTime.setText(
-                new SimpleDateFormat("EEEE dd MMMM yyyy HH:mm a",
-                        Locale.getDefault()).format((new Date()))
-        );
 
         ImageView backBtn = findViewById(R.id.backButton);
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -159,6 +158,13 @@ public class CreateNoteActivity extends AppCompatActivity {
         initNoteOptions();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        textDateTime = findViewById(R.id.textDateTime);
+        textDateTime.setText(singleLineDate.format(new Date()));
+    }
+
     private void saveNote() {
         if (noteTitleInput.getText().toString().trim().isEmpty()) {
             Toast.makeText(this, "Note title can't be empty!", Toast.LENGTH_SHORT).show();
@@ -167,12 +173,6 @@ public class CreateNoteActivity extends AppCompatActivity {
             Toast.makeText(this, "The note requires some content!", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        note.setTitle(noteTitleInput.getText().toString());
-        note.setSubtitle(noteSubtitleInput.getText().toString());
-        note.setNoteText(noteInput.getText().toString());
-        note.setDateTime(textDateTime.getText().toString());
-        note.setImagePath(selectedImagePath);
 
         if (webURLLayout.getVisibility() == View.VISIBLE) {
             note.setWebLink(webURL.getText().toString());
@@ -201,7 +201,72 @@ public class CreateNoteActivity extends AppCompatActivity {
             }
         }
 
+        TextView formattedDateTime = findViewById(R.id.textDateTime);
+        formattedDateTime.setText(new SimpleDateFormat("EEEE dd MMMM yyyy \nHH:mm a",
+                Locale.getDefault()).format((new Date())));
+
+        note.setTitle(noteTitleInput.getText().toString());
+        note.setSubtitle(noteSubtitleInput.getText().toString());
+        note.setNoteText(noteInput.getText().toString());
+        note.setDateTime(formattedDateTime.getText().toString());
+        note.setImagePath(selectedImagePath);
+
         new SaveNoteTask().execute();
+    }
+
+    private void deleteNote() {
+        if (deleteNoteDialog == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(CreateNoteActivity.this);
+            View view = LayoutInflater.from(this).inflate(
+                    R.layout.delete_note_layout,
+                    (ViewGroup) findViewById(R.id.deleteNoteLayout)
+            );
+            builder.setView(view);
+            deleteNoteDialog = builder.create();
+
+            if (deleteNoteDialog.getWindow() != null) {
+                deleteNoteDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            }
+
+            view.findViewById(R.id.textDeleteNote).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    @SuppressLint("StaticFieldLeak")
+                    class DeleteNoteTask extends AsyncTask<Void, Void, Void>
+                    {
+                        @Override
+                        protected Void doInBackground(Void... voids) {
+                            NotesDatabase.getDatabase(getApplicationContext()).noteDao()
+                                    .deleteNote(existingNote);
+                            return null;
+                        }
+
+                        @Override
+                        protected void onPostExecute(Void aVoid) {
+                            super.onPostExecute(aVoid);
+                            Intent intent = new Intent();
+                            intent.putExtra("isNoteDeleted", true);
+                            setResult(RESULT_OK, intent);
+                            Toast.makeText(CreateNoteActivity.this,
+                                    "'" + existingNote.getTitle() + "'" + " deleted", Toast.LENGTH_LONG).show();
+                            finish();
+                        }
+                    }
+
+                    new DeleteNoteTask().execute();
+                }
+            });
+
+            view.findViewById(R.id.textCancel).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    deleteNoteDialog.dismiss();
+                }
+            });
+        }
+
+        deleteNoteDialog.show();
     }
 
     private void initNoteOptions() {
@@ -412,7 +477,7 @@ public class CreateNoteActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     bsb.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                    showDeleteNoteDialog();
+                    deleteNote();
                 }
             });
         }
@@ -535,61 +600,6 @@ public class CreateNoteActivity extends AppCompatActivity {
         }
 
         addURLDialog.show();
-    }
-
-    private void showDeleteNoteDialog() {
-        if (deleteNoteDialog == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(CreateNoteActivity.this);
-            View view = LayoutInflater.from(this).inflate(
-                    R.layout.delete_note_layout,
-                    (ViewGroup) findViewById(R.id.deleteNoteLayout)
-            );
-            builder.setView(view);
-            deleteNoteDialog = builder.create();
-
-            if (deleteNoteDialog.getWindow() != null) {
-                deleteNoteDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-            }
-
-            view.findViewById(R.id.textDeleteNote).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    @SuppressLint("StaticFieldLeak")
-                    class DeleteNoteTask extends AsyncTask<Void, Void, Void>
-                    {
-                        @Override
-                        protected Void doInBackground(Void... voids) {
-                            NotesDatabase.getDatabase(getApplicationContext()).noteDao()
-                                    .deleteNote(existingNote);
-                            return null;
-                        }
-
-                        @Override
-                        protected void onPostExecute(Void aVoid) {
-                            super.onPostExecute(aVoid);
-                            Intent intent = new Intent();
-                            intent.putExtra("isNoteDeleted", true);
-                            setResult(RESULT_OK, intent);
-                            Toast.makeText(CreateNoteActivity.this,
-                                    "'" + existingNote.getTitle() + "'" + " deleted", Toast.LENGTH_LONG).show();
-                            finish();
-                        }
-                    }
-
-                    new DeleteNoteTask().execute();
-                }
-            });
-
-            view.findViewById(R.id.textCancel).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    deleteNoteDialog.dismiss();
-                }
-            });
-        }
-
-        deleteNoteDialog.show();
     }
 
     private void setViewOrUpdateNote() {
