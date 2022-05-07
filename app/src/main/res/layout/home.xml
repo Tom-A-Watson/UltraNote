@@ -25,8 +25,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/home"
-        android:layout_marginStart="@dimen/_6sdp"
-        android:layout_marginEnd="@dimen/_6sdp"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginEnd="0dp"
         android:fontFamily="@font/roboto_bold"
         android:textColor="@color/white"
         android:textSize="@dimen/_20ssp"
@@ -76,8 +76,8 @@
 
     <ImageView
         android:id="@+id/createNoteBtn"
-        android:layout_width="@dimen/_30sdp"
-        android:layout_height="@dimen/_30sdp"
+        android:layout_width="@dimen/_28sdp"
+        android:layout_height="@dimen/_28sdp"
         android:layout_marginEnd="@dimen/_20sdp"
         android:src="@drawable/ic_add"
         android:background="@drawable/add_note_button"
@@ -105,9 +105,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_44sdp"
         android:background="@color/primaryColourLight"
-        android:gravity="center_vertical"
-        android:paddingStart="@dimen/_12sdp"
-        android:paddingEnd="@dimen/_12sdp"
+        android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent">
 
@@ -145,8 +143,6 @@
             android:contentDescription="@string/app_name"
             android:src="@drawable/ic_weblink"
             app:tint="@color/textHintColour" />
-
-
 
     </LinearLayout>
 
