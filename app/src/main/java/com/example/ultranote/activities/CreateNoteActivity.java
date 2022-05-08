@@ -49,8 +49,8 @@ public class CreateNoteActivity extends AppCompatActivity {
     private LinearLayout webURLLayout;
     private AlertDialog addURLDialog, deleteNoteDialog;
     private Note existingNote;
-    private SimpleDateFormat singleLineDate = new SimpleDateFormat("EEEE dd MMMM yyyy HH:mm a",
-            Locale.getDefault());
+    private SimpleDateFormat singleLineDate = new SimpleDateFormat(
+            "EEEE dd MMMM yyyy HH:mm a", Locale.getDefault());
 
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
     private static final int REQUEST_CODE_SELECT_IMAGE = 2;
@@ -71,32 +71,39 @@ public class CreateNoteActivity extends AppCompatActivity {
         webURL = findViewById(R.id.webUrl);
         webURLLayout = findViewById(R.id.webUrlLayout);
 
-        ImageView backBtn = findViewById(R.id.backButton);
-        backBtn.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
             }
         });
 
-        ImageView saveBtn = findViewById(R.id.saveButton);
-        saveBtn.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.saveButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 saveNote();
             }
         });
 
-        ImageView addURLBtn = findViewById(R.id.addURLButton);
-        addURLBtn.setOnClickListener(new View.OnClickListener() {
+//        findViewById(R.id.noteColourIndicator).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (bsb.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+//                    bsb.setState(BottomSheetBehavior.STATE_EXPANDED);
+//                } else {
+//                    bsb.setState(BottomSheetBehavior.STATE_COLLAPSED);
+//                }
+//            }
+//        });
+
+        findViewById(R.id.addURLButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showAddURLDialog();
             }
         });
 
-        ImageView addImageBtn = findViewById(R.id.addImageButton);
-        addImageBtn.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.addImageButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if  (ContextCompat.checkSelfPermission(
@@ -276,11 +283,14 @@ public class CreateNoteActivity extends AppCompatActivity {
         noteOptionsLayout.findViewById(R.id.noteOptionsText).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (bsb.getState() != BottomSheetBehavior.STATE_EXPANDED) {
-                    bsb.setState(BottomSheetBehavior.STATE_EXPANDED);
-                } else {
-                    bsb.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                }
+                toggleNoteOptions(bsb);
+            }
+        });
+
+        findViewById(R.id.noteColourIndicator).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleNoteOptions(bsb);
             }
         });
 
@@ -480,6 +490,14 @@ public class CreateNoteActivity extends AppCompatActivity {
                     deleteNote();
                 }
             });
+        }
+    }
+
+    private void toggleNoteOptions(BottomSheetBehavior<LinearLayout> bsb) {
+        if (bsb.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+            bsb.setState(BottomSheetBehavior.STATE_EXPANDED);
+        } else {
+            bsb.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
     }
 

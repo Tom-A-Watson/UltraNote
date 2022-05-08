@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.12072368421052632" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable-v24/note_background_colour_10.xml" value="0.12072368421052632" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable-v24/note_background_colour_11.xml" value="0.12072368421052632" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable-v24/note_background_colour_12.xml" value="0.12072368421052632" />
@@ -27,6 +28,8 @@
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/ic_checklist.xml" value="0.12072368421052632" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/ic_delete.xml" value="0.12072368421052632" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/ic_done.xml" value="0.12072368421052632" />
+        <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/ic_done_black.xml" value="0.12072368421052632" />
+        <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/ic_launcher_background.xml" value="0.12072368421052632" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/ic_search.xml" value="0.12072368421052632" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/note_background_colour_1.xml" value="0.12072368421052632" />
         <entry key="..\:/Users/thoma/AndroidStudioProjects/UltraNote/app/src/main/res/drawable/note_background_colour_10.xml" value="0.11954397394136808" />

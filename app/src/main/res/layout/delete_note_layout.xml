@@ -81,7 +81,7 @@
         android:fontFamily="@font/ubuntu_medium"
         android:padding="@dimen/_8sdp"
         android:text="@string/cancel"
-        android:textColor="@color/accent"
+        android:textColor="@color/revertColour"
         android:textSize="@dimen/_13ssp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/textDeleteNote"
