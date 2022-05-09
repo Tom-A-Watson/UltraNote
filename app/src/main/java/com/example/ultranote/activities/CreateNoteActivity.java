@@ -85,17 +85,6 @@ public class CreateNoteActivity extends AppCompatActivity {
             }
         });
 
-//        findViewById(R.id.noteColourIndicator).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (bsb.getState() != BottomSheetBehavior.STATE_EXPANDED) {
-//                    bsb.setState(BottomSheetBehavior.STATE_EXPANDED);
-//                } else {
-//                    bsb.setState(BottomSheetBehavior.STATE_COLLAPSED);
-//                }
-//            }
-//        });
-
         findViewById(R.id.addURLButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

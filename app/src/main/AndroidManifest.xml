@@ -22,7 +22,8 @@
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
         tools:targetApi="q">
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".activities.Home"
+            android:windowSoftInputMode="stateHidden"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,26 +33,6 @@
         </activity>
         <activity
             android:name=".activities.CreateNoteActivity"
-            android:windowSoftInputMode="stateHidden"
-            android:exported="true" />
-        <activity
-            android:name=".activities.Home"
-            android:windowSoftInputMode="stateHidden"
-            android:exported="true" />
-        <activity
-            android:name=".activities.MyNotes"
-            android:windowSoftInputMode="stateHidden"
-            android:exported="true" />
-        <activity
-            android:name=".activities.CreateNote"
-            android:windowSoftInputMode="stateHidden"
-            android:exported="true" />
-        <activity
-            android:name=".activities.Categories"
-            android:windowSoftInputMode="stateHidden"
-            android:exported="true" />
-        <activity
-            android:name=".activities.Settings"
             android:windowSoftInputMode="stateHidden"
             android:exported="true" />
     </application>

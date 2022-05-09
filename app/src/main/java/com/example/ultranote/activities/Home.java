@@ -71,8 +71,7 @@ public class Home extends AppCompatActivity implements NotesListener {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent menu = new Intent(Home.this, MainActivity.class);
-                startActivity(menu);
+                onBackPressed();
             }
         });
 
@@ -134,12 +133,16 @@ public class Home extends AppCompatActivity implements NotesListener {
             }
         });
 
+        if (noteList.isEmpty()) {
+
+        }
+
         getNotes(REQUEST_CODE_SHOW_NOTES, false);
     }
 
-    public void openCreateNote(View view) {
-        Intent createNote = new Intent(this, CreateNote.class);
-        startActivity(createNote);
+    public void openCreateNoteActivity(View view) {
+        Intent intent = new Intent(this, CreateNoteActivity.class);
+        startActivity(intent);
     }
 
     private void selectImage() {

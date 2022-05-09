@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primaryColour"
-    tools:context=".activities.MainActivity">
+    tools:context=".activities.Home">
 
     <ImageView
         android:id="@+id/backButton"
@@ -82,11 +82,12 @@
         android:src="@drawable/ic_add"
         android:background="@drawable/add_note_button"
         android:contentDescription="@string/add_notes_button"
-        android:onClick="openCreateNote"
+        android:onClick="openCreateNoteActivity"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/homeText"
         app:layout_constraintBottom_toBottomOf="@id/homeText"
-        app:tint="@color/primaryColour" />
+        app:tint="@color/primaryColour"
+        tools:ignore="OnClick" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notesRecyclerView"
@@ -98,7 +99,7 @@
         android:paddingEnd="@dimen/_12sdp"
         android:paddingBottom="@dimen/_12sdp"
         app:layout_constraintTop_toBottomOf="@+id/searchLayout"
-        app:layout_constraintBottom_toTopOf="@id/quickActions"/>
+        app:layout_constraintBottom_toTopOf="@id/quickActions" />
 
     <LinearLayout
         android:id="@+id/quickActions"
