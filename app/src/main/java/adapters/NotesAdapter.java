@@ -110,21 +110,22 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
         }
     }
 
-    public void searchNotes(final String searchKeyword) {
+    public void searchNotes(final String searchInput) {
         timer = new Timer();
         timer.schedule(new TimerTask() {
 
             @Override
             public void run() {
-                if (searchKeyword.trim().isEmpty()) {
+                if (searchInput.trim().isEmpty()) {
                     notes = notesSource;
                 } else {
                     ArrayList<Note> temp = new ArrayList<>();
 
                     for (Note note : notesSource) {
-                        if (note.getTitle().toLowerCase().contains(searchKeyword.toLowerCase())
-                                || note.getSubtitle().toLowerCase().contains(searchKeyword.toLowerCase())
-                                || note.getNoteText().toLowerCase().contains(searchKeyword.toLowerCase())) {
+                        if (note.getTitle().toLowerCase().contains(searchInput.toLowerCase())
+                                || note.getSubtitle().toLowerCase().contains(searchInput.toLowerCase())
+                                || note.getNoteText().toLowerCase().contains(searchInput.toLowerCase())) {
+
                             temp.add(note);
                         }
                     }
