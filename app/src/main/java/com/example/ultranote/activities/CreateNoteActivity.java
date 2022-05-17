@@ -218,8 +218,8 @@ public class CreateNoteActivity extends AppCompatActivity {
                     (ViewGroup) findViewById(R.id.deleteNoteLayout)
             );
             builder.setView(view);
-            deleteNoteDialog = builder.create();
 
+            deleteNoteDialog = builder.create();
             if (deleteNoteDialog.getWindow() != null) {
                 deleteNoteDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
             }
@@ -267,19 +267,19 @@ public class CreateNoteActivity extends AppCompatActivity {
 
     private void initNoteOptions() {
         final LinearLayout noteOptionsLayout = findViewById(R.id.noteOptionsLayout);
-        final BottomSheetBehavior<LinearLayout> bsb = BottomSheetBehavior.from(noteOptionsLayout);
+        final BottomSheetBehavior<LinearLayout> noteOptions = BottomSheetBehavior.from(noteOptionsLayout);
 
         noteOptionsLayout.findViewById(R.id.noteOptionsText).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toggleNoteOptions(bsb);
+                toggleNoteOptions(noteOptions);
             }
         });
 
         findViewById(R.id.noteColourIndicator).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toggleNoteOptions(bsb);
+                toggleNoteOptions(noteOptions);
             }
         });
 
@@ -475,7 +475,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             noteOptionsLayout.findViewById(R.id.deleteNote).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    bsb.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    noteOptions.setState(BottomSheetBehavior.STATE_COLLAPSED);
                     deleteNote();
                 }
             });
