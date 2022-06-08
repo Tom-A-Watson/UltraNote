@@ -59,6 +59,7 @@ public class CreateNoteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.createnoteactivity);
+        initNoteOptions();
 
         noteTitleInput = findViewById(R.id.noteTitleInput);
         noteSubtitleInput = findViewById(R.id.noteSubtitleInput);
@@ -73,39 +74,32 @@ public class CreateNoteActivity extends AppCompatActivity {
 
         findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
+            public void onClick(View view) { onBackPressed(); }
         });
 
         findViewById(R.id.saveButton).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                saveNote();
-            }
+            public void onClick(View view) { saveNote(); }
         });
 
         findViewById(R.id.addURLButton).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                showAddURLDialog();
-            }
+            public void onClick(View view) { showAddURLDialog(); }
         });
 
         findViewById(R.id.addImageButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if  (ContextCompat.checkSelfPermission(
-                        getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE
-                    ) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(
+                if (ContextCompat.checkSelfPermission(
+                        getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) !=
+                        PackageManager.PERMISSION_GRANTED) {
+
+                        ActivityCompat.requestPermissions(
                             CreateNoteActivity.this,
                             new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
                             REQUEST_CODE_STORAGE_PERMISSION
-                    );
-                } else {
-                    selectImage();
-                }
+                        );
+                } else { selectImage(); }
             }
         });
 
@@ -150,8 +144,6 @@ public class CreateNoteActivity extends AppCompatActivity {
                 }
             }
         }
-
-        initNoteOptions();
     }
 
     @Override
@@ -170,10 +162,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             return;
         }
 
-        if (webURLLayout.getVisibility() == View.VISIBLE) {
-            note.setWebLink(webURL.getText().toString());
-        }
-
+        if (webURLLayout.getVisibility() == View.VISIBLE) { note.setWebLink(webURL.getText().toString()); }
         if (existingNote != null) { note.setId(existingNote.getId()); }
 
         @SuppressLint("StaticFieldLeak")
@@ -256,9 +245,7 @@ public class CreateNoteActivity extends AppCompatActivity {
 
             view.findViewById(R.id.textCancel).setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    deleteNoteDialog.dismiss();
-                }
+                public void onClick(View view) { deleteNoteDialog.dismiss(); }
             });
         }
 
@@ -269,19 +256,26 @@ public class CreateNoteActivity extends AppCompatActivity {
         final LinearLayout noteOptionsLayout = findViewById(R.id.noteOptionsLayout);
         final BottomSheetBehavior<LinearLayout> noteOptions = BottomSheetBehavior.from(noteOptionsLayout);
 
-        noteOptionsLayout.findViewById(R.id.noteOptionsText).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.noteOptionsText).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                toggleNoteOptions(noteOptions);
-            }
+            public void onClick(View view) { toggleNoteOptions(noteOptions); }
         });
 
         findViewById(R.id.noteColourIndicator).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                toggleNoteOptions(noteOptions);
-            }
+            public void onClick(View view) { toggleNoteOptions(noteOptions); }
         });
+
+        if (existingNote != null) {
+            noteOptionsLayout.findViewById(R.id.deleteNote).setVisibility(View.VISIBLE);
+            noteOptionsLayout.findViewById(R.id.deleteNote).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    noteOptions.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    deleteNote();
+                }
+            });
+        }
 
         final ImageView grey = noteOptionsLayout.findViewById(R.id.imageColour1);
         final ImageView red = noteOptionsLayout.findViewById(R.id.imageColour2);
@@ -469,17 +463,6 @@ public class CreateNoteActivity extends AppCompatActivity {
                     note.setColour("#E91E63"); break;
             }
         }
-
-        if (existingNote != null) {
-            noteOptionsLayout.findViewById(R.id.deleteNote).setVisibility(View.VISIBLE);
-            noteOptionsLayout.findViewById(R.id.deleteNote).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    noteOptions.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                    deleteNote();
-                }
-            });
-        }
     }
 
     private void toggleNoteOptions(BottomSheetBehavior<LinearLayout> bsb) {
@@ -514,11 +497,8 @@ public class CreateNoteActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == REQUEST_CODE_STORAGE_PERMISSION && grantResults.length > 0) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                selectImage();
-            } else {
-                Toast.makeText(this, "Permission Denied!", Toast.LENGTH_SHORT).show();
-            }
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) { selectImage(); }
+            else { Toast.makeText(this, "Permission Denied!", Toast.LENGTH_SHORT).show(); }
         }
     }
 
@@ -532,7 +512,6 @@ public class CreateNoteActivity extends AppCompatActivity {
 
                 if (selectedImageUri != null) {
                     try {
-
                         InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
                         Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                         noteImage.setImageBitmap(bitmap);
@@ -554,9 +533,8 @@ public class CreateNoteActivity extends AppCompatActivity {
         Cursor cursor = getContentResolver()
                 .query(contentUri, null, null, null, null);
 
-        if (cursor == null) {
-            filePath = contentUri.getPath();
-        } else {
+        if (cursor == null) { filePath = contentUri.getPath(); }
+        else {
             cursor.moveToFirst();
             int index = cursor.getColumnIndex("_data");
             filePath = cursor.getString(index);
@@ -600,9 +578,7 @@ public class CreateNoteActivity extends AppCompatActivity {
 
             view.findViewById(R.id.textCancel).setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    addURLDialog.dismiss();
-                }
+                public void onClick(View view) { addURLDialog.dismiss(); }
             });
         }
 

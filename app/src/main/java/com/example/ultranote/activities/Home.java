@@ -57,6 +57,7 @@ public class Home extends AppCompatActivity implements NotesListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home);
+        getNotes(REQUEST_CODE_SHOW_NOTES, false);
 
         noteList = new ArrayList<>();
         notesAdapter = new NotesAdapter(noteList, this);
@@ -77,7 +78,7 @@ public class Home extends AppCompatActivity implements NotesListener {
 
         EditText searchInput = findViewById(R.id.searchNotesInput);
         searchInput.addTextChangedListener(new TextWatcher() {
-            @Override
+            // Method not required
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
@@ -87,21 +88,19 @@ public class Home extends AppCompatActivity implements NotesListener {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (noteList.size() != 0) {
-                    notesAdapter.searchNotes(s.toString());
-                }
+                if (noteList.size() != 0) { notesAdapter.searchNotes(s.toString()); }
             }
         });
 
         quickTitleInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int action, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
-                        || action == EditorInfo.IME_ACTION_DONE) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) ||
+                        action == EditorInfo.IME_ACTION_DONE) {
                     Intent noteWithTitle = new Intent(getApplicationContext(), CreateNoteActivity.class);
                     noteWithTitle.putExtra("isFromQuickActions", true);
                     noteWithTitle.putExtra("quickActionType", "title");
-                    noteWithTitle.putExtra("quickTitle", quickTitleInput.getText().toString());
+                    noteWithTitle.putExtra("quickTitle", quickTitleInput.getText().toString().trim());
                     startActivityForResult(noteWithTitle, REQUEST_CODE_ADD_NOTE);
                 }
 
@@ -112,32 +111,23 @@ public class Home extends AppCompatActivity implements NotesListener {
         findViewById(R.id.quickAddImage).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if  (ContextCompat.checkSelfPermission(
-                        getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(
+                if (ContextCompat.checkSelfPermission(
+                        getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) !=
+                        PackageManager.PERMISSION_GRANTED) {
+
+                        ActivityCompat.requestPermissions(
                             Home.this,
                             new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
                             REQUEST_CODE_STORAGE_PERMISSION
-                    );
-                } else {
-                    selectImage();
-                }
+                        );
+                } else { selectImage(); }
             }
         });
 
         findViewById(R.id.quickAddURL).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                showAddURLDialog();
-            }
+            public void onClick(View view) { showAddURLDialog(); }
         });
-
-        if (noteList.isEmpty()) {
-
-        }
-
-        getNotes(REQUEST_CODE_SHOW_NOTES, false);
     }
 
     public void openCreateNoteActivity(View view) {
@@ -158,11 +148,8 @@ public class Home extends AppCompatActivity implements NotesListener {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == REQUEST_CODE_STORAGE_PERMISSION && grantResults.length > 0) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                selectImage();
-            } else {
-                Toast.makeText(this, "Permission Denied!", Toast.LENGTH_SHORT).show();
-            }
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) { selectImage(); }
+            else { Toast.makeText(this, "Permission Denied!", Toast.LENGTH_SHORT).show(); }
         }
     }
 
@@ -171,9 +158,8 @@ public class Home extends AppCompatActivity implements NotesListener {
         Cursor cursor = getContentResolver()
                 .query(contentUri, null, null, null, null);
 
-        if (cursor == null) {
-            filePath = contentUri.getPath();
-        } else {
+        if (cursor == null) { filePath = contentUri.getPath(); }
+        else {
             cursor.moveToFirst();
             int index = cursor.getColumnIndex("_data");
             filePath = cursor.getString(index);
@@ -192,7 +178,7 @@ public class Home extends AppCompatActivity implements NotesListener {
         startActivityForResult(intent, REQUEST_CODE_UPDATE_NOTE);
     }
 
-    private void getNotes(final int requestCode, final boolean isNoteDeleted) {
+    private void getNotes(final int requestCode, final boolean noteIsDeleted) {
 
         @SuppressLint("StaticFieldLeak")
         class GetNotesTask extends AsyncTask<Void, Void, List<Note>>
@@ -217,9 +203,8 @@ public class Home extends AppCompatActivity implements NotesListener {
                 } else if (requestCode == REQUEST_CODE_UPDATE_NOTE) {
                     noteList.remove(noteClickedPosition);
 
-                    if (isNoteDeleted) {
-                        notesAdapter.notifyItemRemoved(noteClickedPosition);
-                    } else {
+                    if (noteIsDeleted) { notesAdapter.notifyItemRemoved(noteClickedPosition); }
+                    else {
                         noteList.add(noteClickedPosition, notes.get(noteClickedPosition));
                         notesAdapter.notifyItemChanged(noteClickedPosition);
                     }
@@ -297,9 +282,7 @@ public class Home extends AppCompatActivity implements NotesListener {
 
             view.findViewById(R.id.textCancel).setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    addURLDialog.dismiss();
-                }
+                public void onClick(View view) { addURLDialog.dismiss(); }
             });
         }
 
