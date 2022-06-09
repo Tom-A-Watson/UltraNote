@@ -41,15 +41,14 @@ public class CreateNoteActivity extends AppCompatActivity {
 
     final Note note = new Note();
     private EditText noteTitleInput, noteSubtitleInput, noteInput;
-    private TextView textDateTime;
-    private TextView webURL;
+    private TextView textDateTime, webURL;
     private View noteColourIndicator;
     private ImageView noteImage;
     private String selectedImagePath;
     private LinearLayout webURLLayout;
     private AlertDialog addURLDialog, deleteNoteDialog;
     private Note existingNote;
-    private SimpleDateFormat singleLineDate = new SimpleDateFormat(
+    private final SimpleDateFormat singleLineDate = new SimpleDateFormat(
             "EEEE dd MMMM yyyy HH:mm a", Locale.getDefault());
 
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
@@ -186,14 +185,14 @@ public class CreateNoteActivity extends AppCompatActivity {
             }
         }
 
-        TextView formattedDateTime = findViewById(R.id.textDateTime);
-        formattedDateTime.setText(new SimpleDateFormat("EEEE dd MMMM yyyy \nHH:mm a",
+        TextView multiLineDate = findViewById(R.id.textDateTime);
+        multiLineDate.setText(new SimpleDateFormat("EEEE dd MMMM yyyy \nHH:mm a",
                 Locale.getDefault()).format((new Date())));
 
         note.setTitle(noteTitleInput.getText().toString());
         note.setSubtitle(noteSubtitleInput.getText().toString());
         note.setNoteText(noteInput.getText().toString());
-        note.setDateTime(formattedDateTime.getText().toString());
+        note.setDateTime(multiLineDate.getText().toString());
         note.setImagePath(selectedImagePath);
 
         new SaveNoteTask().execute();
@@ -293,110 +292,136 @@ public class CreateNoteActivity extends AppCompatActivity {
         final ImageView[] colours = new ImageView[] { grey, red, orange, lightOrange, yellow, lightGreen,
                 green, lightBlue, blue, indigo, purple, violet, lightMaroon };
 
-        noteOptionsLayout.findViewById(R.id.viewColour1).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                selectColour(colours, 1);
-                noteColourIndicator.setBackgroundColor(Color.parseColor("#333333"));
-                note.setColour("#333333");
-            }
-        });
-        noteOptionsLayout.findViewById(R.id.viewColour2).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                selectColour(colours, 2);
-                noteColourIndicator.setBackgroundColor(Color.parseColor("#FF2929"));
-                note.setColour("#FF2929");
-            }
-        });
-        noteOptionsLayout.findViewById(R.id.viewColour3).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                selectColour(colours, 3);
-                noteColourIndicator.setBackgroundColor(Color.parseColor("#FF5722"));
-                note.setColour("#FF5722");
-            }
-        });
-        noteOptionsLayout.findViewById(R.id.viewColour4).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                selectColour(colours, 4);
-                noteColourIndicator.setBackgroundColor(Color.parseColor("#FF9800"));
-                note.setColour("#FF9800");
-            }
-        });
-        noteOptionsLayout.findViewById(R.id.viewColour5).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                selectColour(colours, 5);
-                noteColourIndicator.setBackgroundColor(Color.parseColor("#FFE719"));
-                note.setColour("#FFE719");
-            }
-        });
-        noteOptionsLayout.findViewById(R.id.viewColour6).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                selectColour(colours, 6);
-                noteColourIndicator.setBackgroundColor(Color.parseColor("#8BC34A"));
-                note.setColour("#8BC34A");
-            }
-        });
-        noteOptionsLayout.findViewById(R.id.viewColour7).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                selectColour(colours, 7);
-                noteColourIndicator.setBackgroundColor(Color.parseColor("#4CAF50"));
-                note.setColour("#4CAF50");
-            }
-        });
-        noteOptionsLayout.findViewById(R.id.viewColour8).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                selectColour(colours, 8);
-                noteColourIndicator.setBackgroundColor(Color.parseColor("#00BCD4"));
-                note.setColour("#00BCD4");
-            }
-        });
-        noteOptionsLayout.findViewById(R.id.viewColour9).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                selectColour(colours, 9);
-                noteColourIndicator.setBackgroundColor(Color.parseColor("#2196F3"));
-                note.setColour("#2196F3");
-            }
-        });
-        noteOptionsLayout.findViewById(R.id.viewColour10).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                selectColour(colours, 10);
-                noteColourIndicator.setBackgroundColor(Color.parseColor("#3F51B5"));
-                note.setColour("#3F51B5");
-            }
-        });
-        noteOptionsLayout.findViewById(R.id.viewColour11).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                selectColour(colours, 11);
-                noteColourIndicator.setBackgroundColor(Color.parseColor("#673AB7"));
-                note.setColour("#673AB7");
-            }
-        });
-        noteOptionsLayout.findViewById(R.id.viewColour12).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                selectColour(colours, 12);
-                noteColourIndicator.setBackgroundColor(Color.parseColor("#9C27B0"));
-                note.setColour("#9C27B0");
-            }
-        });
-        noteOptionsLayout.findViewById(R.id.viewColour13).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                selectColour(colours, 13);
-                noteColourIndicator.setBackgroundColor(Color.parseColor("#E91E63"));
-                note.setColour("#E91E63");
-            }
-        });
+        final View btn1 = findViewById(R.id.viewColour1);
+        final View btn2 = findViewById(R.id.viewColour2);
+        final View btn3 = findViewById(R.id.viewColour3);
+        final View btn4 = findViewById(R.id.viewColour4);
+        final View btn5 = findViewById(R.id.viewColour5);
+        final View btn6 = findViewById(R.id.viewColour6);
+        final View btn7 = findViewById(R.id.viewColour7);
+        final View btn8 = findViewById(R.id.viewColour8);
+        final View btn9 = findViewById(R.id.viewColour9);
+        final View btn10 = findViewById(R.id.viewColour10);
+        final View btn11 = findViewById(R.id.viewColour11);
+        final View btn12 = findViewById(R.id.viewColour12);
+        final View btn13 = findViewById(R.id.viewColour13);
+        final View[] buttons = new View[] { btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9,
+                btn10, btn11, btn12, btn13, };
+
+        for (int i = 0; i < buttons.length; i++) {
+            final int j = i;
+            buttons[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    selectColour(colours, j + 1);
+                }
+            });
+        }
+
+//        noteOptionsLayout.findViewById(R.id.viewColour1).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                selectColour(colours, 1);
+//                noteColourIndicator.setBackgroundColor(Color.parseColor("#333333"));
+//                note.setColour("#333333");
+//            }
+//        });
+//        noteOptionsLayout.findViewById(R.id.viewColour2).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                selectColour(colours, 2);
+//                noteColourIndicator.setBackgroundColor(Color.parseColor("#FF2929"));
+//                note.setColour("#FF2929");
+//            }
+//        });
+//        noteOptionsLayout.findViewById(R.id.viewColour3).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                selectColour(colours, 3);
+//                noteColourIndicator.setBackgroundColor(Color.parseColor("#FF5722"));
+//                note.setColour("#FF5722");
+//            }
+//        });
+//        noteOptionsLayout.findViewById(R.id.viewColour4).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                selectColour(colours, 4);
+//                noteColourIndicator.setBackgroundColor(Color.parseColor("#FF9800"));
+//                note.setColour("#FF9800");
+//            }
+//        });
+//        noteOptionsLayout.findViewById(R.id.viewColour5).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                selectColour(colours, 5);
+//                noteColourIndicator.setBackgroundColor(Color.parseColor("#FFE719"));
+//                note.setColour("#FFE719");
+//            }
+//        });
+//        noteOptionsLayout.findViewById(R.id.viewColour6).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                selectColour(colours, 6);
+//                noteColourIndicator.setBackgroundColor(Color.parseColor("#8BC34A"));
+//                note.setColour("#8BC34A");
+//            }
+//        });
+//        noteOptionsLayout.findViewById(R.id.viewColour7).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                selectColour(colours, 7);
+//                noteColourIndicator.setBackgroundColor(Color.parseColor("#4CAF50"));
+//                note.setColour("#4CAF50");
+//            }
+//        });
+//        noteOptionsLayout.findViewById(R.id.viewColour8).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                selectColour(colours, 8);
+//                noteColourIndicator.setBackgroundColor(Color.parseColor("#00BCD4"));
+//                note.setColour("#00BCD4");
+//            }
+//        });
+//        noteOptionsLayout.findViewById(R.id.viewColour9).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                selectColour(colours, 9);
+//                noteColourIndicator.setBackgroundColor(Color.parseColor("#2196F3"));
+//                note.setColour("#2196F3");
+//            }
+//        });
+//        noteOptionsLayout.findViewById(R.id.viewColour10).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                selectColour(colours, 10);
+//                noteColourIndicator.setBackgroundColor(Color.parseColor("#3F51B5"));
+//                note.setColour("#3F51B5");
+//            }
+//        });
+//        noteOptionsLayout.findViewById(R.id.viewColour11).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                selectColour(colours, 11);
+//                noteColourIndicator.setBackgroundColor(Color.parseColor("#673AB7"));
+//                note.setColour("#673AB7");
+//            }
+//        });
+//        noteOptionsLayout.findViewById(R.id.viewColour12).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                selectColour(colours, 12);
+//                noteColourIndicator.setBackgroundColor(Color.parseColor("#9C27B0"));
+//                note.setColour("#9C27B0");
+//            }
+//        });
+//        noteOptionsLayout.findViewById(R.id.viewColour13).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                selectColour(colours, 13);
+//                noteColourIndicator.setBackgroundColor(Color.parseColor("#E91E63"));
+//                note.setColour("#E91E63");
+//            }
+//        });
 
         if (existingNote != null && existingNote.getColour() != null
                 && !existingNote.getColour().trim().isEmpty()) {
