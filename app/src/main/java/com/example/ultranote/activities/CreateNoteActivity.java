@@ -150,6 +150,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         super.onResume();
         textDateTime = findViewById(R.id.textDateTime);
         textDateTime.setText(singleLineDate.format(new Date()));
+        initNoteOptions();
     }
 
     private void saveNote() {
@@ -310,182 +311,95 @@ public class CreateNoteActivity extends AppCompatActivity {
 
         for (int i = 0; i < buttons.length; i++) {
             final int j = i;
+
             buttons[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     selectColour(colours, j + 1);
+                    switch (j) {
+                        case 0: note.setColour("#333333");
+                            noteColourIndicator.setBackgroundColor(Color.parseColor("#333333"));
+                            break;
+                        case 1: note.setColour("#FF2929");
+                            noteColourIndicator.setBackgroundColor(Color.parseColor("#FF2929"));
+                            break;
+                        case 2: note.setColour("#FF5722");
+                            noteColourIndicator.setBackgroundColor(Color.parseColor("#FF5722"));
+                            break;
+                        case 3: note.setColour("#FF9800");
+                            noteColourIndicator.setBackgroundColor(Color.parseColor("#FF9800"));
+                            break;
+                        case 4: note.setColour("#FFE719");
+                            noteColourIndicator.setBackgroundColor(Color.parseColor("#FFE719"));
+                            break;
+                        case 5: note.setColour("#8BC34A");
+                            noteColourIndicator.setBackgroundColor(Color.parseColor("#8BC34A"));
+                            break;
+                        case 6: note.setColour("#4CAF50");
+                            noteColourIndicator.setBackgroundColor(Color.parseColor("#4CAF50"));
+                            break;
+                        case 7: note.setColour("#00BCD4");
+                            noteColourIndicator.setBackgroundColor(Color.parseColor("#00BCD4"));
+                            break;
+                        case 8: note.setColour("#2196F3");
+                            noteColourIndicator.setBackgroundColor(Color.parseColor("#2196F3"));
+                            break;
+                        case 9: note.setColour("#3F51B5");
+                            noteColourIndicator.setBackgroundColor(Color.parseColor("#3F51B5"));
+                            break;
+                        case 10: note.setColour("#673AB7");
+                            noteColourIndicator.setBackgroundColor(Color.parseColor("#673AB7"));
+                            break;
+                        case 11: note.setColour("#9C27B0");
+                            noteColourIndicator.setBackgroundColor(Color.parseColor("#9C27B0"));
+                            break;
+                        case 12: note.setColour("#E91E63");
+                            noteColourIndicator.setBackgroundColor(Color.parseColor("#E91E63"));
+                            break;
+                    }
                 }
             });
         }
 
-//        noteOptionsLayout.findViewById(R.id.viewColour1).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                selectColour(colours, 1);
-//                noteColourIndicator.setBackgroundColor(Color.parseColor("#333333"));
-//                note.setColour("#333333");
-//            }
-//        });
-//        noteOptionsLayout.findViewById(R.id.viewColour2).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                selectColour(colours, 2);
-//                noteColourIndicator.setBackgroundColor(Color.parseColor("#FF2929"));
-//                note.setColour("#FF2929");
-//            }
-//        });
-//        noteOptionsLayout.findViewById(R.id.viewColour3).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                selectColour(colours, 3);
-//                noteColourIndicator.setBackgroundColor(Color.parseColor("#FF5722"));
-//                note.setColour("#FF5722");
-//            }
-//        });
-//        noteOptionsLayout.findViewById(R.id.viewColour4).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                selectColour(colours, 4);
-//                noteColourIndicator.setBackgroundColor(Color.parseColor("#FF9800"));
-//                note.setColour("#FF9800");
-//            }
-//        });
-//        noteOptionsLayout.findViewById(R.id.viewColour5).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                selectColour(colours, 5);
-//                noteColourIndicator.setBackgroundColor(Color.parseColor("#FFE719"));
-//                note.setColour("#FFE719");
-//            }
-//        });
-//        noteOptionsLayout.findViewById(R.id.viewColour6).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                selectColour(colours, 6);
-//                noteColourIndicator.setBackgroundColor(Color.parseColor("#8BC34A"));
-//                note.setColour("#8BC34A");
-//            }
-//        });
-//        noteOptionsLayout.findViewById(R.id.viewColour7).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                selectColour(colours, 7);
-//                noteColourIndicator.setBackgroundColor(Color.parseColor("#4CAF50"));
-//                note.setColour("#4CAF50");
-//            }
-//        });
-//        noteOptionsLayout.findViewById(R.id.viewColour8).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                selectColour(colours, 8);
-//                noteColourIndicator.setBackgroundColor(Color.parseColor("#00BCD4"));
-//                note.setColour("#00BCD4");
-//            }
-//        });
-//        noteOptionsLayout.findViewById(R.id.viewColour9).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                selectColour(colours, 9);
-//                noteColourIndicator.setBackgroundColor(Color.parseColor("#2196F3"));
-//                note.setColour("#2196F3");
-//            }
-//        });
-//        noteOptionsLayout.findViewById(R.id.viewColour10).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                selectColour(colours, 10);
-//                noteColourIndicator.setBackgroundColor(Color.parseColor("#3F51B5"));
-//                note.setColour("#3F51B5");
-//            }
-//        });
-//        noteOptionsLayout.findViewById(R.id.viewColour11).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                selectColour(colours, 11);
-//                noteColourIndicator.setBackgroundColor(Color.parseColor("#673AB7"));
-//                note.setColour("#673AB7");
-//            }
-//        });
-//        noteOptionsLayout.findViewById(R.id.viewColour12).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                selectColour(colours, 12);
-//                noteColourIndicator.setBackgroundColor(Color.parseColor("#9C27B0"));
-//                note.setColour("#9C27B0");
-//            }
-//        });
-//        noteOptionsLayout.findViewById(R.id.viewColour13).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                selectColour(colours, 13);
-//                noteColourIndicator.setBackgroundColor(Color.parseColor("#E91E63"));
-//                note.setColour("#E91E63");
-//            }
-//        });
-
         if (existingNote != null && existingNote.getColour() != null
                 && !existingNote.getColour().trim().isEmpty()) {
             switch (existingNote.getColour()) {
-                case "#FF2929":
+                case "#FF2929": note.setColour("#FF2929"); colours[0].setImageResource(0);
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#FF2929"));
-                    colours[0].setImageResource(0);
-                    colours[1].setImageResource(R.drawable.ic_done);
-                    note.setColour("#FF2929"); break;
-                case "#FF5722":
+                    colours[1].setImageResource(R.drawable.ic_done); break;
+                case "#FF5722": note.setColour("#FF5722"); colours[0].setImageResource(0);
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#FF5722"));
-                    colours[0].setImageResource(0);
-                    colours[2].setImageResource(R.drawable.ic_done);
-                    note.setColour("#FF5722"); break;
-                case "#FF9800":
+                    colours[2].setImageResource(R.drawable.ic_done); break;
+                case "#FF9800": note.setColour("#FF9800"); colours[0].setImageResource(0);
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#FF9800"));
-                    colours[0].setImageResource(0);
-                    colours[3].setImageResource(R.drawable.ic_done);
-                    note.setColour("#FF9800"); break;
-                case "#FFE719":
+                    colours[3].setImageResource(R.drawable.ic_done); break;
+                case "#FFE719": note.setColour("#FFE719"); colours[0].setImageResource(0);
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#FFE719"));
-                    colours[0].setImageResource(0);
-                    colours[4].setImageResource(R.drawable.ic_done);
-                    note.setColour("#FFE719"); break;
-                case "#8BC34A":
+                    colours[4].setImageResource(R.drawable.ic_done); break;
+                case "#8BC34A": note.setColour("#8BC34A"); colours[0].setImageResource(0);
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#8BC34A"));
-                    colours[0].setImageResource(0);
-                    colours[5].setImageResource(R.drawable.ic_done);
-                    note.setColour("#8BC34A"); break;
-                case "#4CAF50":
+                    colours[5].setImageResource(R.drawable.ic_done); break;
+                case "#4CAF50": note.setColour("#4CAF50"); colours[0].setImageResource(0);
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#4CAF50"));
-                    colours[0].setImageResource(0);
-                    colours[6].setImageResource(R.drawable.ic_done);
-                    note.setColour("#4CAF50"); break;
-                case "#00BCD4":
+                    colours[6].setImageResource(R.drawable.ic_done); break;
+                case "#00BCD4": note.setColour("#00BCD4"); colours[0].setImageResource(0);
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#00BCD4"));
-                    colours[0].setImageResource(0);
-                    colours[7].setImageResource(R.drawable.ic_done);
-                    note.setColour("#00BCD4"); break;
-                case "#2196F3":
+                    colours[7].setImageResource(R.drawable.ic_done); break;
+                case "#2196F3": note.setColour("#2196F3"); colours[0].setImageResource(0);
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#2196F3"));
-                    colours[0].setImageResource(0);
-                    colours[8].setImageResource(R.drawable.ic_done);
-                    note.setColour("#2196F3"); break;
-                case "#3F51B5":
+                    colours[8].setImageResource(R.drawable.ic_done); break;
+                case "#3F51B5": note.setColour("#3F51B5"); colours[0].setImageResource(0);
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#3F51B5"));
-                    colours[0].setImageResource(0);
-                    colours[9].setImageResource(R.drawable.ic_done);
-                    note.setColour("#3F51B5"); break;
-                case "#673AB7":
+                    colours[9].setImageResource(R.drawable.ic_done); break;
+                case "#673AB7": note.setColour("#673AB7"); colours[0].setImageResource(0);
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#673AB7"));
-                    colours[0].setImageResource(0);
-                    colours[10].setImageResource(R.drawable.ic_done);
-                    note.setColour("#673AB7"); break;
-                case "#9C27B0":
+                    colours[10].setImageResource(R.drawable.ic_done); break;
+                case "#9C27B0": note.setColour("#9C27B0"); colours[0].setImageResource(0);
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#9C27B0"));
-                    colours[0].setImageResource(0);
-                    colours[11].setImageResource(R.drawable.ic_done);
-                    note.setColour("#9C27B0"); break;
-                case "#E91E63":
+                    colours[11].setImageResource(R.drawable.ic_done); break;
+                case "#E91E63": note.setColour("#E91E63"); colours[0].setImageResource(0);
                     noteColourIndicator.setBackgroundColor(Color.parseColor("#E91E63"));
-                    colours[0].setImageResource(0);
-                    colours[12].setImageResource(R.drawable.ic_done);
-                    note.setColour("#E91E63"); break;
+                    colours[12].setImageResource(R.drawable.ic_done); break;
             }
         }
     }
