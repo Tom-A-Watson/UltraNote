@@ -58,7 +58,7 @@
         app:layout_constraintTop_toBottomOf="@id/addURLIcon" />
 
     <TextView
-        android:id="@+id/textAdd"
+        android:id="@+id/confirmAddURL"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/_8sdp"
@@ -74,7 +74,7 @@
         app:layout_constraintTop_toBottomOf="@id/inputURL" />
 
     <TextView
-        android:id="@+id/textCancel"
+        android:id="@+id/cancelAddURL"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/_8sdp"
@@ -86,7 +86,7 @@
         android:textColor="@color/revertColour"
         android:textSize="@dimen/_13ssp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/textAdd"
+        app:layout_constraintEnd_toStartOf="@id/confirmAddURL"
         app:layout_constraintTop_toBottomOf="@id/inputURL" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

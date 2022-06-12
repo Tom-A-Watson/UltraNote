@@ -37,7 +37,7 @@ import java.util.Locale;
 import database.NotesDatabase;
 import entities.Note;
 
-public class CreateNoteActivity extends AppCompatActivity {
+public class CreateNote extends AppCompatActivity implements View.OnClickListener {
 
     final Note note = new Note();
     private EditText noteTitleInput, noteSubtitleInput, noteInput;
@@ -71,22 +71,11 @@ public class CreateNoteActivity extends AppCompatActivity {
         webURL = findViewById(R.id.webUrl);
         webURLLayout = findViewById(R.id.webUrlLayout);
 
-        findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) { onBackPressed(); }
-        });
-
-        findViewById(R.id.saveButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) { saveNote(); }
-        });
-
-        findViewById(R.id.addURLButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) { showAddURLDialog(); }
-        });
-
-        findViewById(R.id.addImageButton).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.backButton).setOnClickListener(this);
+        findViewById(R.id.saveButton).setOnClickListener(this);
+        findViewById(R.id.addURL).setOnClickListener(this);
+        findViewById(R.id.deleteURL).setOnClickListener(this);
+        findViewById(R.id.addImage).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (ContextCompat.checkSelfPermission(
@@ -94,19 +83,11 @@ public class CreateNoteActivity extends AppCompatActivity {
                         PackageManager.PERMISSION_GRANTED) {
 
                         ActivityCompat.requestPermissions(
-                            CreateNoteActivity.this,
+                            CreateNote.this,
                             new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
                             REQUEST_CODE_STORAGE_PERMISSION
                         );
                 } else { selectImage(); }
-            }
-        });
-
-        findViewById(R.id.deleteWebURL).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                webURL.setText(null);
-                webURLLayout.setVisibility(View.GONE);
             }
         });
 
@@ -178,7 +159,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 Intent intent = new Intent();
-                Intent homePage = new Intent(CreateNoteActivity.this, Home.class);
+                Intent homePage = new Intent(CreateNote.this, Home.class);
 
                 setResult(RESULT_OK, intent);
                 homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -201,7 +182,7 @@ public class CreateNoteActivity extends AppCompatActivity {
 
     private void deleteNote() {
         if (deleteNoteDialog == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(CreateNoteActivity.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(CreateNote.this);
             View view = LayoutInflater.from(this).inflate(
                     R.layout.delete_note_layout,
                     (ViewGroup) findViewById(R.id.deleteNoteLayout)
@@ -213,106 +194,42 @@ public class CreateNoteActivity extends AppCompatActivity {
                 deleteNoteDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
             }
 
-            view.findViewById(R.id.textDeleteNote).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    @SuppressLint("StaticFieldLeak")
-                    class DeleteNoteTask extends AsyncTask<Void, Void, Void>
-                    {
-                        @Override
-                        protected Void doInBackground(Void... voids) {
-                            NotesDatabase.getDatabase(getApplicationContext()).noteDao()
-                                    .deleteNote(existingNote);
-                            return null;
-                        }
-
-                        @Override
-                        protected void onPostExecute(Void aVoid) {
-                            super.onPostExecute(aVoid);
-                            Intent intent = new Intent();
-                            intent.putExtra("isNoteDeleted", true);
-                            setResult(RESULT_OK, intent);
-                            Toast.makeText(CreateNoteActivity.this,
-                                    "'" + existingNote.getTitle() + "'" + " deleted", Toast.LENGTH_LONG).show();
-                            finish();
-                        }
-                    }
-
-                    new DeleteNoteTask().execute();
-                }
-            });
-
-            view.findViewById(R.id.textCancel).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) { deleteNoteDialog.dismiss(); }
-            });
+            view.findViewById(R.id.textDeleteNote).setOnClickListener(this);
+            view.findViewById(R.id.cancelDelete).setOnClickListener(this);
         }
 
         deleteNoteDialog.show();
     }
 
     private void initNoteOptions() {
-        final LinearLayout noteOptionsLayout = findViewById(R.id.noteOptionsLayout);
-        final BottomSheetBehavior<LinearLayout> noteOptions = BottomSheetBehavior.from(noteOptionsLayout);
+        findViewById(R.id.noteOptionsText).setOnClickListener(this);
+        findViewById(R.id.noteColourIndicator).setOnClickListener(this);
 
-        findViewById(R.id.noteOptionsText).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) { toggleNoteOptions(noteOptions); }
-        });
-
-        findViewById(R.id.noteColourIndicator).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) { toggleNoteOptions(noteOptions); }
-        });
-
-        if (existingNote != null) {
-            noteOptionsLayout.findViewById(R.id.deleteNote).setVisibility(View.VISIBLE);
-            noteOptionsLayout.findViewById(R.id.deleteNote).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    noteOptions.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                    deleteNote();
-                }
-            });
-        }
-
-        final ImageView grey = noteOptionsLayout.findViewById(R.id.imageColour1);
-        final ImageView red = noteOptionsLayout.findViewById(R.id.imageColour2);
-        final ImageView orange = noteOptionsLayout.findViewById(R.id.imageColour3);
-        final ImageView lightOrange = noteOptionsLayout.findViewById(R.id.imageColour4);
-        final ImageView yellow = noteOptionsLayout.findViewById(R.id.imageColour5);
-        final ImageView lightGreen = noteOptionsLayout.findViewById(R.id.imageColour6);
-        final ImageView green = noteOptionsLayout.findViewById(R.id.imageColour7);
-        final ImageView lightBlue = noteOptionsLayout.findViewById(R.id.imageColour8);
-        final ImageView blue = noteOptionsLayout.findViewById(R.id.imageColour9);
-        final ImageView indigo = noteOptionsLayout.findViewById(R.id.imageColour10);
-        final ImageView purple = noteOptionsLayout.findViewById(R.id.imageColour11);
-        final ImageView violet = noteOptionsLayout.findViewById(R.id.imageColour12);
-        final ImageView lightMaroon = noteOptionsLayout.findViewById(R.id.imageColour13);
+        final ImageView grey = findViewById(R.id.imageColour1);
+        final ImageView red = findViewById(R.id.imageColour2);
+        final ImageView orange = findViewById(R.id.imageColour3);
+        final ImageView lightOrange = findViewById(R.id.imageColour4);
+        final ImageView yellow = findViewById(R.id.imageColour5);
+        final ImageView lightGreen = findViewById(R.id.imageColour6);
+        final ImageView green = findViewById(R.id.imageColour7);
+        final ImageView lightBlue = findViewById(R.id.imageColour8);
+        final ImageView blue = findViewById(R.id.imageColour9);
+        final ImageView indigo = findViewById(R.id.imageColour10);
+        final ImageView purple = findViewById(R.id.imageColour11);
+        final ImageView violet = findViewById(R.id.imageColour12);
+        final ImageView lightMaroon = findViewById(R.id.imageColour13);
         final ImageView[] colours = new ImageView[] { grey, red, orange, lightOrange, yellow, lightGreen,
                 green, lightBlue, blue, indigo, purple, violet, lightMaroon };
 
-        final View btn1 = findViewById(R.id.viewColour1);
-        final View btn2 = findViewById(R.id.viewColour2);
-        final View btn3 = findViewById(R.id.viewColour3);
-        final View btn4 = findViewById(R.id.viewColour4);
-        final View btn5 = findViewById(R.id.viewColour5);
-        final View btn6 = findViewById(R.id.viewColour6);
-        final View btn7 = findViewById(R.id.viewColour7);
-        final View btn8 = findViewById(R.id.viewColour8);
-        final View btn9 = findViewById(R.id.viewColour9);
-        final View btn10 = findViewById(R.id.viewColour10);
-        final View btn11 = findViewById(R.id.viewColour11);
-        final View btn12 = findViewById(R.id.viewColour12);
-        final View btn13 = findViewById(R.id.viewColour13);
-        final View[] buttons = new View[] { btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9,
-                btn10, btn11, btn12, btn13, };
+        if (existingNote != null) {
+            findViewById(R.id.deleteNote).setVisibility(View.VISIBLE);
+            findViewById(R.id.deleteNote).setOnClickListener(this);
+        }
 
-        for (int i = 0; i < buttons.length; i++) {
+        for (int i = 0; i < colours.length; i++) {
             final int j = i;
 
-            buttons[i].setOnClickListener(new View.OnClickListener() {
+            colours[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     selectColour(colours, j + 1);
@@ -475,8 +392,8 @@ public class CreateNoteActivity extends AppCompatActivity {
         if (cursor == null) { filePath = contentUri.getPath(); }
         else {
             cursor.moveToFirst();
-            int index = cursor.getColumnIndex("_data");
-            filePath = cursor.getString(index);
+            int i = cursor.getColumnIndex("_data");
+            filePath = cursor.getString(i);
             cursor.close();
         }
 
@@ -485,7 +402,7 @@ public class CreateNoteActivity extends AppCompatActivity {
 
     private void showAddURLDialog() {
         if (addURLDialog == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(CreateNoteActivity.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(CreateNote.this);
             View view = LayoutInflater.from(this).inflate(
                     R.layout.add_url_layout,
                     (ViewGroup) findViewById(R.id.addURLLayout)
@@ -500,13 +417,13 @@ public class CreateNoteActivity extends AppCompatActivity {
             final EditText inputURL = view.findViewById(R.id.inputURL);
             inputURL.requestFocus();
 
-            view.findViewById(R.id.textAdd).setOnClickListener(new View.OnClickListener() {
+            view.findViewById(R.id.confirmAddURL).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (inputURL.getText().toString().trim().isEmpty()) {
-                        Toast.makeText(CreateNoteActivity.this, "Enter a URL", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateNote.this, "Enter a URL", Toast.LENGTH_SHORT).show();
                     } else if (!Patterns.WEB_URL.matcher(inputURL.getText().toString()).matches()) {
-                        Toast.makeText(CreateNoteActivity.this, "Enter a valid URL", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateNote.this, "Enter a valid URL", Toast.LENGTH_SHORT).show();
                     } else {
                         webURL.setText(inputURL.getText().toString());
                         webURLLayout.setVisibility(View.VISIBLE);
@@ -515,10 +432,7 @@ public class CreateNoteActivity extends AppCompatActivity {
                 }
             });
 
-            view.findViewById(R.id.textCancel).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) { addURLDialog.dismiss(); }
-            });
+            view.findViewById(R.id.cancelAddURL).setOnClickListener(this);
         }
 
         addURLDialog.show();
@@ -541,6 +455,47 @@ public class CreateNoteActivity extends AppCompatActivity {
         if (existingNote.getWebLink() != null && !existingNote.getWebLink().trim().isEmpty()) {
             webURL.setText(existingNote.getWebLink());
             webURLLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public void onClick(View view) {
+        final LinearLayout noteOptionsLayout = findViewById(R.id.noteOptionsLayout);
+        final BottomSheetBehavior<LinearLayout> noteOptions = BottomSheetBehavior.from(noteOptionsLayout);
+
+        switch (view.getId()) {
+            case R.id.backButton: onBackPressed(); break;
+            case R.id.saveButton: saveNote(); break;
+            case R.id.addURL: showAddURLDialog(); break;
+            case R.id.cancelAddURL: addURLDialog.dismiss(); break;
+            case R.id.deleteURL: webURL.setText(null); webURLLayout.setVisibility(View.GONE); break;
+            case R.id.noteColourIndicator:  // and
+            case R.id.noteOptionsText: toggleNoteOptions(noteOptions); break;
+            case R.id.deleteNote: noteOptions.setState(BottomSheetBehavior.STATE_COLLAPSED); deleteNote(); break;
+            case R.id.cancelDelete: deleteNoteDialog.dismiss(); break;
+            default:
+                class DeleteNoteTask extends AsyncTask<Void, Void, Void>
+                {
+                    @Override
+                    protected Void doInBackground(Void... voids) {
+                        NotesDatabase.getDatabase(getApplicationContext()).noteDao().deleteNote(existingNote);
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        super.onPostExecute(aVoid);
+                        Intent intent = new Intent();
+                        intent.putExtra("isNoteDeleted", true);
+                        setResult(RESULT_OK, intent);
+                        Toast.makeText(CreateNote.this, "'" + existingNote.getTitle() + "'"
+                                + " deleted", Toast.LENGTH_LONG).show();
+                        finish();
+                    }
+                }
+
+                new DeleteNoteTask().execute();
         }
     }
 }

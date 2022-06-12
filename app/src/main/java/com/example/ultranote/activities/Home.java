@@ -97,7 +97,7 @@ public class Home extends AppCompatActivity implements NotesListener {
             public boolean onEditorAction(TextView textView, int action, KeyEvent event) {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) ||
                         action == EditorInfo.IME_ACTION_DONE) {
-                    Intent noteWithTitle = new Intent(getApplicationContext(), CreateNoteActivity.class);
+                    Intent noteWithTitle = new Intent(getApplicationContext(), CreateNote.class);
                     noteWithTitle.putExtra("isFromQuickActions", true);
                     noteWithTitle.putExtra("quickActionType", "title");
                     noteWithTitle.putExtra("quickTitle", quickTitleInput.getText().toString().trim());
@@ -131,7 +131,7 @@ public class Home extends AppCompatActivity implements NotesListener {
     }
 
     public void openCreateNoteActivity(View view) {
-        Intent intent = new Intent(this, CreateNoteActivity.class);
+        Intent intent = new Intent(this, CreateNote.class);
         startActivity(intent);
     }
 
@@ -172,7 +172,7 @@ public class Home extends AppCompatActivity implements NotesListener {
     @Override
     public void onNoteClicked(Note note, int position) {
         noteClickedPosition = position;
-        Intent intent = new Intent(getApplicationContext(), CreateNoteActivity.class);
+        Intent intent = new Intent(getApplicationContext(), CreateNote.class);
         intent.putExtra("isViewOrUpdate", true);
         intent.putExtra("note", note);
         startActivityForResult(intent, REQUEST_CODE_UPDATE_NOTE);
@@ -232,7 +232,7 @@ public class Home extends AppCompatActivity implements NotesListener {
                 if (selectedImageUri != null) {
                     try {
                         String selectedImagePath = getPathFromUri(selectedImageUri);
-                        Intent noteWithImage = new Intent(getApplicationContext(), CreateNoteActivity.class);
+                        Intent noteWithImage = new Intent(getApplicationContext(), CreateNote.class);
                         noteWithImage.putExtra("isFromQuickActions", true);
                         noteWithImage.putExtra("quickActionType", "image");
                         noteWithImage.putExtra("imagePath", selectedImagePath);
@@ -262,7 +262,7 @@ public class Home extends AppCompatActivity implements NotesListener {
             final EditText inputURL = view.findViewById(R.id.inputURL);
             inputURL.requestFocus();
 
-            view.findViewById(R.id.textAdd).setOnClickListener(new View.OnClickListener() {
+            view.findViewById(R.id.confirmAddURL).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (inputURL.getText().toString().trim().isEmpty()) {
@@ -271,7 +271,7 @@ public class Home extends AppCompatActivity implements NotesListener {
                         Toast.makeText(Home.this, "Enter a valid URL", Toast.LENGTH_SHORT).show();
                     } else {
                         addURLDialog.dismiss();
-                        Intent noteWithURL = new Intent(getApplicationContext(), CreateNoteActivity.class);
+                        Intent noteWithURL = new Intent(getApplicationContext(), CreateNote.class);
                         noteWithURL.putExtra("isFromQuickActions", true);
                         noteWithURL.putExtra("quickActionType", "URL");
                         noteWithURL.putExtra("URL", inputURL.getText().toString());
@@ -280,7 +280,7 @@ public class Home extends AppCompatActivity implements NotesListener {
                 }
             });
 
-            view.findViewById(R.id.textCancel).setOnClickListener(new View.OnClickListener() {
+            view.findViewById(R.id.cancelAddURL).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) { addURLDialog.dismiss(); }
             });

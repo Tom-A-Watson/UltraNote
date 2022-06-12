@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primaryColour"
-    tools:context=".activities.CreateNoteActivity">
+    tools:context=".activities.CreateNote">
 
     <ScrollView
         android:id="@+id/noteScrollView"
@@ -47,19 +47,19 @@
                 app:layout_constraintBottom_toBottomOf="@id/backButton" />
 
             <ImageView
-                android:id="@+id/addURLButton"
+                android:id="@+id/addURL"
                 android:layout_width="@dimen/_26sdp"
                 android:layout_height="@dimen/_26sdp"
                 android:layout_marginEnd="@dimen/_6sdp"
                 android:contentDescription="@string/app_name"
                 android:src="@drawable/ic_weblink"
                 app:tint="@color/textHintColour"
-                app:layout_constraintEnd_toStartOf="@id/addImageButton"
-                app:layout_constraintBottom_toBottomOf="@id/addImageButton"
-                app:layout_constraintTop_toTopOf="@id/addImageButton"/>
+                app:layout_constraintEnd_toStartOf="@id/addImage"
+                app:layout_constraintBottom_toBottomOf="@id/addImage"
+                app:layout_constraintTop_toTopOf="@id/addImage"/>
 
             <ImageView
-                android:id="@+id/addImageButton"
+                android:id="@+id/addImage"
                 android:layout_width="@dimen/_26sdp"
                 android:layout_height="@dimen/_26sdp"
                 android:layout_marginEnd="@dimen/_10sdp"
@@ -208,7 +208,7 @@
                     android:textColorLink="@color/accent" />
 
                 <ImageView
-                    android:id="@+id/deleteWebURL"
+                    android:id="@+id/deleteURL"
                     android:layout_width="@dimen/_24sdp"
                     android:layout_height="@dimen/_24sdp"
                     android:layout_marginEnd="@dimen/_7sdp"

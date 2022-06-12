@@ -32,7 +32,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.CreateNoteActivity"
+            android:name=".activities.CreateNote"
             android:windowSoftInputMode="stateHidden"
             android:exported="true" />
     </application>
