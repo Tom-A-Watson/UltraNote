@@ -75,31 +75,8 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         findViewById(R.id.saveButton).setOnClickListener(this);
         findViewById(R.id.addURL).setOnClickListener(this);
         findViewById(R.id.deleteURL).setOnClickListener(this);
-        findViewById(R.id.addImage).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (ContextCompat.checkSelfPermission(
-                        getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) !=
-                        PackageManager.PERMISSION_GRANTED) {
-
-                        ActivityCompat.requestPermissions(
-                            CreateNote.this,
-                            new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
-                            REQUEST_CODE_STORAGE_PERMISSION
-                        );
-                } else { selectImage(); }
-            }
-        });
-
-        findViewById(R.id.deleteImageIcon).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                noteImage.setImageBitmap(null);
-                noteImage.setVisibility(View.GONE);
-                findViewById(R.id.deleteImageIcon).setVisibility(View.GONE);
-                selectedImagePath = "";
-            }
-        });
+        findViewById(R.id.addImage).setOnClickListener(this);
+        findViewById(R.id.deleteImage).setOnClickListener(this);
 
         if (getIntent().getBooleanExtra("isViewOrUpdate", false)) {
             existingNote = (Note) getIntent().getSerializableExtra("note");
@@ -117,7 +94,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
                         selectedImagePath = getIntent().getStringExtra("imagePath");
                         noteImage.setImageBitmap(BitmapFactory.decodeFile(selectedImagePath));
                         noteImage.setVisibility(View.VISIBLE);
-                        findViewById(R.id.deleteImageIcon).setVisibility(View.VISIBLE); break;
+                        findViewById(R.id.deleteImage).setVisibility(View.VISIBLE); break;
                     case "URL":
                         webURL.setText(getIntent().getStringExtra("URL"));
                         webURLLayout.setVisibility(View.VISIBLE); break;
@@ -135,16 +112,20 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     }
 
     private void saveNote() {
+        final LinearLayout noteOptionsLayout = findViewById(R.id.noteOptionsLayout);
+        final BottomSheetBehavior<LinearLayout> options = BottomSheetBehavior.from(noteOptionsLayout);
+
         if (noteTitleInput.getText().toString().trim().isEmpty()) {
-            Toast.makeText(this, "Note title can't be empty!", Toast.LENGTH_SHORT).show();
-            return;
+            Toast.makeText(this, "Note title can't be empty!", Toast.LENGTH_SHORT).show(); return;
         } else if (noteInput.getText().toString().trim().isEmpty()) {
-            Toast.makeText(this, "The note requires some content!", Toast.LENGTH_SHORT).show();
-            return;
+            Toast.makeText(this, "The note requires some content!", Toast.LENGTH_SHORT).show(); return;
         }
 
         if (webURLLayout.getVisibility() == View.VISIBLE) { note.setWebLink(webURL.getText().toString()); }
         if (existingNote != null) { note.setId(existingNote.getId()); }
+        if (options.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+            options.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        }
 
         @SuppressLint("StaticFieldLeak")
         class SaveNoteTask extends AsyncTask<Void, Void, Void>
@@ -194,8 +175,8 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
                 deleteNoteDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
             }
 
-            view.findViewById(R.id.textDeleteNote).setOnClickListener(this);
-            view.findViewById(R.id.cancelDelete).setOnClickListener(this);
+            view.findViewById(R.id.deleteNote).setOnClickListener(this);
+            view.findViewById(R.id.cancelDeleteNote).setOnClickListener(this);
         }
 
         deleteNoteDialog.show();
@@ -222,8 +203,8 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
                 green, lightBlue, blue, indigo, purple, violet, lightMaroon };
 
         if (existingNote != null) {
-            findViewById(R.id.deleteNote).setVisibility(View.VISIBLE);
-            findViewById(R.id.deleteNote).setOnClickListener(this);
+            findViewById(R.id.deleteBtn).setVisibility(View.VISIBLE);
+            findViewById(R.id.deleteBtn).setOnClickListener(this);
         }
 
         for (int i = 0; i < colours.length; i++) {
@@ -374,7 +355,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
                         noteImage.setVisibility(View.VISIBLE);
                         selectedImagePath = getPathFromUri(selectedImageUri);
 
-                        findViewById(R.id.deleteImageIcon).setVisibility(View.VISIBLE);
+                        findViewById(R.id.deleteImage).setVisibility(View.VISIBLE);
 
                     } catch (Exception e) {
                         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -431,7 +412,6 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
                     }
                 }
             });
-
             view.findViewById(R.id.cancelAddURL).setOnClickListener(this);
         }
 
@@ -449,7 +429,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
             noteImage.setVisibility(View.VISIBLE);
             selectedImagePath = existingNote.getImagePath();
 
-            findViewById(R.id.deleteImageIcon).setVisibility(View.VISIBLE);
+            findViewById(R.id.deleteImage).setVisibility(View.VISIBLE);
         }
 
         if (existingNote.getWebLink() != null && !existingNote.getWebLink().trim().isEmpty()) {
@@ -462,19 +442,36 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     @Override
     public void onClick(View view) {
         final LinearLayout noteOptionsLayout = findViewById(R.id.noteOptionsLayout);
-        final BottomSheetBehavior<LinearLayout> noteOptions = BottomSheetBehavior.from(noteOptionsLayout);
+        final BottomSheetBehavior<LinearLayout> options = BottomSheetBehavior.from(noteOptionsLayout);
 
         switch (view.getId()) {
+            // Simple 1-line implementations
             case R.id.backButton: onBackPressed(); break;
             case R.id.saveButton: saveNote(); break;
             case R.id.addURL: showAddURLDialog(); break;
             case R.id.cancelAddURL: addURLDialog.dismiss(); break;
             case R.id.deleteURL: webURL.setText(null); webURLLayout.setVisibility(View.GONE); break;
-            case R.id.noteColourIndicator:  // and
-            case R.id.noteOptionsText: toggleNoteOptions(noteOptions); break;
-            case R.id.deleteNote: noteOptions.setState(BottomSheetBehavior.STATE_COLLAPSED); deleteNote(); break;
-            case R.id.cancelDelete: deleteNoteDialog.dismiss(); break;
-            default:
+            case R.id.noteColourIndicator: case R.id.noteOptionsText: toggleNoteOptions(options); break;
+            case R.id.deleteBtn: options.setState(BottomSheetBehavior.STATE_COLLAPSED); deleteNote(); break;
+            case R.id.cancelDeleteNote: deleteNoteDialog.dismiss(); break;
+
+            case R.id.addImage:   // Ask the user for permission to access the gallery
+                if (ContextCompat.checkSelfPermission(
+                        getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) !=
+                        PackageManager.PERMISSION_GRANTED) {
+
+                    ActivityCompat.requestPermissions(
+                            CreateNote.this,
+                            new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
+                            REQUEST_CODE_STORAGE_PERMISSION
+                    );
+                } else { selectImage(); } break;
+
+            case R.id.deleteImage:   // Delete the image from the note
+                noteImage.setImageBitmap(null); noteImage.setVisibility(View.GONE);
+                findViewById(R.id.deleteImage).setVisibility(View.GONE); selectedImagePath = ""; break;
+
+            case R.id.deleteNote:   // Delete the note, then throw a toast message to confirm this
                 class DeleteNoteTask extends AsyncTask<Void, Void, Void>
                 {
                     @Override

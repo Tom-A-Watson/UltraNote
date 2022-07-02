@@ -53,7 +53,7 @@
         app:layout_constraintTop_toBottomOf="@id/deleteNoteIcon" />
 
     <TextView
-        android:id="@+id/textDeleteNote"
+        android:id="@+id/deleteNote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/_8sdp"
@@ -71,7 +71,7 @@
         app:layout_constraintTop_toBottomOf="@id/deleteNoteMessage" />
 
     <TextView
-        android:id="@+id/cancelDelete"
+        android:id="@+id/cancelDeleteNote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/_8sdp"
@@ -84,7 +84,7 @@
         android:textColor="@color/revertColour"
         android:textSize="@dimen/_13ssp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/textDeleteNote"
+        app:layout_constraintEnd_toStartOf="@id/deleteNote"
         app:layout_constraintTop_toBottomOf="@id/deleteNoteMessage" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

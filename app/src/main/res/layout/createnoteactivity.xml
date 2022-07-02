@@ -169,7 +169,7 @@
                 app:layout_constraintTop_toBottomOf="@id/noteSubtitleInput" />
 
             <ImageView
-                android:id="@+id/deleteImageIcon"
+                android:id="@+id/deleteImage"
                 android:layout_width="@dimen/_26sdp"
                 android:layout_height="@dimen/_26sdp"
                 android:layout_marginTop="@dimen/_8sdp"
