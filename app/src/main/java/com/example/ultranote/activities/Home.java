@@ -38,9 +38,9 @@ import database.NotesDatabase;
 import entities.Note;
 import listeners.NotesListener;
 
-public class Home extends AppCompatActivity implements NotesListener {
-
-    private EditText quickTitleInput;
+public class Home extends AppCompatActivity implements NotesListener, View.OnClickListener,
+                                                       TextWatcher, TextView.OnEditorActionListener {
+    private EditText searchInput, quickTitleInput;
     private RecyclerView notesRecyclerView;
     private List<Note> noteList;
     private NotesAdapter notesAdapter;
@@ -62,77 +62,22 @@ public class Home extends AppCompatActivity implements NotesListener {
         noteList = new ArrayList<>();
         notesAdapter = new NotesAdapter(noteList, this);
         notesRecyclerView = findViewById(R.id.notesRecyclerView);
+        searchInput = findViewById(R.id.searchNotesInput);
         quickTitleInput = findViewById(R.id.quickTitleInput);
         notesRecyclerView.setAdapter(notesAdapter);
         notesRecyclerView.setLayoutManager(
                 new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         );
 
-        ImageView backBtn = findViewById(R.id.backButton);
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
-
-        EditText searchInput = findViewById(R.id.searchNotesInput);
-        searchInput.addTextChangedListener(new TextWatcher() {
-            // Method not required
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                notesAdapter.cancelTimer();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (noteList.size() != 0) { notesAdapter.searchNotes(s.toString()); }
-            }
-        });
-
-        quickTitleInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int action, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) ||
-                        action == EditorInfo.IME_ACTION_DONE) {
-                    Intent noteWithTitle = new Intent(getApplicationContext(), CreateNote.class);
-                    noteWithTitle.putExtra("isFromQuickActions", true);
-                    noteWithTitle.putExtra("quickActionType", "title");
-                    noteWithTitle.putExtra("quickTitle", quickTitleInput.getText().toString().trim());
-                    startActivityForResult(noteWithTitle, REQUEST_CODE_ADD_NOTE);
-                }
-
-                return false;
-            }
-        });
-
-        findViewById(R.id.quickAddImage).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (ContextCompat.checkSelfPermission(
-                        getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) !=
-                        PackageManager.PERMISSION_GRANTED) {
-
-                        ActivityCompat.requestPermissions(
-                            Home.this,
-                            new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
-                            REQUEST_CODE_STORAGE_PERMISSION
-                        );
-                } else { selectImage(); }
-            }
-        });
-
-        findViewById(R.id.quickAddURL).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) { showAddURLDialog(); }
-        });
+        findViewById(R.id.backButton).setOnClickListener(this);
+        findViewById(R.id.quickAddImage).setOnClickListener(this);
+        findViewById(R.id.quickAddURL).setOnClickListener(this);
+        searchInput.addTextChangedListener(this);
+        quickTitleInput.setOnEditorActionListener(this);
     }
 
     public void openCreateNoteActivity(View view) {
-        Intent intent = new Intent(this, CreateNote.class);
-        startActivity(intent);
+        Intent intent = new Intent(this, CreateNote.class); startActivity(intent);
     }
 
     private void selectImage() {
@@ -219,28 +164,32 @@ public class Home extends AppCompatActivity implements NotesListener {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_CODE_ADD_NOTE && resultCode == RESULT_OK) {
-            getNotes(REQUEST_CODE_ADD_NOTE, false);
-        } else if (requestCode == REQUEST_CODE_UPDATE_NOTE && resultCode == RESULT_OK) {
-            if (data != null) {
-                getNotes(REQUEST_CODE_UPDATE_NOTE, data.getBooleanExtra("isNoteDeleted", false));
-            }
-        } else if (requestCode == REQUEST_CODE_SELECT_IMAGE && resultCode == RESULT_OK) {
-            if (data != null) {
-                Uri selectedImageUri = data.getData();
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_CODE_ADD_NOTE: getNotes(REQUEST_CODE_ADD_NOTE, false); break;
 
-                if (selectedImageUri != null) {
-                    try {
-                        String selectedImagePath = getPathFromUri(selectedImageUri);
-                        Intent noteWithImage = new Intent(getApplicationContext(), CreateNote.class);
-                        noteWithImage.putExtra("isFromQuickActions", true);
-                        noteWithImage.putExtra("quickActionType", "image");
-                        noteWithImage.putExtra("imagePath", selectedImagePath);
-                        startActivityForResult(noteWithImage, REQUEST_CODE_ADD_NOTE);
-                    } catch (Exception e) {
-                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }
+                case REQUEST_CODE_UPDATE_NOTE:
+                    if (data != null) {
+                        getNotes(REQUEST_CODE_UPDATE_NOTE, data.getBooleanExtra("isNoteDeleted", false));
+                    } break;
+
+                case REQUEST_CODE_SELECT_IMAGE:
+                    if (data != null) {
+                        Uri selectedImageUri = data.getData();
+
+                        if (selectedImageUri != null) {
+                            try {
+                                String selectedImagePath = getPathFromUri(selectedImageUri);
+                                Intent noteWithImage = new Intent(getApplicationContext(), CreateNote.class);
+                                noteWithImage.putExtra("isFromQuickActions", true);
+                                noteWithImage.putExtra("quickActionType", "image");
+                                noteWithImage.putExtra("imagePath", selectedImagePath);
+                                startActivityForResult(noteWithImage, REQUEST_CODE_ADD_NOTE);
+                            } catch (Exception e) {
+                                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    } break;
             }
         }
     }
@@ -280,12 +229,57 @@ public class Home extends AppCompatActivity implements NotesListener {
                 }
             });
 
-            view.findViewById(R.id.cancelAddURL).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) { addURLDialog.dismiss(); }
-            });
+            view.findViewById(R.id.cancelAddURL).setOnClickListener(this);
         }
 
         addURLDialog.show();
+    }
+
+    // Method not required
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+    @Override
+    public void onTextChanged(CharSequence cs, int i, int i1, int i2) { notesAdapter.cancelTimer(); }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        if (noteList.size() != 0) { notesAdapter.searchNotes(s.toString()); }
+    }
+
+    @Override
+    public boolean onEditorAction(TextView textView, int action, KeyEvent event) {
+        if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) ||
+                action == EditorInfo.IME_ACTION_DONE) {
+            Intent noteWithTitle = new Intent(getApplicationContext(), CreateNote.class);
+            noteWithTitle.putExtra("isFromQuickActions", true);
+            noteWithTitle.putExtra("quickActionType", "title");
+            noteWithTitle.putExtra("quickTitle", quickTitleInput.getText().toString().trim());
+            startActivityForResult(noteWithTitle, REQUEST_CODE_ADD_NOTE);
+        }
+
+        return true;
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            // Simple 1-line implementations
+            case R.id.backButton: onBackPressed(); break;
+            case R.id.quickAddURL: showAddURLDialog(); break;
+            case R.id.cancelAddURL: addURLDialog.dismiss(); break;
+
+            case R.id.quickAddImage:   // Ask the user for permission to access the gallery
+                if (ContextCompat.checkSelfPermission(
+                        getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) !=
+                        PackageManager.PERMISSION_GRANTED) {
+
+                    ActivityCompat.requestPermissions(
+                            Home.this,
+                            new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
+                            REQUEST_CODE_STORAGE_PERMISSION
+                    );
+                } else { selectImage(); } break;
+        }
     }
 }

@@ -492,7 +492,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
                     }
                 }
 
-                new DeleteNoteTask().execute();
+                new DeleteNoteTask().execute(); break;
         }
     }
 }

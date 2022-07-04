@@ -187,7 +187,7 @@
                 android:layout_height="@dimen/_35sdp"
                 android:contentDescription="@string/app_name"
                 android:padding="@dimen/_10sdp"
-                app:tint="@color/white" />
+                app:tint="@color/black" />
 
         </FrameLayout>
 
@@ -220,7 +220,7 @@
                 android:layout_height="@dimen/_35sdp"
                 android:contentDescription="@string/app_name"
                 android:padding="@dimen/_10sdp"
-                app:tint="@color/white" />
+                app:tint="@color/black" />
 
         </FrameLayout>
 
