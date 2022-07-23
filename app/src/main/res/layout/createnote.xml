@@ -111,6 +111,20 @@
                 android:textSize="@dimen/_16ssp"
                 app:layout_constraintTop_toBottomOf="@id/backButton" />
 
+            <ImageView
+                android:id="@+id/removeTitle"
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:src="@drawable/ic_delete"
+                android:rotation="45"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="@+id/noteTitleInput"
+                app:layout_constraintBottom_toBottomOf="@id/noteTitleInput"
+                app:layout_constraintEnd_toEndOf="@+id/noteTitleInput"
+                app:tint="@color/deleteColour"/>
+
             <TextView
                 android:id="@+id/textDateTime"
                 android:layout_width="0dp"
@@ -211,7 +225,7 @@
                     android:id="@+id/deleteURL"
                     android:layout_width="@dimen/_24sdp"
                     android:layout_height="@dimen/_24sdp"
-                    android:layout_marginEnd="@dimen/_7sdp"
+                    android:layout_marginEnd="@dimen/_8sdp"
                     android:contentDescription="@string/app_name"
                     android:src="@drawable/ic_delete"
                     android:rotation="45"
@@ -220,7 +234,7 @@
             </LinearLayout>
 
             <EditText
-                android:id="@+id/noteInput"
+                android:id="@+id/noteContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_12sdp"

@@ -19,6 +19,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,13 +39,13 @@ import java.util.Locale;
 import database.NotesDatabase;
 import entities.Note;
 
-public class CreateNote extends AppCompatActivity implements View.OnClickListener {
+public class CreateNote extends AppCompatActivity implements View.OnClickListener, TextWatcher {
 
     final Note note = new Note();
-    private EditText noteTitleInput, noteSubtitleInput, noteInput;
+    private EditText title, subtitle, content;
     private TextView textDateTime, webURL;
     private View noteColourIndicator;
-    private ImageView noteImage;
+    private ImageView noteImage, removeTitle;
     private String selectedImagePath;
     private LinearLayout webURLLayout;
     private AlertDialog addURLDialog, deleteNoteDialog;
@@ -58,12 +60,12 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.createnoteactivity);
+        setContentView(R.layout.createnote);
         initNoteOptions();
 
-        noteTitleInput = findViewById(R.id.noteTitleInput);
-        noteSubtitleInput = findViewById(R.id.noteSubtitleInput);
-        noteInput = findViewById(R.id.noteInput);
+        title = findViewById(R.id.noteTitleInput);
+        subtitle = findViewById(R.id.noteSubtitleInput);
+        content = findViewById(R.id.noteContent);
         textDateTime = findViewById(R.id.textDateTime);
         textDateTime.setText(singleLineDate.format(new Date()));
         noteColourIndicator = findViewById(R.id.noteColourIndicator);
@@ -71,13 +73,17 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         selectedImagePath = "";
         webURL = findViewById(R.id.webUrl);
         webURLLayout = findViewById(R.id.webUrlLayout);
+        removeTitle = findViewById(R.id.removeTitle);
 
         findViewById(R.id.backButton).setOnClickListener(this);
         findViewById(R.id.saveButton).setOnClickListener(this);
+        findViewById(R.id.removeTitle).setOnClickListener(this);
         findViewById(R.id.addURL).setOnClickListener(this);
         findViewById(R.id.deleteURL).setOnClickListener(this);
         findViewById(R.id.addImage).setOnClickListener(this);
         findViewById(R.id.deleteImage).setOnClickListener(this);
+
+        title.addTextChangedListener(this);
 
         if (getIntent().getBooleanExtra("isViewOrUpdate", false)) {
             existingNote = (Note) getIntent().getSerializableExtra("note");
@@ -89,15 +95,12 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
 
             if (type != null) {
                 switch (type) {
-                    case "title":
-                        noteTitleInput.setText((getIntent().getStringExtra("quickTitle"))); break;
-                    case "image":
-                        selectedImagePath = getIntent().getStringExtra("imagePath");
+                    case "title": title.setText((getIntent().getStringExtra("quickTitle"))); break;
+                    case "image": selectedImagePath = getIntent().getStringExtra("imagePath");
                         noteImage.setImageBitmap(BitmapFactory.decodeFile(selectedImagePath));
                         noteImage.setVisibility(View.VISIBLE);
                         findViewById(R.id.deleteImage).setVisibility(View.VISIBLE); break;
-                    case "URL":
-                        webURL.setText(getIntent().getStringExtra("URL"));
+                    case "URL": webURL.setText(getIntent().getStringExtra("URL"));
                         webURLLayout.setVisibility(View.VISIBLE); break;
                 }
             }
@@ -116,10 +119,10 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         final LinearLayout noteOptionsLayout = findViewById(R.id.noteOptionsLayout);
         final BottomSheetBehavior<LinearLayout> options = BottomSheetBehavior.from(noteOptionsLayout);
 
-        if (noteTitleInput.getText().toString().trim().isEmpty()) {
-            Toast.makeText(this, "Note title can't be empty!", Toast.LENGTH_SHORT).show(); return;
-        } else if (noteInput.getText().toString().trim().isEmpty()) {
-            Toast.makeText(this, "The note requires some content!", Toast.LENGTH_SHORT).show(); return;
+        if (title.getText().toString().trim().isEmpty()) {
+            Toast.makeText(this, "Note title is empty!", Toast.LENGTH_SHORT).show(); return;
+        } if (content.getText().toString().trim().isEmpty()) {
+            Toast.makeText(this, "The note requires content!", Toast.LENGTH_SHORT).show(); return;
         }
 
         if (webURLLayout.getVisibility() == View.VISIBLE) { note.setWebLink(webURL.getText().toString()); }
@@ -152,9 +155,9 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         multiLineDate.setText(new SimpleDateFormat("EEEE dd MMMM yyyy \nHH:mm a",
                 Locale.getDefault()).format((new Date())));
 
-        note.setTitle(noteTitleInput.getText().toString());
-        note.setSubtitle(noteSubtitleInput.getText().toString());
-        note.setNoteText(noteInput.getText().toString());
+        note.setTitle(title.getText().toString());
+        note.setSubtitle(subtitle.getText().toString());
+        note.setNoteText(content.getText().toString());
         note.setDateTime(multiLineDate.getText().toString());
         note.setImagePath(selectedImagePath);
 
@@ -402,9 +405,9 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
                 @Override
                 public void onClick(View view) {
                     if (inputURL.getText().toString().trim().isEmpty()) {
-                        Toast.makeText(CreateNote.this, "Enter a URL", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateNote.this, "Empty URL!", Toast.LENGTH_SHORT).show();
                     } else if (!Patterns.WEB_URL.matcher(inputURL.getText().toString()).matches()) {
-                        Toast.makeText(CreateNote.this, "Enter a valid URL", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateNote.this, "Invalid URL!", Toast.LENGTH_SHORT).show();
                     } else {
                         webURL.setText(inputURL.getText().toString());
                         webURLLayout.setVisibility(View.VISIBLE);
@@ -419,10 +422,23 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         addURLDialog.show();
     }
 
+    /**
+     * TextWatcher implementations. In this class I only need 'onTextChanged()' for checking if any
+     * of the text fields (title, subtitle & content) are empty. This is so that the button for
+     * removing text is only visible if there is text in the field.
+     */
+    @Override
+    public void onTextChanged(CharSequence cs, int i, int i1, int i2) {
+        if (title.getText().toString().trim().length() > 0) { removeTitle.setVisibility(View.VISIBLE); }
+        else { removeTitle.setVisibility(View.GONE); }
+    }
+    public void beforeTextChanged(CharSequence cs, int i, int i1, int i2) {} // Method not required
+    public void afterTextChanged(Editable editable) {}                       // Method not required
+
     private void viewOrUpdateNote() {
-        noteTitleInput.setText(existingNote.getTitle());
-        noteSubtitleInput.setText(existingNote.getSubtitle());
-        noteInput.setText(existingNote.getNoteText());
+        title.setText(existingNote.getTitle());
+        subtitle.setText(existingNote.getSubtitle());
+        content.setText(existingNote.getNoteText());
         textDateTime.setText(existingNote.getDateTime());
 
         if (existingNote.getImagePath() != null && !existingNote.getImagePath().trim().isEmpty()) {
@@ -449,6 +465,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
             // Simple 1-line implementations
             case R.id.backButton: onBackPressed(); break;
             case R.id.saveButton: saveNote(); break;
+            case R.id.removeTitle: title.getText().clear(); break;
             case R.id.addURL: addURL(); break;
             case R.id.cancelAddURL: addURLDialog.dismiss(); break;
             case R.id.deleteURL: webURL.setText(null); webURLLayout.setVisibility(View.GONE); break;

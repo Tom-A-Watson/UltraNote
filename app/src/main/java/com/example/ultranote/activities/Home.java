@@ -76,6 +76,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         findViewById(R.id.backButton).setOnClickListener(this);
         findViewById(R.id.quickAddImage).setOnClickListener(this);
         findViewById(R.id.quickAddURL).setOnClickListener(this);
+
         searchInput.addTextChangedListener(this);
         quickTitleInput.setOnEditorActionListener(this);
     }
@@ -239,15 +240,18 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         addURLDialog.show();
     }
 
-    public void beforeTextChanged(CharSequence cs, int i, int i1, int i2) {} // Method not required
-
+    /**
+     * TextWatcher Implementations. In this class I only need 'onTextChanged' and 'afterTextChanged' for
+     * the search notes functionality. Notes can be searched by words/ letters located in any title,
+     * subtitle and even content.
+     */
     @Override
     public void onTextChanged(CharSequence cs, int i, int i1, int i2) { notesAdapter.cancelTimer(); }
-
     @Override
     public void afterTextChanged(Editable s) {
         if (noteList.size() != 0) { notesAdapter.searchNotes(s.toString()); }
     }
+    public void beforeTextChanged(CharSequence cs, int i, int i1, int i2) {} // Method not required
 
     @Override
     public boolean onEditorAction(TextView textView, int a, KeyEvent evt) {
