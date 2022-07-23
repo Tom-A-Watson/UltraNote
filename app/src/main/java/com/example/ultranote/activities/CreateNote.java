@@ -51,8 +51,9 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     private final SimpleDateFormat singleLineDate = new SimpleDateFormat(
             "EEEE dd MMMM yyyy HH:mm a", Locale.getDefault());
 
-    private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
-    private static final int REQUEST_CODE_SELECT_IMAGE = 2;
+    // Request codes
+    private static final int STORAGE_PERMISSION = 1;
+    private static final int SELECT_IMAGE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +81,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
 
         if (getIntent().getBooleanExtra("isViewOrUpdate", false)) {
             existingNote = (Note) getIntent().getSerializableExtra("note");
-            setViewOrUpdateNote();
+            viewOrUpdateNote();
         }
 
         if (getIntent().getBooleanExtra("isFromQuickActions", false)) {
@@ -132,8 +133,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         {
             @Override
             protected Void doInBackground(Void... voids) {
-                NotesDatabase.getDatabase(getApplicationContext()).noteDao().insertNote(note);
-                return null;
+                NotesDatabase.getDatabase(getApplicationContext()).noteDao().insertNote(note); return null;
             }
 
             @Override
@@ -169,8 +169,8 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
                     (ViewGroup) findViewById(R.id.deleteNoteLayout)
             );
             builder.setView(view);
-
             deleteNoteDialog = builder.create();
+
             if (deleteNoteDialog.getWindow() != null) {
                 deleteNoteDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
             }
@@ -325,16 +325,16 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
         if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE);
+            startActivityForResult(intent, SELECT_IMAGE);
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] perms, @NonNull int[] results) {
+        super.onRequestPermissionsResult(requestCode, perms, results);
 
-        if (requestCode == REQUEST_CODE_STORAGE_PERMISSION && grantResults.length > 0) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) { selectImage(); }
+        if (requestCode == STORAGE_PERMISSION && results.length > 0) {
+            if (results[0] == PackageManager.PERMISSION_GRANTED) { selectImage(); }
             else { Toast.makeText(this, "Permission Denied!", Toast.LENGTH_SHORT).show(); }
         }
     }
@@ -343,7 +343,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_CODE_SELECT_IMAGE && resultCode == RESULT_OK) {
+        if (requestCode == SELECT_IMAGE && resultCode == RESULT_OK) {
             if (data != null) {
                 Uri selectedImageUri = data.getData();
 
@@ -353,7 +353,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
                         Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                         noteImage.setImageBitmap(bitmap);
                         noteImage.setVisibility(View.VISIBLE);
-                        selectedImagePath = getPathFromUri(selectedImageUri);
+                        selectedImagePath = getPath(selectedImageUri);
 
                         findViewById(R.id.deleteImage).setVisibility(View.VISIBLE);
 
@@ -365,7 +365,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         }
     }
 
-    private String getPathFromUri(Uri contentUri) {
+    private String getPath(Uri contentUri) {
         String filePath;
         Cursor cursor = getContentResolver()
                 .query(contentUri, null, null, null, null);
@@ -381,7 +381,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         return filePath;
     }
 
-    private void showAddURLDialog() {
+    private void addURL() {
         if (addURLDialog == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(CreateNote.this);
             View view = LayoutInflater.from(this).inflate(
@@ -412,13 +412,14 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
                     }
                 }
             });
+
             view.findViewById(R.id.cancelAddURL).setOnClickListener(this);
         }
 
         addURLDialog.show();
     }
 
-    private void setViewOrUpdateNote() {
+    private void viewOrUpdateNote() {
         noteTitleInput.setText(existingNote.getTitle());
         noteSubtitleInput.setText(existingNote.getSubtitle());
         noteInput.setText(existingNote.getNoteText());
@@ -448,7 +449,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
             // Simple 1-line implementations
             case R.id.backButton: onBackPressed(); break;
             case R.id.saveButton: saveNote(); break;
-            case R.id.addURL: showAddURLDialog(); break;
+            case R.id.addURL: addURL(); break;
             case R.id.cancelAddURL: addURLDialog.dismiss(); break;
             case R.id.deleteURL: webURL.setText(null); webURLLayout.setVisibility(View.GONE); break;
             case R.id.noteColourIndicator: case R.id.noteOptionsText: toggleNoteOptions(options); break;
@@ -456,14 +457,13 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
             case R.id.cancelDeleteNote: deleteNoteDialog.dismiss(); break;
 
             case R.id.addImage:   // Ask the user for permission to access the gallery
-                if (ContextCompat.checkSelfPermission(
-                        getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) !=
-                        PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                        Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
                     ActivityCompat.requestPermissions(
                             CreateNote.this,
                             new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
-                            REQUEST_CODE_STORAGE_PERMISSION
+                            STORAGE_PERMISSION
                     );
                 } else { selectImage(); } break;
 
@@ -487,8 +487,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
                         intent.putExtra("isNoteDeleted", true);
                         setResult(RESULT_OK, intent);
                         Toast.makeText(CreateNote.this, "'" + existingNote.getTitle() + "'"
-                                + " deleted", Toast.LENGTH_LONG).show();
-                        finish();
+                                + " deleted", Toast.LENGTH_LONG).show(); finish();
                     }
                 }
 

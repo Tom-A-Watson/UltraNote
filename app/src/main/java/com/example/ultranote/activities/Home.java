@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -38,6 +37,10 @@ import database.NotesDatabase;
 import entities.Note;
 import listeners.NotesListener;
 
+/**
+ * This class contains all functionality regarding user-interaction on the the Home page. Some of
+ * this entails sending specific information to the CreateNote class via Intents.
+ */
 public class Home extends AppCompatActivity implements NotesListener, View.OnClickListener,
                                                        TextWatcher, TextView.OnEditorActionListener {
     private EditText searchInput, quickTitleInput;
@@ -47,17 +50,18 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     private AlertDialog addURLDialog;
     private int noteClickedPosition = -1;
 
-    public static final int REQUEST_CODE_ADD_NOTE = 1;
-    public static final int REQUEST_CODE_UPDATE_NOTE = 2;
-    public static final int REQUEST_CODE_SHOW_NOTES = 3;
-    public static final int REQUEST_CODE_SELECT_IMAGE = 4;
-    public static final int REQUEST_CODE_STORAGE_PERMISSION = 5;
+    // Request codes
+    public static final int ADD_NOTE = 1;
+    public static final int UPDATE_NOTE = 2;
+    public static final int SHOW_NOTES = 3;
+    public static final int SELECT_IMAGE = 4;
+    public static final int STORAGE_PERMISSION = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home);
-        getNotes(REQUEST_CODE_SHOW_NOTES, false);
+        getNotes(SHOW_NOTES, false);
 
         noteList = new ArrayList<>();
         notesAdapter = new NotesAdapter(noteList, this);
@@ -76,29 +80,29 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         quickTitleInput.setOnEditorActionListener(this);
     }
 
-    public void openCreateNoteActivity(View view) {
+    public void openCreateNote(View view) {
         Intent intent = new Intent(this, CreateNote.class); startActivity(intent);
     }
 
     private void selectImage() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent selectedImg = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE);
+        if (selectedImg.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(selectedImg, SELECT_IMAGE);
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] perms, @NonNull int[] results) {
+        super.onRequestPermissionsResult(requestCode, perms, results);
 
-        if (requestCode == REQUEST_CODE_STORAGE_PERMISSION && grantResults.length > 0) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) { selectImage(); }
+        if (requestCode == STORAGE_PERMISSION && results.length > 0) {
+            if (results[0] == PackageManager.PERMISSION_GRANTED) { selectImage(); }
             else { Toast.makeText(this, "Permission Denied!", Toast.LENGTH_SHORT).show(); }
         }
     }
 
-    private String getPathFromUri(Uri contentUri) {
+    private String getPath(Uri contentUri) {
         String filePath;
         Cursor cursor = getContentResolver()
                 .query(contentUri, null, null, null, null);
@@ -120,7 +124,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         Intent intent = new Intent(getApplicationContext(), CreateNote.class);
         intent.putExtra("isViewOrUpdate", true);
         intent.putExtra("note", note);
-        startActivityForResult(intent, REQUEST_CODE_UPDATE_NOTE);
+        startActivityForResult(intent, UPDATE_NOTE);
     }
 
     private void getNotes(final int requestCode, final boolean noteIsDeleted) {
@@ -138,14 +142,14 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
             protected void onPostExecute(List<Note> notes) {
                 super.onPostExecute(notes);
 
-                if (requestCode == REQUEST_CODE_SHOW_NOTES) {
+                if (requestCode == SHOW_NOTES) {
                     noteList.addAll(notes);
                     notesAdapter.notifyDataSetChanged();
-                } else if (requestCode == REQUEST_CODE_ADD_NOTE) {
+                } else if (requestCode == ADD_NOTE) {
                     noteList.add(0, notes.get(0));
                     notesAdapter.notifyItemInserted(0);
                     notesRecyclerView.smoothScrollToPosition(0);
-                } else if (requestCode == REQUEST_CODE_UPDATE_NOTE) {
+                } else if (requestCode == UPDATE_NOTE) {
                     noteList.remove(noteClickedPosition);
 
                     if (noteIsDeleted) { notesAdapter.notifyItemRemoved(noteClickedPosition); }
@@ -166,25 +170,25 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
 
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case REQUEST_CODE_ADD_NOTE: getNotes(REQUEST_CODE_ADD_NOTE, false); break;
+                case ADD_NOTE: getNotes(ADD_NOTE, false); break;
 
-                case REQUEST_CODE_UPDATE_NOTE:
+                case UPDATE_NOTE:
                     if (data != null) {
-                        getNotes(REQUEST_CODE_UPDATE_NOTE, data.getBooleanExtra("isNoteDeleted", false));
+                        getNotes(UPDATE_NOTE, data.getBooleanExtra("isNoteDeleted", false));
                     } break;
 
-                case REQUEST_CODE_SELECT_IMAGE:
+                case SELECT_IMAGE:
                     if (data != null) {
                         Uri selectedImageUri = data.getData();
 
                         if (selectedImageUri != null) {
                             try {
-                                String selectedImagePath = getPathFromUri(selectedImageUri);
+                                String selectedImagePath = getPath(selectedImageUri);
                                 Intent noteWithImage = new Intent(getApplicationContext(), CreateNote.class);
                                 noteWithImage.putExtra("isFromQuickActions", true);
                                 noteWithImage.putExtra("quickActionType", "image");
                                 noteWithImage.putExtra("imagePath", selectedImagePath);
-                                startActivityForResult(noteWithImage, REQUEST_CODE_ADD_NOTE);
+                                startActivityForResult(noteWithImage, ADD_NOTE);
                             } catch (Exception e) {
                                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
@@ -194,7 +198,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         }
     }
 
-    private void showAddURLDialog() {
+    private void quickAddURL() {
         if (addURLDialog == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
             View view = LayoutInflater.from(this).inflate(
@@ -224,7 +228,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
                         noteWithURL.putExtra("isFromQuickActions", true);
                         noteWithURL.putExtra("quickActionType", "URL");
                         noteWithURL.putExtra("URL", inputURL.getText().toString());
-                        startActivityForResult(noteWithURL, REQUEST_CODE_ADD_NOTE);
+                        startActivityForResult(noteWithURL, ADD_NOTE);
                     }
                 }
             });
@@ -235,8 +239,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         addURLDialog.show();
     }
 
-    // Method not required
-    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+    public void beforeTextChanged(CharSequence cs, int i, int i1, int i2) {} // Method not required
 
     @Override
     public void onTextChanged(CharSequence cs, int i, int i1, int i2) { notesAdapter.cancelTimer(); }
@@ -247,14 +250,14 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     }
 
     @Override
-    public boolean onEditorAction(TextView textView, int action, KeyEvent event) {
-        if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) ||
-                action == EditorInfo.IME_ACTION_DONE) {
+    public boolean onEditorAction(TextView textView, int a, KeyEvent evt) {
+        if ((evt != null && (a == EditorInfo.IME_ACTION_DONE ||
+                evt.getKeyCode() == KeyEvent.KEYCODE_ENTER))) {
             Intent noteWithTitle = new Intent(getApplicationContext(), CreateNote.class);
             noteWithTitle.putExtra("isFromQuickActions", true);
             noteWithTitle.putExtra("quickActionType", "title");
             noteWithTitle.putExtra("quickTitle", quickTitleInput.getText().toString().trim());
-            startActivityForResult(noteWithTitle, REQUEST_CODE_ADD_NOTE);
+            startActivityForResult(noteWithTitle, ADD_NOTE);
         }
 
         return true;
@@ -266,18 +269,17 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         switch (view.getId()) {
             // Simple 1-line implementations
             case R.id.backButton: onBackPressed(); break;
-            case R.id.quickAddURL: showAddURLDialog(); break;
+            case R.id.quickAddURL: quickAddURL(); break;
             case R.id.cancelAddURL: addURLDialog.dismiss(); break;
 
             case R.id.quickAddImage:   // Ask the user for permission to access the gallery
-                if (ContextCompat.checkSelfPermission(
-                        getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) !=
-                        PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                        Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
                     ActivityCompat.requestPermissions(
                             Home.this,
                             new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
-                            REQUEST_CODE_STORAGE_PERMISSION
+                            STORAGE_PERMISSION
                     );
                 } else { selectImage(); } break;
         }
