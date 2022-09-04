@@ -1,30 +1,32 @@
 package com.example.ultranote.activities;
 
+import android.Manifest;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import android.annotation.SuppressLint;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.database.Cursor;
+import database.NotesDatabase;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+import java.io.InputStream;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Patterns;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,20 +34,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.example.ultranote.R;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import database.NotesDatabase;
 import entities.Note;
 
 public class CreateNote extends AppCompatActivity implements View.OnClickListener, TextWatcher {
 
     final Note note = new Note();
     private EditText title, subtitle, content;
-    private TextView textDateTime, webURL;
-    private View noteColourIndicator;
-    private ImageView noteImage, removeTitle;
+    private TextView dateTime, webURL;
+    private View colourIndicator;
+    private ImageView image, removeTitle, removeSubtitle, removeContent;
     private String selectedImagePath;
     private LinearLayout webURLLayout;
     private AlertDialog addURLDialog, deleteNoteDialog;
@@ -66,14 +66,16 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         title = findViewById(R.id.noteTitleInput);
         subtitle = findViewById(R.id.noteSubtitleInput);
         content = findViewById(R.id.noteContent);
-        textDateTime = findViewById(R.id.textDateTime);
-        textDateTime.setText(singleLineDate.format(new Date()));
-        noteColourIndicator = findViewById(R.id.noteColourIndicator);
-        noteImage = findViewById(R.id.noteImage);
+        dateTime = findViewById(R.id.textDateTime);
+        dateTime.setText(singleLineDate.format(new Date()));
+        colourIndicator = findViewById(R.id.colourIndicator);
+        image = findViewById(R.id.noteImage);
         selectedImagePath = "";
         webURL = findViewById(R.id.webUrl);
         webURLLayout = findViewById(R.id.webUrlLayout);
         removeTitle = findViewById(R.id.removeTitle);
+        removeSubtitle = findViewById(R.id.removeSubtitle);
+        removeContent = findViewById(R.id.removeContent);
 
         findViewById(R.id.backButton).setOnClickListener(this);
         findViewById(R.id.saveButton).setOnClickListener(this);
@@ -84,6 +86,8 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         findViewById(R.id.deleteImage).setOnClickListener(this);
 
         title.addTextChangedListener(this);
+        subtitle.addTextChangedListener(this);
+        content.addTextChangedListener(this);
 
         if (getIntent().getBooleanExtra("isViewOrUpdate", false)) {
             existingNote = (Note) getIntent().getSerializableExtra("note");
@@ -97,8 +101,8 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
                 switch (type) {
                     case "title": title.setText((getIntent().getStringExtra("quickTitle"))); break;
                     case "image": selectedImagePath = getIntent().getStringExtra("imagePath");
-                        noteImage.setImageBitmap(BitmapFactory.decodeFile(selectedImagePath));
-                        noteImage.setVisibility(View.VISIBLE);
+                        image.setImageBitmap(BitmapFactory.decodeFile(selectedImagePath));
+                        image.setVisibility(View.VISIBLE);
                         findViewById(R.id.deleteImage).setVisibility(View.VISIBLE); break;
                     case "URL": webURL.setText(getIntent().getStringExtra("URL"));
                         webURLLayout.setVisibility(View.VISIBLE); break;
@@ -110,8 +114,8 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     @Override
     protected void onResume() {
         super.onResume();
-        textDateTime = findViewById(R.id.textDateTime);
-        textDateTime.setText(singleLineDate.format(new Date()));
+        dateTime = findViewById(R.id.textDateTime);
+        dateTime.setText(singleLineDate.format(new Date()));
         initNoteOptions();
     }
 
@@ -121,7 +125,8 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
 
         if (title.getText().toString().trim().isEmpty()) {
             Toast.makeText(this, "Note title is empty!", Toast.LENGTH_SHORT).show(); return;
-        } if (content.getText().toString().trim().isEmpty()) {
+        }
+        if (content.getText().toString().trim().isEmpty()) {
             Toast.makeText(this, "The note requires content!", Toast.LENGTH_SHORT).show(); return;
         }
 
@@ -187,7 +192,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
 
     private void initNoteOptions() {
         findViewById(R.id.noteOptionsText).setOnClickListener(this);
-        findViewById(R.id.noteColourIndicator).setOnClickListener(this);
+        findViewById(R.id.colourIndicator).setOnClickListener(this);
 
         final ImageView grey = findViewById(R.id.imageColour1);
         final ImageView red = findViewById(R.id.imageColour2);
@@ -219,44 +224,31 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
                     selectColour(colours, j + 1);
                     switch (j) {
                         case 0: note.setColour("#333333");
-                            noteColourIndicator.setBackgroundColor(Color.parseColor("#333333"));
-                            break;
+                            colourIndicator.setBackgroundColor(Color.parseColor("#333333")); break;
                         case 1: note.setColour("#FF2929");
-                            noteColourIndicator.setBackgroundColor(Color.parseColor("#FF2929"));
-                            break;
+                            colourIndicator.setBackgroundColor(Color.parseColor("#FF2929")); break;
                         case 2: note.setColour("#FF5722");
-                            noteColourIndicator.setBackgroundColor(Color.parseColor("#FF5722"));
-                            break;
+                            colourIndicator.setBackgroundColor(Color.parseColor("#FF5722")); break;
                         case 3: note.setColour("#FF9800");
-                            noteColourIndicator.setBackgroundColor(Color.parseColor("#FF9800"));
-                            break;
+                            colourIndicator.setBackgroundColor(Color.parseColor("#FF9800")); break;
                         case 4: note.setColour("#FFE719");
-                            noteColourIndicator.setBackgroundColor(Color.parseColor("#FFE719"));
-                            break;
+                            colourIndicator.setBackgroundColor(Color.parseColor("#FFE719")); break;
                         case 5: note.setColour("#8BC34A");
-                            noteColourIndicator.setBackgroundColor(Color.parseColor("#8BC34A"));
-                            break;
+                            colourIndicator.setBackgroundColor(Color.parseColor("#8BC34A")); break;
                         case 6: note.setColour("#4CAF50");
-                            noteColourIndicator.setBackgroundColor(Color.parseColor("#4CAF50"));
-                            break;
+                            colourIndicator.setBackgroundColor(Color.parseColor("#4CAF50")); break;
                         case 7: note.setColour("#00BCD4");
-                            noteColourIndicator.setBackgroundColor(Color.parseColor("#00BCD4"));
-                            break;
+                            colourIndicator.setBackgroundColor(Color.parseColor("#00BCD4")); break;
                         case 8: note.setColour("#2196F3");
-                            noteColourIndicator.setBackgroundColor(Color.parseColor("#2196F3"));
-                            break;
+                            colourIndicator.setBackgroundColor(Color.parseColor("#2196F3")); break;
                         case 9: note.setColour("#3F51B5");
-                            noteColourIndicator.setBackgroundColor(Color.parseColor("#3F51B5"));
-                            break;
+                            colourIndicator.setBackgroundColor(Color.parseColor("#3F51B5")); break;
                         case 10: note.setColour("#673AB7");
-                            noteColourIndicator.setBackgroundColor(Color.parseColor("#673AB7"));
-                            break;
+                            colourIndicator.setBackgroundColor(Color.parseColor("#673AB7")); break;
                         case 11: note.setColour("#9C27B0");
-                            noteColourIndicator.setBackgroundColor(Color.parseColor("#9C27B0"));
-                            break;
+                            colourIndicator.setBackgroundColor(Color.parseColor("#9C27B0")); break;
                         case 12: note.setColour("#E91E63");
-                            noteColourIndicator.setBackgroundColor(Color.parseColor("#E91E63"));
-                            break;
+                            colourIndicator.setBackgroundColor(Color.parseColor("#E91E63")); break;
                     }
                 }
             });
@@ -266,40 +258,40 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
                 && !existingNote.getColour().trim().isEmpty()) {
             switch (existingNote.getColour()) {
                 case "#FF2929": note.setColour("#FF2929"); colours[0].setImageResource(0);
-                    noteColourIndicator.setBackgroundColor(Color.parseColor("#FF2929"));
+                    colourIndicator.setBackgroundColor(Color.parseColor("#FF2929"));
                     colours[1].setImageResource(R.drawable.ic_done); break;
                 case "#FF5722": note.setColour("#FF5722"); colours[0].setImageResource(0);
-                    noteColourIndicator.setBackgroundColor(Color.parseColor("#FF5722"));
+                    colourIndicator.setBackgroundColor(Color.parseColor("#FF5722"));
                     colours[2].setImageResource(R.drawable.ic_done); break;
                 case "#FF9800": note.setColour("#FF9800"); colours[0].setImageResource(0);
-                    noteColourIndicator.setBackgroundColor(Color.parseColor("#FF9800"));
+                    colourIndicator.setBackgroundColor(Color.parseColor("#FF9800"));
                     colours[3].setImageResource(R.drawable.ic_done); break;
                 case "#FFE719": note.setColour("#FFE719"); colours[0].setImageResource(0);
-                    noteColourIndicator.setBackgroundColor(Color.parseColor("#FFE719"));
+                    colourIndicator.setBackgroundColor(Color.parseColor("#FFE719"));
                     colours[4].setImageResource(R.drawable.ic_done); break;
                 case "#8BC34A": note.setColour("#8BC34A"); colours[0].setImageResource(0);
-                    noteColourIndicator.setBackgroundColor(Color.parseColor("#8BC34A"));
+                    colourIndicator.setBackgroundColor(Color.parseColor("#8BC34A"));
                     colours[5].setImageResource(R.drawable.ic_done); break;
                 case "#4CAF50": note.setColour("#4CAF50"); colours[0].setImageResource(0);
-                    noteColourIndicator.setBackgroundColor(Color.parseColor("#4CAF50"));
+                    colourIndicator.setBackgroundColor(Color.parseColor("#4CAF50"));
                     colours[6].setImageResource(R.drawable.ic_done); break;
                 case "#00BCD4": note.setColour("#00BCD4"); colours[0].setImageResource(0);
-                    noteColourIndicator.setBackgroundColor(Color.parseColor("#00BCD4"));
+                    colourIndicator.setBackgroundColor(Color.parseColor("#00BCD4"));
                     colours[7].setImageResource(R.drawable.ic_done); break;
                 case "#2196F3": note.setColour("#2196F3"); colours[0].setImageResource(0);
-                    noteColourIndicator.setBackgroundColor(Color.parseColor("#2196F3"));
+                    colourIndicator.setBackgroundColor(Color.parseColor("#2196F3"));
                     colours[8].setImageResource(R.drawable.ic_done); break;
                 case "#3F51B5": note.setColour("#3F51B5"); colours[0].setImageResource(0);
-                    noteColourIndicator.setBackgroundColor(Color.parseColor("#3F51B5"));
+                    colourIndicator.setBackgroundColor(Color.parseColor("#3F51B5"));
                     colours[9].setImageResource(R.drawable.ic_done); break;
                 case "#673AB7": note.setColour("#673AB7"); colours[0].setImageResource(0);
-                    noteColourIndicator.setBackgroundColor(Color.parseColor("#673AB7"));
+                    colourIndicator.setBackgroundColor(Color.parseColor("#673AB7"));
                     colours[10].setImageResource(R.drawable.ic_done); break;
                 case "#9C27B0": note.setColour("#9C27B0"); colours[0].setImageResource(0);
-                    noteColourIndicator.setBackgroundColor(Color.parseColor("#9C27B0"));
+                    colourIndicator.setBackgroundColor(Color.parseColor("#9C27B0"));
                     colours[11].setImageResource(R.drawable.ic_done); break;
                 case "#E91E63": note.setColour("#E91E63"); colours[0].setImageResource(0);
-                    noteColourIndicator.setBackgroundColor(Color.parseColor("#E91E63"));
+                    colourIndicator.setBackgroundColor(Color.parseColor("#E91E63"));
                     colours[12].setImageResource(R.drawable.ic_done); break;
             }
         }
@@ -354,8 +346,8 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
                     try {
                         InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
                         Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                        noteImage.setImageBitmap(bitmap);
-                        noteImage.setVisibility(View.VISIBLE);
+                        image.setImageBitmap(bitmap);
+                        image.setVisibility(View.VISIBLE);
                         selectedImagePath = getPath(selectedImageUri);
 
                         findViewById(R.id.deleteImage).setVisibility(View.VISIBLE);
@@ -431,6 +423,12 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     public void onTextChanged(CharSequence cs, int i, int i1, int i2) {
         if (title.getText().toString().trim().length() > 0) { removeTitle.setVisibility(View.VISIBLE); }
         else { removeTitle.setVisibility(View.GONE); }
+
+        if (subtitle.getText().toString().trim().length() > 0) { removeSubtitle.setVisibility(View.VISIBLE); }
+        else { removeSubtitle.setVisibility(View.GONE); }
+
+        if (content.getText().toString().trim().length() > 0) { removeContent.setVisibility(View.VISIBLE); }
+        else { removeContent.setVisibility(View.GONE); }
     }
     public void beforeTextChanged(CharSequence cs, int i, int i1, int i2) {} // Method not required
     public void afterTextChanged(Editable editable) {}                       // Method not required
@@ -439,11 +437,11 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         title.setText(existingNote.getTitle());
         subtitle.setText(existingNote.getSubtitle());
         content.setText(existingNote.getNoteText());
-        textDateTime.setText(existingNote.getDateTime());
+        dateTime.setText(existingNote.getDateTime());
 
         if (existingNote.getImagePath() != null && !existingNote.getImagePath().trim().isEmpty()) {
-            noteImage.setImageBitmap(BitmapFactory.decodeFile(existingNote.getImagePath()));
-            noteImage.setVisibility(View.VISIBLE);
+            image.setImageBitmap(BitmapFactory.decodeFile(existingNote.getImagePath()));
+            image.setVisibility(View.VISIBLE);
             selectedImagePath = existingNote.getImagePath();
 
             findViewById(R.id.deleteImage).setVisibility(View.VISIBLE);
@@ -455,8 +453,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         }
     }
 
-    @SuppressLint("NonConstantResourceId")
-    @Override
+    @Override @SuppressLint("NonConstantResourceId")
     public void onClick(View view) {
         final LinearLayout noteOptionsLayout = findViewById(R.id.noteOptionsLayout);
         final BottomSheetBehavior<LinearLayout> options = BottomSheetBehavior.from(noteOptionsLayout);
@@ -466,10 +463,12 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
             case R.id.backButton: onBackPressed(); break;
             case R.id.saveButton: saveNote(); break;
             case R.id.removeTitle: title.getText().clear(); break;
+            case R.id.removeSubtitle: subtitle.getText().clear(); break;
+            case R.id.removeContent: content.getText().clear(); break;
             case R.id.addURL: addURL(); break;
             case R.id.cancelAddURL: addURLDialog.dismiss(); break;
             case R.id.deleteURL: webURL.setText(null); webURLLayout.setVisibility(View.GONE); break;
-            case R.id.noteColourIndicator: case R.id.noteOptionsText: toggleNoteOptions(options); break;
+            case R.id.colourIndicator: case R.id.noteOptionsText: toggleNoteOptions(options); break;
             case R.id.deleteBtn: options.setState(BottomSheetBehavior.STATE_COLLAPSED); deleteNote(); break;
             case R.id.cancelDeleteNote: deleteNoteDialog.dismiss(); break;
 
@@ -485,7 +484,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
                 } else { selectImage(); } break;
 
             case R.id.deleteImage:   // Delete the image from the note
-                noteImage.setImageBitmap(null); noteImage.setVisibility(View.GONE);
+                image.setImageBitmap(null); image.setVisibility(View.GONE);
                 findViewById(R.id.deleteImage).setVisibility(View.GONE); selectedImagePath = ""; break;
 
             case R.id.deleteNote:   // Delete the note, then throw a toast message to confirm this

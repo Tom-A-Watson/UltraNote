@@ -138,8 +138,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
                 return NotesDatabase.getDatabase(getApplicationContext()).noteDao().getAllNotes();
             }
 
-            @SuppressLint("NotifyDataSetChanged")
-            @Override
+            @Override @SuppressLint("NotifyDataSetChanged")
             protected void onPostExecute(List<Note> notes) {
                 super.onPostExecute(notes);
 
@@ -267,8 +266,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         return true;
     }
 
-    @SuppressLint("NonConstantResourceId")
-    @Override
+    @Override @SuppressLint("NonConstantResourceId")
     public void onClick(View view) {
         switch (view.getId()) {
             // Simple 1-line implementations

@@ -25,9 +25,9 @@ import listeners.NotesListener;
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHolder> {
 
     private List<Note> notes;
-    private NotesListener notesListener;
+    private final NotesListener notesListener;
     private Timer timer;
-    private List<Note> notesSource;
+    private final List<Note> notesSource;
 
     public NotesAdapter(List<Note> notes, NotesListener notesListener) {
         this.notes = notes;
@@ -35,8 +35,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
         notesSource = notes;
     }
 
-    @NonNull
-    @Override
+    @NonNull @Override
     public NoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new NoteViewHolder(
                 LayoutInflater.from(parent.getContext()).inflate(
@@ -134,8 +133,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
                 }
 
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @SuppressLint("NotifyDataSetChanged")
-                    @Override
+                    @Override @SuppressLint("NotifyDataSetChanged")
                     public void run() {
                         notifyDataSetChanged();
                     }

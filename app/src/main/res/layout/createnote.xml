@@ -85,7 +85,7 @@
                 app:layout_constraintTop_toTopOf="@id/backButton" />
 
             <View
-                android:id="@+id/noteColourIndicator"
+                android:id="@+id/colourIndicator"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
                 android:background="@drawable/note_colour_indicator"
@@ -123,6 +123,33 @@
                 app:layout_constraintTop_toTopOf="@+id/noteTitleInput"
                 app:layout_constraintBottom_toBottomOf="@id/noteTitleInput"
                 app:layout_constraintEnd_toEndOf="@+id/noteTitleInput"
+                app:tint="@color/deleteColour"/>
+
+            <ImageView
+                android:id="@+id/removeSubtitle"
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:src="@drawable/ic_delete"
+                android:rotation="45"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="@+id/noteSubtitleInput"
+                app:layout_constraintBottom_toBottomOf="@id/noteSubtitleInput"
+                app:layout_constraintEnd_toEndOf="@+id/noteSubtitleInput"
+                app:tint="@color/deleteColour"/>
+
+            <ImageView
+                android:id="@+id/removeContent"
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:src="@drawable/ic_delete"
+                android:rotation="45"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="@+id/noteContent"
+                app:layout_constraintEnd_toEndOf="@+id/noteContent"
                 app:tint="@color/deleteColour"/>
 
             <TextView
