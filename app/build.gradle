@@ -8,6 +8,7 @@ android {
     defaultConfig {
         applicationId "com.example.ultranote"
         minSdk 21
+        //noinspection ExpiredTargetSdkVersion (meaningless Google Play error stating the API level had to be 33 or higher)
         targetSdk 31
         versionCode 1
         versionName "1.0"
@@ -25,6 +26,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    namespace 'com.example.ultranote'
 }
 
 dependencies {
