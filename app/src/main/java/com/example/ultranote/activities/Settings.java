@@ -4,21 +4,20 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-
 import com.example.ultranote.R;
 import com.google.android.material.switchmaterial.SwitchMaterial;
-
 import settings.UserSettings;
 
-public class Settings extends AppCompatActivity {
+public class Settings extends AppCompatActivity implements View.OnClickListener {
 
     private View settingsParent;
     private SwitchMaterial themeSwitch;
     private TextView settingsText, themeText;
+    private ImageView backButton;
 
     private UserSettings settings;
 
@@ -26,18 +25,20 @@ public class Settings extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
-        settings = (UserSettings) getApplication();
-
         initComponents();
         initSwitchListener();
         loadSharedPreferences();
-        updateApplication();
+        updateView();
+
+        findViewById(R.id.backButton).setOnClickListener(this);
     }
 
     private void initComponents() {
+        settings = (UserSettings) getApplication();
         themeText = findViewById(R.id.themeText);
         settingsText = findViewById(R.id.settingsText);
         themeSwitch = findViewById(R.id.themeSwitch);
+        backButton = findViewById(R.id.backButton);
         settingsParent = findViewById(R.id.settings);
     }
 
@@ -54,7 +55,7 @@ public class Settings extends AppCompatActivity {
                 SharedPreferences.Editor editor = getSharedPreferences(UserSettings.PREFERENCES, MODE_PRIVATE).edit();
                 editor.putString(UserSettings.CUSTOM_THEME, settings.getCustomTheme());
                 editor.apply();
-                updateApplication();
+                updateView();
             }
         });
     }
@@ -65,7 +66,7 @@ public class Settings extends AppCompatActivity {
         settings.setCustomTheme(theme);
     }
 
-    private void updateApplication() {
+    private void updateView() {
         final int dark = ContextCompat.getColor(this, R.color.primaryColour);
         final int black = ContextCompat.getColor(this, R.color.black);
         final int white = ContextCompat.getColor(this, R.color.white);
@@ -74,6 +75,7 @@ public class Settings extends AppCompatActivity {
             settingsText.setTextColor(black);
             themeText.setTextColor(black);
             themeText.setText("Light mode");
+            backButton.setColorFilter(black);
             settingsParent.setBackgroundColor(white);
             themeSwitch.setChecked(true);
             return;
@@ -82,7 +84,16 @@ public class Settings extends AppCompatActivity {
         settingsText.setTextColor(white);
         themeText.setTextColor(white);
         themeText.setText("Dark mode");
+        backButton.setColorFilter(white);
         settingsParent.setBackgroundColor(dark);
         themeSwitch.setChecked(false);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            // Simple 1-line implementations
+            case R.id.backButton: onBackPressed(); break;
+        }
     }
 }

@@ -6,7 +6,7 @@
     <color name="accent">#72FFFA</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
-    <color name="textHintColour">#C6C6C6</color>
+    <color name="offWhite">#C6C6C6</color>
     <color name="revertColour">#FFEB3B</color>
     <color name="deleteColour">#F44336</color>
     <color name="confirmColour">#4CAF50</color>

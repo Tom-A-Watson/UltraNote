@@ -1,6 +1,7 @@
 package settings;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 
 public class UserSettings extends Application {
 
@@ -17,6 +18,11 @@ public class UserSettings extends Application {
 
     public void setCustomTheme(String customTheme) {
         this.customTheme = customTheme;
+    }
+
+    public String getCurrentTheme() {
+        SharedPreferences sharedPreferences = getSharedPreferences(UserSettings.PREFERENCES, MODE_PRIVATE);
+        return sharedPreferences.getString(UserSettings.CUSTOM_THEME, UserSettings.DARK_THEME);
     }
 
 }

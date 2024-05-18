@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,6 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -36,6 +39,7 @@ import adapters.NotesAdapter;
 import database.NotesDatabase;
 import entities.Note;
 import listeners.NotesListener;
+import settings.UserSettings;
 
 /**
  * This class contains all functionality regarding user-interaction on the the Home page. Some of
@@ -43,11 +47,16 @@ import listeners.NotesListener;
  */
 public class Home extends AppCompatActivity implements NotesListener, View.OnClickListener,
                                                        TextWatcher, TextView.OnEditorActionListener {
+    private View homeView;
     private EditText searchInput, quickTitleInput;
+    private TextView homeText;
+    private ImageView backBtn, createNoteBtn, settingsBtn, searchIcon, quickAddImageBtn, quickAddURLBtn;
     private RecyclerView notesRecyclerView;
+    private LinearLayout searchLayout, quickActionsLayout;
     private List<Note> noteList;
     private NotesAdapter notesAdapter;
     private AlertDialog addURLDialog;
+    private UserSettings settings;
     private int noteClickedPosition = -1;
 
     // Request codes
@@ -61,13 +70,13 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home);
+        initComponents();
+        updateView();
         getNotes(SHOW_NOTES, false);
 
         noteList = new ArrayList<>();
         notesAdapter = new NotesAdapter(noteList, this);
         notesRecyclerView = findViewById(R.id.notesRecyclerView);
-        searchInput = findViewById(R.id.searchNotesInput);
-        quickTitleInput = findViewById(R.id.quickTitleInput);
         notesRecyclerView.setAdapter(notesAdapter);
         notesRecyclerView.setLayoutManager(
                 new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
@@ -79,6 +88,72 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
 
         searchInput.addTextChangedListener(this);
         quickTitleInput.setOnEditorActionListener(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateView();
+    }
+
+    private void initComponents() {
+        settings = (UserSettings) getApplication();
+        homeText = findViewById(R.id.homeText);
+        backBtn = findViewById(R.id.backButton);
+        createNoteBtn = findViewById(R.id.createNoteBtn);
+        settingsBtn = findViewById(R.id.settingsBtn);
+        searchLayout = findViewById(R.id.searchLayout);
+        searchInput = findViewById(R.id.searchNotesInput);
+        searchIcon = findViewById(R.id.searchIcon);
+        quickActionsLayout = findViewById(R.id.quickActions);
+        quickAddImageBtn = findViewById(R.id.quickAddImage);
+        quickAddURLBtn = findViewById(R.id.quickAddURL);
+        homeView = findViewById(R.id.homeView);
+        quickTitleInput = findViewById(R.id.quickTitleInput);
+    }
+
+    private void updateView() {
+        final int darkGrey = ContextCompat.getColor(this, R.color.primaryColour);
+        final int lightGrey = ContextCompat.getColor(this, R.color.primaryColourLight);
+        final int offWhite = ContextCompat.getColor(this, R.color.offWhite);
+        final int black = ContextCompat.getColor(this, R.color.black);
+        final int white = ContextCompat.getColor(this, R.color.white);
+        final Drawable defaultAddNoteButtonBG = ContextCompat.getDrawable(this, R.drawable.add_note_button);
+        final Drawable lightModeAddNoteButtonBG = ContextCompat.getDrawable(this, R.drawable.add_note_button_light);
+        final Drawable quickTitleInputLightBG = ContextCompat.getDrawable(this, R.drawable.quick_note_light_background);
+        final Drawable defaultQuickTitleInputBG = ContextCompat.getDrawable(this, R.drawable.quick_note_background);
+
+        if (settings.getCurrentTheme().equals(UserSettings.LIGHT_THEME)) {
+            homeText.setTextColor(black);
+            backBtn.setColorFilter(black);
+            homeView.setBackgroundColor(white);
+            settingsBtn.setColorFilter(lightGrey);
+            createNoteBtn.setBackground(lightModeAddNoteButtonBG);
+            searchLayout.setBackgroundColor(offWhite);
+            searchInput.setHintTextColor(black);
+            searchIcon.setColorFilter(darkGrey);
+            quickActionsLayout.setBackgroundColor(offWhite);
+            quickTitleInput.setBackground(quickTitleInputLightBG);
+            quickTitleInput.setHintTextColor(black);
+            quickAddImageBtn.setColorFilter(lightGrey);
+            quickAddURLBtn.setColorFilter(lightGrey);
+            return;
+        }
+
+        // Components are reverted to their default colours
+        homeText.setTextColor(white);
+        backBtn.setColorFilter(white);
+        homeView.setBackgroundColor(darkGrey);
+        settingsBtn.setColorFilter(offWhite);
+        createNoteBtn.setBackground(defaultAddNoteButtonBG);
+        searchLayout.setBackgroundColor(lightGrey);
+        searchInput.setHintTextColor(offWhite);
+        searchIcon.setColorFilter(offWhite);
+        quickActionsLayout.setBackgroundColor(lightGrey);
+        quickTitleInput.setBackground(defaultQuickTitleInputBG);
+        quickTitleInput.setHintTextColor(offWhite);
+        quickAddImageBtn.setColorFilter(offWhite);
+        quickAddURLBtn.setColorFilter(offWhite);
     }
 
     public void openCreateNote(View view) {

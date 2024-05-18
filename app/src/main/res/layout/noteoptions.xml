@@ -29,7 +29,7 @@
         android:gravity="center"
         android:includeFontPadding="false"
         android:text="@string/pick_a_colour"
-        android:textColor="@color/textHintColour"
+        android:textColor="@color/offWhite"
         android:textSize="@dimen/_13ssp" />
 
     <LinearLayout

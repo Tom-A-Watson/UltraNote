@@ -16,15 +16,14 @@
     <string name="search_favourites">Search Favourites</string>
     <string name="pick_a_colour">Pick a colour</string>
     <string name="add_item">Add Item</string>
-    <string name="type_item_names_here">Type item names here</string>
-    <string name="add_url">Add URL</string>
+    <string name="add_url">Add a URL</string>
     <string name="enter_url_here">Enter URL here…</string>
     <string name="add">ADD</string>
     <string name="cancel" tools:ignore="ButtonCase">CANCEL</string>
     <string name="note_options">Note Options</string>
-    <string name="delete_note">Delete Note</string>
+    <string name="delete_note">Delete note</string>
     <string name="delete_confirmation_msg">Are you sure that you want to delete this note?</string>
-    <string name="quick_note">Quick Note…</string>
+    <string name="quick_note">Quick note…</string>
     <string name="new_notes_will_appear_here">New notes will appear here!</string>
     <string name="title_activity_settings">Settings</string>
 
