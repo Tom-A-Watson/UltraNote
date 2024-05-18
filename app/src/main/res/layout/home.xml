@@ -89,6 +89,20 @@
         app:tint="@color/primaryColour"
         tools:ignore="OnClick" />
 
+    <ImageView
+        android:id="@+id/settingsBtn"
+        android:layout_width="@dimen/_26sdp"
+        android:layout_height="@dimen/_26sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:src="@drawable/ic_settings"
+        android:contentDescription="@string/nav_to_settings"
+        android:onClick="openSettings"
+        app:layout_constraintEnd_toStartOf="@id/createNoteBtn"
+        app:layout_constraintTop_toTopOf="@id/homeText"
+        app:layout_constraintBottom_toBottomOf="@id/homeText"
+        app:tint="@color/textHintColour"
+        tools:ignore="OnClick" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notesRecyclerView"
         android:layout_width="match_parent"

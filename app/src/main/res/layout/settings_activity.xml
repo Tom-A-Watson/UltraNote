@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settings"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primaryColour"
+    tools:context=".activities.Settings">
+
+    <ImageView
+        android:id="@+id/backButton"
+        android:layout_width="@dimen/_30sdp"
+        android:layout_height="@dimen/_30sdp"
+        android:layout_marginStart="@dimen/_6sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_back"
+        app:tint="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/settingsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/settings"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginEnd="0dp"
+        android:fontFamily="@font/roboto_bold"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_20ssp"
+        app:layout_constraintStart_toEndOf="@id/backButton"
+        app:layout_constraintTop_toTopOf="@id/backButton"
+        app:layout_constraintBottom_toBottomOf="@id/backButton" />
+
+    <TextView
+        android:id="@+id/themeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dark mode"
+        android:fontFamily="@font/ubuntu_medium"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_15ssp"
+        android:layout_marginTop="@dimen/_20sdp"
+        app:layout_constraintStart_toStartOf="@id/settingsText"
+        app:layout_constraintTop_toBottomOf="@id/settingsText" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/themeSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/themeText"
+        app:layout_constraintTop_toTopOf="@+id/themeText"
+        app:layout_constraintBottom_toBottomOf="@+id/themeText"
+        android:layout_marginStart="@dimen/_24sdp"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

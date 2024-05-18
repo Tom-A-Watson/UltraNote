@@ -85,6 +85,10 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         Intent intent = new Intent(this, CreateNote.class); startActivity(intent);
     }
 
+    public void openSettings(View view) {
+        Intent intent = new Intent(this, Settings.class); startActivity(intent);
+    }
+
     private void selectImage() {
         Intent selectedImg = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
