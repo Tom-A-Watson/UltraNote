@@ -28,7 +28,7 @@
         android:fontFamily="@font/ubuntu_bold"
         android:includeFontPadding="false"
         android:textColor="@color/white"
-        android:textSize="@dimen/_14ssp" />
+        android:textSize="@dimen/_15ssp" />
 
     <TextView
         android:id="@+id/textSubtitle"
@@ -37,8 +37,7 @@
         android:layout_marginStart="@dimen/_8sdp"
         android:layout_marginTop="@dimen/_4sdp"
         android:layout_marginEnd="@dimen/_8sdp"
-        android:layout_marginBottom="@dimen/_4sdp"
-        android:fontFamily="@font/ubuntu_medium"
+        android:fontFamily="@font/roboto_medium"
         android:includeFontPadding="false"
         android:textColor="@color/white"
         android:textSize="@dimen/_12ssp" />
@@ -47,6 +46,7 @@
         android:id="@+id/textDateTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_7sdp"
         android:layout_marginStart="@dimen/_8sdp"
         android:layout_marginEnd="@dimen/_8sdp"
         android:layout_marginBottom="@dimen/_8sdp"

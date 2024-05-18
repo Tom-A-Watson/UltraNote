@@ -1,6 +1,7 @@
 package com.example.ultranote.activities;
 
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -16,8 +17,8 @@ public class Settings extends AppCompatActivity implements View.OnClickListener 
 
     private View settingsParent;
     private SwitchMaterial themeSwitch;
-    private TextView settingsText, themeText;
-    private ImageView backButton;
+    private TextView settingsText, themeText, displaySettingsText;
+    private ImageView backButton, separator;
 
     private UserSettings settings;
 
@@ -35,6 +36,8 @@ public class Settings extends AppCompatActivity implements View.OnClickListener 
 
     private void initComponents() {
         settings = (UserSettings) getApplication();
+        displaySettingsText = findViewById(R.id.displaySettingsText);
+        separator = findViewById(R.id.separator);
         themeText = findViewById(R.id.themeText);
         settingsText = findViewById(R.id.settingsText);
         themeSwitch = findViewById(R.id.themeSwitch);
@@ -52,9 +55,9 @@ public class Settings extends AppCompatActivity implements View.OnClickListener 
                     settings.setCustomTheme(UserSettings.DARK_THEME);
                 }
 
-                SharedPreferences.Editor editor = getSharedPreferences(UserSettings.PREFERENCES, MODE_PRIVATE).edit();
-                editor.putString(UserSettings.CUSTOM_THEME, settings.getCustomTheme());
-                editor.apply();
+                SharedPreferences.Editor sharedPrefEditor = getSharedPreferences(UserSettings.PREFERENCES, MODE_PRIVATE).edit();
+                sharedPrefEditor.putString(UserSettings.CUSTOM_THEME, settings.getCustomTheme());
+                sharedPrefEditor.apply();
                 updateView();
             }
         });
@@ -67,25 +70,30 @@ public class Settings extends AppCompatActivity implements View.OnClickListener 
     }
 
     private void updateView() {
-        final int dark = ContextCompat.getColor(this, R.color.primaryColour);
+        final int darkGrey = ContextCompat.getColor(this, R.color.primaryColour);
+        final int offWhite = ContextCompat.getColor(this, R.color.offWhite);
         final int black = ContextCompat.getColor(this, R.color.black);
         final int white = ContextCompat.getColor(this, R.color.white);
 
         if (settings.getCustomTheme().equals(UserSettings.LIGHT_THEME)) {
-            settingsText.setTextColor(black);
-            themeText.setTextColor(black);
-            themeText.setText("Light mode");
             backButton.setColorFilter(black);
+            settingsText.setTextColor(black);
+            displaySettingsText.setTextColor(darkGrey);
+            separator.setBackgroundColor(darkGrey);
+            themeText.setTextColor(black);
+            themeText.setText("Light Mode");
             settingsParent.setBackgroundColor(white);
             themeSwitch.setChecked(true);
             return;
         }
 
-        settingsText.setTextColor(white);
-        themeText.setTextColor(white);
-        themeText.setText("Dark mode");
         backButton.setColorFilter(white);
-        settingsParent.setBackgroundColor(dark);
+        settingsText.setTextColor(white);
+        displaySettingsText.setTextColor(offWhite);
+        separator.setBackgroundColor(offWhite);
+        themeText.setTextColor(white);
+        themeText.setText("Dark Mode");
+        settingsParent.setBackgroundColor(darkGrey);
         themeSwitch.setChecked(false);
     }
 

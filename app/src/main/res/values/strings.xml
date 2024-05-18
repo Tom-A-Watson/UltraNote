@@ -42,4 +42,6 @@
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="nav_to_settings">Navigate to Settings page</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="display">Display</string>
 </resources>

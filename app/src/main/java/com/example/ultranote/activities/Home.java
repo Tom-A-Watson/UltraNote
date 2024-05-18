@@ -124,6 +124,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         final Drawable defaultQuickTitleInputBG = ContextCompat.getDrawable(this, R.drawable.quick_note_background);
 
         if (settings.getCurrentTheme().equals(UserSettings.LIGHT_THEME)) {
+            // Components are set to their specified light mode colours
             homeText.setTextColor(black);
             backBtn.setColorFilter(black);
             homeView.setBackgroundColor(white);
@@ -131,6 +132,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
             createNoteBtn.setBackground(lightModeAddNoteButtonBG);
             searchLayout.setBackgroundColor(offWhite);
             searchInput.setHintTextColor(black);
+            searchInput.setTextColor(black);
             searchIcon.setColorFilter(darkGrey);
             quickActionsLayout.setBackgroundColor(offWhite);
             quickTitleInput.setBackground(quickTitleInputLightBG);
@@ -148,6 +150,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         createNoteBtn.setBackground(defaultAddNoteButtonBG);
         searchLayout.setBackgroundColor(lightGrey);
         searchInput.setHintTextColor(offWhite);
+        searchInput.setTextColor(white);
         searchIcon.setColorFilter(offWhite);
         quickActionsLayout.setBackgroundColor(lightGrey);
         quickTitleInput.setBackground(defaultQuickTitleInputBG);
