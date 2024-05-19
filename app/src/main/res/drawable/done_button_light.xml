@@ -5,7 +5,7 @@
     <solid android:color="@color/confirmColour" />
 
     <stroke
-        android:width="@dimen/_2sdp"
-        android:color="@color/confirmColour" />
+        android:width="@dimen/_1sdp"
+        android:color="@color/primaryColour" />
 
 </shape>

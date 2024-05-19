@@ -47,11 +47,11 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     private Note existingNote;
     final Note note = new Note();
     private EditText title, subtitle, content;
-    private TextView dateTime, webURL, createNoteText;
+    private TextView dateTime, webURL, createNoteText, noteOptionsText, colourPickerText;
     private View colourIndicator, subtitleIndicator;
     private ImageView image, backBtn, addURL, addImg, saveBtn, removeTitle, removeSubtitle, removeContent;
     private String selectedImagePath;
-    private LinearLayout webURLLayout;
+    private LinearLayout webURLLayout, noteOptionsLayout;
     private CoordinatorLayout createNoteView;
     private AlertDialog addURLDialog, deleteNoteDialog;
     private final SimpleDateFormat singleLineDate = new SimpleDateFormat(
@@ -136,6 +136,9 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         removeTitle = findViewById(R.id.removeTitle);
         removeSubtitle = findViewById(R.id.removeSubtitle);
         removeContent = findViewById(R.id.removeContent);
+        noteOptionsLayout = findViewById(R.id.noteOptionsLayout);
+        noteOptionsText = findViewById(R.id.noteOptionsText);
+        colourPickerText = findViewById(R.id.colourPickerText);
     }
 
     private void updateView() {
@@ -150,6 +153,10 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
                 ContextCompat.getDrawable(this, R.drawable.subtitle_indicator_light);
         final Drawable defaultSubtitleIndicator =
                 ContextCompat.getDrawable(this, R.drawable.subtitle_indicator);
+        final Drawable noteOptionsLightBG =
+                ContextCompat.getDrawable(this, R.drawable.noteoptions_light_background);
+        final Drawable noteOptionsDefaultBG =
+                ContextCompat.getDrawable(this, R.drawable.noteoptions_background);
 
         if (settings.getCurrentTheme().equals(UserSettings.LIGHT_THEME)) {
             // Components are set to their specified light mode colours
@@ -167,6 +174,9 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
             content.setHintTextColor(black);
             content.setTextColor(black);
             dateTime.setTextColor(black);
+            noteOptionsLayout.setBackground(noteOptionsLightBG);
+            noteOptionsText.setTextColor(black);
+            colourPickerText.setTextColor(darkGrey);
             return;
         }
 
@@ -185,6 +195,9 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         content.setHintTextColor(offWhite);
         content.setTextColor(white);
         dateTime.setTextColor(white);
+        noteOptionsLayout.setBackground(noteOptionsDefaultBG);
+        noteOptionsText.setTextColor(white);
+        colourPickerText.setTextColor(offWhite);
     }
 
     private void saveNote() {

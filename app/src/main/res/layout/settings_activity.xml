@@ -44,6 +44,7 @@
         android:textColor="@color/offWhite"
         android:textSize="@dimen/_16ssp"
         android:textStyle="bold"
+        android:letterSpacing="0.08"
         android:layout_marginTop="@dimen/_24sdp"
         android:layout_marginStart="@dimen/_40sdp"
         app:layout_constraintStart_toStartOf="parent"
@@ -68,7 +69,7 @@
         android:fontFamily="@font/roboto_regular"
         android:textColor="@color/white"
         android:textSize="@dimen/_15ssp"
-        android:letterSpacing="0.08"
+        android:letterSpacing="0.05"
         android:layout_marginTop="@dimen/_16sdp"
         app:layout_constraintStart_toStartOf="@id/settingsText"
         app:layout_constraintTop_toBottomOf="@id/separator" />
