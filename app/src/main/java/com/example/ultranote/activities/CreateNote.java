@@ -48,8 +48,10 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     final Note note = new Note();
     private EditText title, subtitle, content;
     private TextView dateTime, webURL, createNoteText, noteOptionsText, colourPickerText;
-    private View colourIndicator, subtitleIndicator;
+    private View colourIndicator, subtitleIndicator, greyNoteBtn;
+    private View[] noteColourButtons;
     private ImageView image, backBtn, addURL, addImg, saveBtn, removeTitle, removeSubtitle, removeContent;
+    private Drawable[] colourButtonsDBG, colourButtonsLBG;
     private String selectedImagePath;
     private LinearLayout webURLLayout, noteOptionsLayout;
     private CoordinatorLayout createNoteView;
@@ -139,6 +141,58 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         noteOptionsLayout = findViewById(R.id.noteOptionsLayout);
         noteOptionsText = findViewById(R.id.noteOptionsText);
         colourPickerText = findViewById(R.id.colourPickerText);
+//        greyNoteBtn = findViewById(R.id.viewColour1);
+
+        // Note colour buttons and list
+        final View greyBtn = findViewById(R.id.viewColour1);
+        final View redBtn = findViewById(R.id.viewColour2);
+        final View orangeBtn = findViewById(R.id.viewColour3);
+        final View lightOrangeBtn = findViewById(R.id.viewColour4);
+        final View yellowBtn = findViewById(R.id.viewColour5);
+        final View lightGreenBtn = findViewById(R.id.viewColour6);
+        final View greenBtn = findViewById(R.id.viewColour7);
+        final View lightBlueBtn = findViewById(R.id.viewColour8);
+        final View blueBtn = findViewById(R.id.viewColour9);
+        final View indigoBtn = findViewById(R.id.viewColour10);
+        final View purpleBtn = findViewById(R.id.viewColour11);
+        final View violetBtn = findViewById(R.id.viewColour12);
+        final View maroonBtn = findViewById(R.id.viewColour13);
+        noteColourButtons = new View[] { greyBtn, redBtn, orangeBtn, lightOrangeBtn, yellowBtn, lightGreenBtn,
+            greenBtn, lightBlueBtn, blueBtn, indigoBtn, purpleBtn, violetBtn, maroonBtn };
+
+        // Colour buttons dark backgrounds and list:
+        final Drawable greyBtnDBG = ContextCompat.getDrawable(this, R.drawable.grey_note_btn);
+        final Drawable redBtnDBG = ContextCompat.getDrawable(this, R.drawable.red_note_btn);
+        final Drawable orangeBtnDBG = ContextCompat.getDrawable(this, R.drawable.orange_note_btn);
+        final Drawable lightOrangeBtnDBG = ContextCompat.getDrawable(this, R.drawable.lightorange_note_btn);
+        final Drawable yellowBtnDBG = ContextCompat.getDrawable(this, R.drawable.yellow_note_btn);
+        final Drawable lightGreenBtnDBG = ContextCompat.getDrawable(this, R.drawable.lightgreen_note_btn);
+        final Drawable greenBtnDBG = ContextCompat.getDrawable(this, R.drawable.green_note_btn);
+        final Drawable lightBlueBtnDBG = ContextCompat.getDrawable(this, R.drawable.lightblue_note_btn);
+        final Drawable blueBtnDBG = ContextCompat.getDrawable(this, R.drawable.blue_note_btn);
+        final Drawable indigoBtnDBG = ContextCompat.getDrawable(this, R.drawable.indigo_note_btn);
+        final Drawable purpleBtnDBG = ContextCompat.getDrawable(this, R.drawable.purple_note_btn);
+        final Drawable violetBtnDBG = ContextCompat.getDrawable(this, R.drawable.violet_note_btn);
+        final Drawable maroonBtnDBG = ContextCompat.getDrawable(this, R.drawable.maroon_note_btn);
+        colourButtonsDBG = new Drawable[] { greyBtnDBG, redBtnDBG, orangeBtnDBG, lightOrangeBtnDBG, yellowBtnDBG, lightGreenBtnDBG,
+            greenBtnDBG, lightBlueBtnDBG, blueBtnDBG, indigoBtnDBG, purpleBtnDBG, violetBtnDBG, maroonBtnDBG };
+
+        // Colour buttons light backgrounds and list;
+        final Drawable greyBtnLBG = ContextCompat.getDrawable(this, R.drawable.grey_note_btn_light);
+        final Drawable redBtnLBG = ContextCompat.getDrawable(this, R.drawable.red_note_btn_light);
+        final Drawable orangeBtnLBG = ContextCompat.getDrawable(this, R.drawable.orange_note_btn_light);
+        final Drawable lightOrangeBtnLBG = ContextCompat.getDrawable(this, R.drawable.lightorange_note_btn_light);
+        final Drawable yellowBtnLBG = ContextCompat.getDrawable(this, R.drawable.yellow_note_btn_light);
+        final Drawable lightGreenBtnLBG = ContextCompat.getDrawable(this, R.drawable.lightgreen_note_btn_light);
+        final Drawable greenBtnLBG = ContextCompat.getDrawable(this, R.drawable.green_note_btn_light);
+        final Drawable lightBlueBtnLBG = ContextCompat.getDrawable(this, R.drawable.lightblue_note_btn_light);
+        final Drawable blueBtnLBG = ContextCompat.getDrawable(this, R.drawable.blue_note_btn_light);
+        final Drawable indigoBtnLBG = ContextCompat.getDrawable(this, R.drawable.indigo_note_btn_light);
+        final Drawable purpleBtnLBG = ContextCompat.getDrawable(this, R.drawable.purple_note_btn_light);
+        final Drawable violetBtnLBG = ContextCompat.getDrawable(this, R.drawable.violet_note_btn_light);
+        final Drawable maroonBtnLBG = ContextCompat.getDrawable(this, R.drawable.maroon_note_btn_light);
+        colourButtonsLBG = new Drawable[] { greyBtnLBG, redBtnLBG, orangeBtnLBG, lightOrangeBtnLBG, yellowBtnLBG, lightGreenBtnLBG,
+                greenBtnLBG, lightBlueBtnLBG, blueBtnLBG, indigoBtnLBG, purpleBtnLBG, violetBtnLBG, maroonBtnLBG };
     }
 
     private void updateView() {
@@ -147,6 +201,8 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         final int offWhite = ContextCompat.getColor(this, R.color.offWhite);
         final int black = ContextCompat.getColor(this, R.color.black);
         final int white = ContextCompat.getColor(this, R.color.white);
+        final int lightModeAccent = ContextCompat.getColor(this, R.color.noteColour9);
+        final int darkModeAccent = ContextCompat.getColor(this, R.color.accent);
         final Drawable saveBtnLightBG = ContextCompat.getDrawable(this, R.drawable.done_button_light);
         final Drawable saveBtnDarkBG = ContextCompat.getDrawable(this, R.drawable.done_button);
         final Drawable lightSubtitleIndicator =
@@ -174,9 +230,15 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
             content.setHintTextColor(black);
             content.setTextColor(black);
             dateTime.setTextColor(black);
+            webURL.setLinkTextColor(lightModeAccent);
             noteOptionsLayout.setBackground(noteOptionsLightBG);
             noteOptionsText.setTextColor(black);
             colourPickerText.setTextColor(darkGrey);
+
+            for (int i = 0; i < noteColourButtons.length; i++) {
+                noteColourButtons[i].setBackground(colourButtonsLBG[i]);
+            }
+
             return;
         }
 
@@ -195,9 +257,14 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         content.setHintTextColor(offWhite);
         content.setTextColor(white);
         dateTime.setTextColor(white);
+        webURL.setLinkTextColor(darkModeAccent);
         noteOptionsLayout.setBackground(noteOptionsDefaultBG);
         noteOptionsText.setTextColor(white);
         colourPickerText.setTextColor(offWhite);
+
+        for (int i = 0; i < colourButtonsDBG.length; i++) {
+            noteColourButtons[i].setBackground(colourButtonsDBG[i]);
+        }
     }
 
     private void saveNote() {
@@ -462,7 +529,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
             AlertDialog.Builder builder = new AlertDialog.Builder(CreateNote.this);
             View view = LayoutInflater.from(this).inflate(
                     R.layout.add_url_layout,
-                    (ViewGroup) findViewById(R.id.addURLLayout)
+                    findViewById(R.id.addURLLayout)
             );
             builder.setView(view);
             addURLDialog = builder.create();
