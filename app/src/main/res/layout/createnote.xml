@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/createNoteView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primaryColour"
@@ -34,6 +35,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
+                android:id="@+id/createNoteText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/create_note"
@@ -53,7 +55,7 @@
                 android:layout_marginEnd="@dimen/_6sdp"
                 android:contentDescription="@string/app_name"
                 android:src="@drawable/ic_weblink"
-                app:tint="@color/textHintColour"
+                app:tint="@color/offWhite"
                 app:layout_constraintEnd_toStartOf="@id/addImage"
                 app:layout_constraintBottom_toBottomOf="@id/addImage"
                 app:layout_constraintTop_toTopOf="@id/addImage"/>
@@ -65,7 +67,7 @@
                 android:layout_marginEnd="@dimen/_10sdp"
                 android:contentDescription="@string/app_name"
                 android:src="@drawable/ic_image"
-                app:tint="@color/textHintColour"
+                app:tint="@color/offWhite"
                 app:layout_constraintEnd_toStartOf="@id/saveButton"
                 app:layout_constraintBottom_toBottomOf="@id/saveButton"
                 app:layout_constraintTop_toTopOf="@id/saveButton"/>
@@ -107,7 +109,7 @@
                 android:includeFontPadding="false"
                 android:inputType="text"
                 android:textColor="@color/white"
-                android:textColorHint="@color/textHintColour"
+                android:textColorHint="@color/offWhite"
                 android:textSize="@dimen/_16ssp"
                 app:layout_constraintTop_toBottomOf="@id/backButton" />
 
@@ -181,7 +183,7 @@
                 android:paddingTop="@dimen/_8sdp"
                 android:paddingBottom="@dimen/_8sdp"
                 android:textColor="@color/white"
-                android:textColorHint="@color/textHintColour"
+                android:textColorHint="@color/offWhite"
                 android:textSize="@dimen/_13ssp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/viewSubtitleIndicator"
@@ -277,7 +279,7 @@
                 android:inputType="textMultiLine"
                 android:minHeight="@dimen/_100sdp"
                 android:textColor="@color/white"
-                android:textColorHint="@color/textHintColour"
+                android:textColorHint="@color/offWhite"
                 android:textSize="@dimen/_13ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/webUrlLayout" />

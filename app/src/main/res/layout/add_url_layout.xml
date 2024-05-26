@@ -46,7 +46,7 @@
         android:fontFamily="@font/ubuntu_regular"
         android:gravity="center_vertical"
         android:hint="@string/enter_url_here"
-        android:textColorHint="@color/textHintColour"
+        android:textColorHint="@color/offWhite"
         android:imeOptions="actionDone"
         android:importantForAutofill="no"
         android:includeFontPadding="false"

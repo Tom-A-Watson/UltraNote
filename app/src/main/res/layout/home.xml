@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/homeView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primaryColour"
@@ -38,7 +39,7 @@
         android:id="@+id/searchLayout"
         android:layout_width="@dimen/_294sdp"
         android:layout_height="@dimen/_24sdp"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="80dp"
         android:background="@color/primaryColourLight"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -50,11 +51,12 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
+            android:id="@+id/searchIcon"
             android:layout_width="@dimen/_20sdp"
             android:layout_height="@dimen/_20sdp"
             android:contentDescription="@string/search_icon"
             android:src="@drawable/ic_search"
-            app:tint="@color/textHintColour" />
+            app:tint="@color/offWhite" />
 
         <EditText
             android:id="@+id/searchNotesInput"
@@ -87,6 +89,21 @@
         app:layout_constraintTop_toTopOf="@id/homeText"
         app:layout_constraintBottom_toBottomOf="@id/homeText"
         app:tint="@color/primaryColour"
+        tools:ignore="OnClick" />
+
+    <ImageView
+        android:id="@+id/settingsBtn"
+        android:layout_width="@dimen/_26sdp"
+        android:layout_height="@dimen/_26sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:src="@drawable/ic_settings"
+        android:contentDescription="@string/nav_to_settings"
+        android:onClick="openSettings"
+        android:rotation="90"
+        app:layout_constraintEnd_toStartOf="@id/createNoteBtn"
+        app:layout_constraintTop_toTopOf="@id/homeText"
+        app:layout_constraintBottom_toBottomOf="@id/homeText"
+        app:tint="@color/offWhite"
         tools:ignore="OnClick" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -123,7 +140,7 @@
             android:importantForAutofill="no"
             android:includeFontPadding="false"
             android:inputType="text"
-            android:textColorHint="@color/textHintColour"
+            android:textColorHint="@color/offWhite"
             android:textColor="@color/white"
             android:textSize="@dimen/_14ssp" />
 
@@ -134,7 +151,7 @@
             android:layout_marginStart="@dimen/_15sdp"
             android:contentDescription="@string/app_name"
             android:src="@drawable/ic_image"
-            app:tint="@color/textHintColour"/>
+            app:tint="@color/offWhite"/>
 
         <ImageView
             android:id="@+id/quickAddURL"
@@ -143,7 +160,7 @@
             android:layout_marginStart="@dimen/_15sdp"
             android:contentDescription="@string/app_name"
             android:src="@drawable/ic_weblink"
-            app:tint="@color/textHintColour" />
+            app:tint="@color/offWhite" />
 
     </LinearLayout>
 

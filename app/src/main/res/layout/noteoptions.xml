@@ -29,7 +29,7 @@
         android:gravity="center"
         android:includeFontPadding="false"
         android:text="@string/pick_a_colour"
-        android:textColor="@color/textHintColour"
+        android:textColor="@color/offWhite"
         android:textSize="@dimen/_13ssp" />
 
     <LinearLayout
@@ -52,7 +52,7 @@
                 android:id="@+id/viewColour1"
                 android:layout_width="@dimen/_35sdp"
                 android:layout_height="@dimen/_35sdp"
-                android:background="@drawable/note_background_colour_1" />
+                android:background="@drawable/grey_note_btn" />
 
             <ImageView
                 android:id="@+id/imageColour1"
@@ -74,7 +74,7 @@
                 android:id="@+id/viewColour2"
                 android:layout_width="@dimen/_35sdp"
                 android:layout_height="@dimen/_35sdp"
-                android:background="@drawable/note_background_colour_2" />
+                android:background="@drawable/red_note_btn" />
 
             <ImageView
                 android:id="@+id/imageColour2"
@@ -95,7 +95,7 @@
                 android:id="@+id/viewColour3"
                 android:layout_width="@dimen/_35sdp"
                 android:layout_height="@dimen/_35sdp"
-                android:background="@drawable/note_background_colour_3" />
+                android:background="@drawable/orange_note_btn" />
 
             <ImageView
                 android:id="@+id/imageColour3"
@@ -116,7 +116,7 @@
                 android:id="@+id/viewColour4"
                 android:layout_width="@dimen/_35sdp"
                 android:layout_height="@dimen/_35sdp"
-                android:background="@drawable/note_background_colour_4" />
+                android:background="@drawable/lightorange_note_btn" />
 
             <ImageView
                 android:id="@+id/imageColour4"
@@ -137,7 +137,7 @@
                 android:id="@+id/viewColour5"
                 android:layout_width="@dimen/_35sdp"
                 android:layout_height="@dimen/_35sdp"
-                android:background="@drawable/note_background_colour_5" />
+                android:background="@drawable/yellow_note_btn" />
 
             <ImageView
                 android:id="@+id/imageColour5"
@@ -158,7 +158,7 @@
                 android:id="@+id/viewColour6"
                 android:layout_width="@dimen/_35sdp"
                 android:layout_height="@dimen/_35sdp"
-                android:background="@drawable/note_background_colour_6" />
+                android:background="@drawable/lightgreen_note_btn" />
 
             <ImageView
                 android:id="@+id/imageColour6"
@@ -179,7 +179,7 @@
                 android:id="@+id/viewColour7"
                 android:layout_width="@dimen/_35sdp"
                 android:layout_height="@dimen/_35sdp"
-                android:background="@drawable/note_background_colour_7" />
+                android:background="@drawable/green_note_btn" />
 
             <ImageView
                 android:id="@+id/imageColour7"
@@ -212,7 +212,7 @@
                 android:id="@+id/viewColour8"
                 android:layout_width="@dimen/_35sdp"
                 android:layout_height="@dimen/_35sdp"
-                android:background="@drawable/note_background_colour_8" />
+                android:background="@drawable/lightblue_note_btn" />
 
             <ImageView
                 android:id="@+id/imageColour8"
@@ -233,7 +233,7 @@
                 android:id="@+id/viewColour9"
                 android:layout_width="@dimen/_35sdp"
                 android:layout_height="@dimen/_35sdp"
-                android:background="@drawable/note_background_colour_9" />
+                android:background="@drawable/blue_note_btn" />
 
             <ImageView
                 android:id="@+id/imageColour9"
@@ -254,7 +254,7 @@
                 android:id="@+id/viewColour10"
                 android:layout_width="@dimen/_35sdp"
                 android:layout_height="@dimen/_35sdp"
-                android:background="@drawable/note_background_colour_10" />
+                android:background="@drawable/indigo_note_btn" />
 
             <ImageView
                 android:id="@+id/imageColour10"
@@ -275,7 +275,7 @@
                 android:id="@+id/viewColour11"
                 android:layout_width="@dimen/_35sdp"
                 android:layout_height="@dimen/_35sdp"
-                android:background="@drawable/note_background_colour_11" />
+                android:background="@drawable/purple_note_btn" />
 
             <ImageView
                 android:id="@+id/imageColour11"
@@ -296,7 +296,7 @@
                 android:id="@+id/viewColour12"
                 android:layout_width="@dimen/_35sdp"
                 android:layout_height="@dimen/_35sdp"
-                android:background="@drawable/note_background_colour_12" />
+                android:background="@drawable/violet_note_btn" />
 
             <ImageView
                 android:id="@+id/imageColour12"
@@ -317,7 +317,7 @@
                 android:id="@+id/viewColour13"
                 android:layout_width="@dimen/_35sdp"
                 android:layout_height="@dimen/_35sdp"
-                android:background="@drawable/note_background_colour_13" />
+                android:background="@drawable/maroon_note_btn" />
 
             <ImageView
                 android:id="@+id/imageColour13"
