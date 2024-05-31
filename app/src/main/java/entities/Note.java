@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 @Entity (tableName = "notes")
 public class Note implements Serializable {
@@ -32,6 +33,9 @@ public class Note implements Serializable {
 
     @ColumnInfo (name = "web_link")
     private String webLink;
+
+//    @ColumnInfo (name = "checklist")
+//    private ArrayList<String> checklistText;
 
     public int getId() {
         return id;
@@ -96,6 +100,14 @@ public class Note implements Serializable {
     public void setWebLink(String webLink) {
         this.webLink = webLink;
     }
+
+//    public ArrayList<String> getChecklistText() {
+//        return checklistText;
+//    }
+//
+//    public void setChecklistText(ArrayList<String> checklistText) {
+//        this.checklistText = checklistText;
+//    }
 
     @NonNull
     @Override

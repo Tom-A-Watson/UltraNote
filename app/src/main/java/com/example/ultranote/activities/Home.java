@@ -136,6 +136,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
             searchIcon.setColorFilter(darkGrey);
             quickActionsLayout.setBackgroundColor(offWhite);
             quickTitleInput.setBackground(quickTitleInputLightBG);
+            quickTitleInput.setTextColor(black);
             quickTitleInput.setHintTextColor(black);
             quickAddImageBtn.setColorFilter(lightGrey);
             quickAddURLBtn.setColorFilter(lightGrey);
@@ -154,6 +155,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         searchIcon.setColorFilter(offWhite);
         quickActionsLayout.setBackgroundColor(lightGrey);
         quickTitleInput.setBackground(defaultQuickTitleInputBG);
+        quickTitleInput.setTextColor(white);
         quickTitleInput.setHintTextColor(offWhite);
         quickAddImageBtn.setColorFilter(offWhite);
         quickAddURLBtn.setColorFilter(offWhite);
