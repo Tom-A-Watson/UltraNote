@@ -267,7 +267,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         noteOptionsText.setTextColor(white);
         colourPickerText.setTextColor(offWhite);
 
-        for (int i = 0; i < colourButtonsDBG.length; i++) {
+        for (int i = 0; i < noteColourButtons.length; i++) {
             noteColourButtons[i].setBackground(colourButtonsDBG[i]);
         }
     }
@@ -416,8 +416,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         if (existingNote != null && existingNote.getColour() != null
                 && !existingNote.getColour().trim().isEmpty()) {
             switch (existingNote.getColour()) {
-                case "#333333": note.setColour("#333333"); colours[0].setImageResource(0);
-                    colourIndicator.setBackgroundColor(Color.parseColor("#333333"));
+                case "#333333": colourIndicator.setBackgroundColor(Color.parseColor("#333333"));
                     colours[0].setImageResource(R.drawable.ic_done); break;
                 case "#FF2929": note.setColour("#FF2929"); colours[0].setImageResource(0);
                     colourIndicator.setBackgroundColor(Color.parseColor("#FF2929"));
