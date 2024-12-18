@@ -51,6 +51,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     private View colourIndicator, subtitleIndicator, greyNoteBtn;
     private View[] noteColourButtons;
     private ImageView image, backBtn, addURL, addImg, saveBtn, removeTitle, removeSubtitle, removeContent;
+    private ImageView[] colours;
     private Drawable[] colourButtonsDBG, colourButtonsLBG;
     private String selectedImagePath;
     private LinearLayout webURLLayout, noteOptionsLayout;
@@ -141,7 +142,6 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         noteOptionsLayout = findViewById(R.id.noteOptionsLayout);
         noteOptionsText = findViewById(R.id.noteOptionsText);
         colourPickerText = findViewById(R.id.colourPickerText);
-//        greyNoteBtn = findViewById(R.id.viewColour1);
 
         // Note colour buttons and list
         final View greyBtn = findViewById(R.id.viewColour1);
@@ -355,7 +355,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         final ImageView purple = findViewById(R.id.imageColour11);
         final ImageView violet = findViewById(R.id.imageColour12);
         final ImageView lightMaroon = findViewById(R.id.imageColour13);
-        final ImageView[] colours = new ImageView[] { grey, red, orange, lightOrange, yellow, lightGreen,
+        colours = new ImageView[] { grey, red, orange, lightOrange, yellow, lightGreen,
                 green, lightBlue, blue, indigo, purple, violet, lightMaroon };
 
         if (existingNote != null) {
@@ -371,32 +371,19 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
                 public void onClick(View view) {
                     selectColour(colours, j + 1);
                     switch (j) {
-                        case 0: note.setColour("#333333");
-                            colourIndicator.setBackgroundColor(Color.parseColor("#333333")); break;
-                        case 1: note.setColour("#FF2929");
-                            colourIndicator.setBackgroundColor(Color.parseColor("#FF2929")); break;
-                        case 2: note.setColour("#FF5722");
-                            colourIndicator.setBackgroundColor(Color.parseColor("#FF5722")); break;
-                        case 3: note.setColour("#FF9800");
-                            colourIndicator.setBackgroundColor(Color.parseColor("#FF9800")); break;
-                        case 4: note.setColour("#FFE719");
-                            colourIndicator.setBackgroundColor(Color.parseColor("#FFE719")); break;
-                        case 5: note.setColour("#8BC34A");
-                            colourIndicator.setBackgroundColor(Color.parseColor("#8BC34A")); break;
-                        case 6: note.setColour("#4CAF50");
-                            colourIndicator.setBackgroundColor(Color.parseColor("#4CAF50")); break;
-                        case 7: note.setColour("#00BCD4");
-                            colourIndicator.setBackgroundColor(Color.parseColor("#00BCD4")); break;
-                        case 8: note.setColour("#2196F3");
-                            colourIndicator.setBackgroundColor(Color.parseColor("#2196F3")); break;
-                        case 9: note.setColour("#3F51B5");
-                            colourIndicator.setBackgroundColor(Color.parseColor("#3F51B5")); break;
-                        case 10: note.setColour("#673AB7");
-                            colourIndicator.setBackgroundColor(Color.parseColor("#673AB7")); break;
-                        case 11: note.setColour("#9C27B0");
-                            colourIndicator.setBackgroundColor(Color.parseColor("#9C27B0")); break;
-                        case 12: note.setColour("#E91E63");
-                            colourIndicator.setBackgroundColor(Color.parseColor("#E91E63")); break;
+                        case 0: setNoteColour("#333333"); break;
+                        case 1: setNoteColour("#FF2929"); break;
+                        case 2: setNoteColour("#FF5722"); break;
+                        case 3: setNoteColour("#FF9800"); break;
+                        case 4: setNoteColour("#FFE719"); break;
+                        case 5: setNoteColour("#8BC34A"); break;
+                        case 6: setNoteColour("#4CAF50"); break;
+                        case 7: setNoteColour("#00BCD4"); break;
+                        case 8: setNoteColour("#2196F3"); break;
+                        case 9: setNoteColour("#3F51B5"); break;
+                        case 10: setNoteColour("#673AB7"); break;
+                        case 11: setNoteColour("#9C27B0"); break;
+                        case 12: setNoteColour("#E91E63"); break;
                     }
                 }
             });
@@ -405,42 +392,18 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         if (existingNote != null && existingNote.getColour() != null
                 && !existingNote.getColour().trim().isEmpty()) {
             switch (existingNote.getColour()) {
-                case "#FF2929": note.setColour("#FF2929"); colours[0].setImageResource(0);
-                    colourIndicator.setBackgroundColor(Color.parseColor("#FF2929"));
-                    colours[1].setImageResource(R.drawable.ic_done); break;
-                case "#FF5722": note.setColour("#FF5722"); colours[0].setImageResource(0);
-                    colourIndicator.setBackgroundColor(Color.parseColor("#FF5722"));
-                    colours[2].setImageResource(R.drawable.ic_done); break;
-                case "#FF9800": note.setColour("#FF9800"); colours[0].setImageResource(0);
-                    colourIndicator.setBackgroundColor(Color.parseColor("#FF9800"));
-                    colours[3].setImageResource(R.drawable.ic_done); break;
-                case "#FFE719": note.setColour("#FFE719"); colours[0].setImageResource(0);
-                    colourIndicator.setBackgroundColor(Color.parseColor("#FFE719"));
-                    colours[4].setImageResource(R.drawable.ic_done); break;
-                case "#8BC34A": note.setColour("#8BC34A"); colours[0].setImageResource(0);
-                    colourIndicator.setBackgroundColor(Color.parseColor("#8BC34A"));
-                    colours[5].setImageResource(R.drawable.ic_done); break;
-                case "#4CAF50": note.setColour("#4CAF50"); colours[0].setImageResource(0);
-                    colourIndicator.setBackgroundColor(Color.parseColor("#4CAF50"));
-                    colours[6].setImageResource(R.drawable.ic_done); break;
-                case "#00BCD4": note.setColour("#00BCD4"); colours[0].setImageResource(0);
-                    colourIndicator.setBackgroundColor(Color.parseColor("#00BCD4"));
-                    colours[7].setImageResource(R.drawable.ic_done); break;
-                case "#2196F3": note.setColour("#2196F3"); colours[0].setImageResource(0);
-                    colourIndicator.setBackgroundColor(Color.parseColor("#2196F3"));
-                    colours[8].setImageResource(R.drawable.ic_done); break;
-                case "#3F51B5": note.setColour("#3F51B5"); colours[0].setImageResource(0);
-                    colourIndicator.setBackgroundColor(Color.parseColor("#3F51B5"));
-                    colours[9].setImageResource(R.drawable.ic_done); break;
-                case "#673AB7": note.setColour("#673AB7"); colours[0].setImageResource(0);
-                    colourIndicator.setBackgroundColor(Color.parseColor("#673AB7"));
-                    colours[10].setImageResource(R.drawable.ic_done); break;
-                case "#9C27B0": note.setColour("#9C27B0"); colours[0].setImageResource(0);
-                    colourIndicator.setBackgroundColor(Color.parseColor("#9C27B0"));
-                    colours[11].setImageResource(R.drawable.ic_done); break;
-                case "#E91E63": note.setColour("#E91E63"); colours[0].setImageResource(0);
-                    colourIndicator.setBackgroundColor(Color.parseColor("#E91E63"));
-                    colours[12].setImageResource(R.drawable.ic_done); break;
+                case "#FF2929": setNoteColour("#FF2929"); switchTickToButton(1); break;
+                case "#FF5722": setNoteColour("#FF5722"); switchTickToButton(2); break;
+                case "#FF9800": setNoteColour("#FF9800"); switchTickToButton(3); break;
+                case "#FFE719": setNoteColour("#FFE719"); switchTickToButton(4); break;
+                case "#8BC34A": setNoteColour("#8BC34A"); switchTickToButton(5); break;
+                case "#4CAF50": setNoteColour("#4CAF50"); switchTickToButton(6); break;
+                case "#00BCD4": setNoteColour("#00BCD4"); switchTickToButton(7); break;
+                case "#2196F3": setNoteColour("#2196F3"); switchTickToButton(8); break;
+                case "#3F51B5": setNoteColour("#3F51B5"); switchTickToButton(9); break;
+                case "#673AB7": setNoteColour("#673AB7"); switchTickToButton(10); break;
+                case "#9C27B0": setNoteColour("#9C27B0"); switchTickToButton(11); break;
+                case "#E91E63": setNoteColour("#E91E63"); switchTickToButton(12); break;
             }
         }
     }
@@ -462,6 +425,16 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
 
             colours[i].setImageResource(0);
         }
+    }
+
+    private void setNoteColour(String colour) {
+        note.setColour(colour);
+        colourIndicator.setBackgroundColor(Color.parseColor(colour));
+    }
+
+    private void switchTickToButton(int btnNumber) {
+        colours[0].setImageResource(0);
+        colours[btnNumber].setImageResource(R.drawable.ic_done);
     }
 
     private void selectImage() {
@@ -569,13 +542,13 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
      */
     @Override
     public void onTextChanged(CharSequence cs, int i, int i1, int i2) {
-        if (title.getText().toString().trim().length() > 0) { removeTitle.setVisibility(View.VISIBLE); }
+        if (!title.getText().toString().trim().isEmpty()) { removeTitle.setVisibility(View.VISIBLE); }
         else { removeTitle.setVisibility(View.GONE); }
 
-        if (subtitle.getText().toString().trim().length() > 0) { removeSubtitle.setVisibility(View.VISIBLE); }
+        if (!subtitle.getText().toString().trim().isEmpty()) { removeSubtitle.setVisibility(View.VISIBLE); }
         else { removeSubtitle.setVisibility(View.GONE); }
 
-        if (content.getText().toString().trim().length() > 0) { removeContent.setVisibility(View.VISIBLE); }
+        if (!content.getText().toString().trim().isEmpty()) { removeContent.setVisibility(View.VISIBLE); }
         else { removeContent.setVisibility(View.GONE); }
     }
     public void beforeTextChanged(CharSequence cs, int i, int i1, int i2) {} // Method not required
