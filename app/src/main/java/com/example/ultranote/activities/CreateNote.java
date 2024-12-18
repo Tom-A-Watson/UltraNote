@@ -358,6 +358,13 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         colours = new ImageView[] { grey, red, orange, lightOrange, yellow, lightGreen,
                 green, lightBlue, blue, indigo, purple, violet, lightMaroon };
 
+        // Loop sets all colour buttons' image resources (ticks) to 0 upon resuming the activity, prior to the
+        // tick being correctly assigned later in this method. This fixes the onResume() duplicate tick bug
+        // Index starts at 1 so that the default button's tick is not removed when creating a new note.
+        for (int i = 1; i < colours.length; i++) {
+            colours[i].setImageResource(0);
+        }
+
         if (existingNote != null) {
             findViewById(R.id.deleteBtn).setVisibility(View.VISIBLE);
             findViewById(R.id.deleteBtn).setOnClickListener(this);
