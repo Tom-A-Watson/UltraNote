@@ -48,7 +48,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     final Note note = new Note();
     private EditText title, subtitle, content;
     private TextView dateTime, webURL, createNoteText, noteOptionsText, colourPickerText;
-    private View colourIndicator, subtitleIndicator, greyNoteBtn;
+    private View colourIndicator, subtitleIndicator;
     private View[] noteColourButtons;
     private ImageView image, backBtn, addURL, addImg, saveBtn, removeTitle, removeSubtitle, removeContent;
     private ImageView[] colours;
@@ -144,55 +144,55 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         colourPickerText = findViewById(R.id.colourPickerText);
 
         // Note colour buttons and list
-        final View greyBtn = findViewById(R.id.viewColour1);
-        final View redBtn = findViewById(R.id.viewColour2);
-        final View orangeBtn = findViewById(R.id.viewColour3);
-        final View lightOrangeBtn = findViewById(R.id.viewColour4);
-        final View yellowBtn = findViewById(R.id.viewColour5);
-        final View lightGreenBtn = findViewById(R.id.viewColour6);
-        final View greenBtn = findViewById(R.id.viewColour7);
-        final View lightBlueBtn = findViewById(R.id.viewColour8);
-        final View blueBtn = findViewById(R.id.viewColour9);
-        final View indigoBtn = findViewById(R.id.viewColour10);
-        final View purpleBtn = findViewById(R.id.viewColour11);
-        final View violetBtn = findViewById(R.id.viewColour12);
-        final View maroonBtn = findViewById(R.id.viewColour13);
-        noteColourButtons = new View[] { greyBtn, redBtn, orangeBtn, lightOrangeBtn, yellowBtn, lightGreenBtn,
-            greenBtn, lightBlueBtn, blueBtn, indigoBtn, purpleBtn, violetBtn, maroonBtn };
+        final View grey = findViewById(R.id.viewColour1);
+        final View red = findViewById(R.id.viewColour2);
+        final View orange = findViewById(R.id.viewColour3);
+        final View lightOrange = findViewById(R.id.viewColour4);
+        final View yellow = findViewById(R.id.viewColour5);
+        final View lightGreen = findViewById(R.id.viewColour6);
+        final View green = findViewById(R.id.viewColour7);
+        final View lightBlue = findViewById(R.id.viewColour8);
+        final View blue = findViewById(R.id.viewColour9);
+        final View indigo = findViewById(R.id.viewColour10);
+        final View purple = findViewById(R.id.viewColour11);
+        final View violet = findViewById(R.id.viewColour12);
+        final View maroon = findViewById(R.id.viewColour13);
+        noteColourButtons = new View[] { grey, red, orange, lightOrange, yellow, lightGreen, green,
+                lightBlue, blue, indigo, purple, violet, maroon };
 
         // Colour buttons dark backgrounds and list:
-        final Drawable greyBtnDBG = ContextCompat.getDrawable(this, R.drawable.grey_note_btn);
-        final Drawable redBtnDBG = ContextCompat.getDrawable(this, R.drawable.red_note_btn);
-        final Drawable orangeBtnDBG = ContextCompat.getDrawable(this, R.drawable.orange_note_btn);
-        final Drawable lightOrangeBtnDBG = ContextCompat.getDrawable(this, R.drawable.lightorange_note_btn);
-        final Drawable yellowBtnDBG = ContextCompat.getDrawable(this, R.drawable.yellow_note_btn);
-        final Drawable lightGreenBtnDBG = ContextCompat.getDrawable(this, R.drawable.lightgreen_note_btn);
-        final Drawable greenBtnDBG = ContextCompat.getDrawable(this, R.drawable.green_note_btn);
-        final Drawable lightBlueBtnDBG = ContextCompat.getDrawable(this, R.drawable.lightblue_note_btn);
-        final Drawable blueBtnDBG = ContextCompat.getDrawable(this, R.drawable.blue_note_btn);
-        final Drawable indigoBtnDBG = ContextCompat.getDrawable(this, R.drawable.indigo_note_btn);
-        final Drawable purpleBtnDBG = ContextCompat.getDrawable(this, R.drawable.purple_note_btn);
-        final Drawable violetBtnDBG = ContextCompat.getDrawable(this, R.drawable.violet_note_btn);
-        final Drawable maroonBtnDBG = ContextCompat.getDrawable(this, R.drawable.maroon_note_btn);
-        colourButtonsDBG = new Drawable[] { greyBtnDBG, redBtnDBG, orangeBtnDBG, lightOrangeBtnDBG, yellowBtnDBG, lightGreenBtnDBG,
-            greenBtnDBG, lightBlueBtnDBG, blueBtnDBG, indigoBtnDBG, purpleBtnDBG, violetBtnDBG, maroonBtnDBG };
+        final Drawable greyDBG = ContextCompat.getDrawable(this, R.drawable.grey_note_btn);
+        final Drawable redDBG = ContextCompat.getDrawable(this, R.drawable.red_note_btn);
+        final Drawable orangeDBG = ContextCompat.getDrawable(this, R.drawable.orange_note_btn);
+        final Drawable lightOrangeDBG = ContextCompat.getDrawable(this, R.drawable.lightorange_note_btn);
+        final Drawable yellowDBG = ContextCompat.getDrawable(this, R.drawable.yellow_note_btn);
+        final Drawable lightGreenDBG = ContextCompat.getDrawable(this, R.drawable.lightgreen_note_btn);
+        final Drawable greenDBG = ContextCompat.getDrawable(this, R.drawable.green_note_btn);
+        final Drawable lightBlueDBG = ContextCompat.getDrawable(this, R.drawable.lightblue_note_btn);
+        final Drawable blueDBG = ContextCompat.getDrawable(this, R.drawable.blue_note_btn);
+        final Drawable indigoDBG = ContextCompat.getDrawable(this, R.drawable.indigo_note_btn);
+        final Drawable purpleDBG = ContextCompat.getDrawable(this, R.drawable.purple_note_btn);
+        final Drawable violetDBG = ContextCompat.getDrawable(this, R.drawable.violet_note_btn);
+        final Drawable maroonDBG = ContextCompat.getDrawable(this, R.drawable.maroon_note_btn);
+        colourButtonsDBG = new Drawable[] { greyDBG, redDBG, orangeDBG, lightOrangeDBG, yellowDBG, lightGreenDBG,
+            greenDBG, lightBlueDBG, blueDBG, indigoDBG, purpleDBG, violetDBG, maroonDBG };
 
         // Colour buttons light backgrounds and list;
-        final Drawable greyBtnLBG = ContextCompat.getDrawable(this, R.drawable.grey_note_btn_light);
-        final Drawable redBtnLBG = ContextCompat.getDrawable(this, R.drawable.red_note_btn_light);
-        final Drawable orangeBtnLBG = ContextCompat.getDrawable(this, R.drawable.orange_note_btn_light);
-        final Drawable lightOrangeBtnLBG = ContextCompat.getDrawable(this, R.drawable.lightorange_note_btn_light);
-        final Drawable yellowBtnLBG = ContextCompat.getDrawable(this, R.drawable.yellow_note_btn_light);
-        final Drawable lightGreenBtnLBG = ContextCompat.getDrawable(this, R.drawable.lightgreen_note_btn_light);
-        final Drawable greenBtnLBG = ContextCompat.getDrawable(this, R.drawable.green_note_btn_light);
-        final Drawable lightBlueBtnLBG = ContextCompat.getDrawable(this, R.drawable.lightblue_note_btn_light);
-        final Drawable blueBtnLBG = ContextCompat.getDrawable(this, R.drawable.blue_note_btn_light);
-        final Drawable indigoBtnLBG = ContextCompat.getDrawable(this, R.drawable.indigo_note_btn_light);
-        final Drawable purpleBtnLBG = ContextCompat.getDrawable(this, R.drawable.purple_note_btn_light);
-        final Drawable violetBtnLBG = ContextCompat.getDrawable(this, R.drawable.violet_note_btn_light);
-        final Drawable maroonBtnLBG = ContextCompat.getDrawable(this, R.drawable.maroon_note_btn_light);
-        colourButtonsLBG = new Drawable[] { greyBtnLBG, redBtnLBG, orangeBtnLBG, lightOrangeBtnLBG, yellowBtnLBG, lightGreenBtnLBG,
-                greenBtnLBG, lightBlueBtnLBG, blueBtnLBG, indigoBtnLBG, purpleBtnLBG, violetBtnLBG, maroonBtnLBG };
+        final Drawable greyLBG = ContextCompat.getDrawable(this, R.drawable.grey_note_btn_light);
+        final Drawable redLBG = ContextCompat.getDrawable(this, R.drawable.red_note_btn_light);
+        final Drawable orangeLBG = ContextCompat.getDrawable(this, R.drawable.orange_note_btn_light);
+        final Drawable lightOrangeLBG = ContextCompat.getDrawable(this, R.drawable.lightorange_note_btn_light);
+        final Drawable yellowLBG = ContextCompat.getDrawable(this, R.drawable.yellow_note_btn_light);
+        final Drawable lightGreenLBG = ContextCompat.getDrawable(this, R.drawable.lightgreen_note_btn_light);
+        final Drawable greenLBG = ContextCompat.getDrawable(this, R.drawable.green_note_btn_light);
+        final Drawable lightBlueLBG = ContextCompat.getDrawable(this, R.drawable.lightblue_note_btn_light);
+        final Drawable blueLBG = ContextCompat.getDrawable(this, R.drawable.blue_note_btn_light);
+        final Drawable indigoLBG = ContextCompat.getDrawable(this, R.drawable.indigo_note_btn_light);
+        final Drawable purpleLBG = ContextCompat.getDrawable(this, R.drawable.purple_note_btn_light);
+        final Drawable violetLBG = ContextCompat.getDrawable(this, R.drawable.violet_note_btn_light);
+        final Drawable maroonLBG = ContextCompat.getDrawable(this, R.drawable.maroon_note_btn_light);
+        colourButtonsLBG = new Drawable[] { greyLBG, redLBG, orangeLBG, lightOrangeLBG, yellowLBG, lightGreenLBG,
+                greenLBG, lightBlueLBG, blueLBG, indigoLBG, purpleLBG, violetLBG, maroonLBG };
     }
 
     private void updateView() {
@@ -205,14 +205,10 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         final int darkModeAccent = ContextCompat.getColor(this, R.color.accent);
         final Drawable saveBtnLightBG = ContextCompat.getDrawable(this, R.drawable.done_button_light);
         final Drawable saveBtnDarkBG = ContextCompat.getDrawable(this, R.drawable.done_button);
-        final Drawable lightSubtitleIndicator =
-                ContextCompat.getDrawable(this, R.drawable.subtitle_indicator_light);
-        final Drawable defaultSubtitleIndicator =
-                ContextCompat.getDrawable(this, R.drawable.subtitle_indicator);
-        final Drawable noteOptionsLightBG =
-                ContextCompat.getDrawable(this, R.drawable.noteoptions_light_background);
-        final Drawable noteOptionsDefaultBG =
-                ContextCompat.getDrawable(this, R.drawable.noteoptions_background);
+        final Drawable blue = ContextCompat.getDrawable(this, R.drawable.subtitle_indicator_light);
+        final Drawable lightBlue = ContextCompat.getDrawable(this, R.drawable.subtitle_indicator);
+        final Drawable light = ContextCompat.getDrawable(this, R.drawable.noteoptions_light_background);
+        final Drawable dark = ContextCompat.getDrawable(this, R.drawable.noteoptions_background);
 
         if (settings.getCurrentTheme().equals(UserSettings.LIGHT_THEME)) {
             // Components are set to their specified light mode colours
@@ -226,12 +222,12 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
             title.setTextColor(darkGrey);
             subtitle.setHintTextColor(darkGrey);
             subtitle.setTextColor(darkGrey);
-            subtitleIndicator.setBackground(lightSubtitleIndicator);
+            subtitleIndicator.setBackground(blue);
             content.setHintTextColor(black);
             content.setTextColor(black);
             dateTime.setTextColor(black);
             webURL.setLinkTextColor(lightModeAccent);
-            noteOptionsLayout.setBackground(noteOptionsLightBG);
+            noteOptionsLayout.setBackground(light);
             noteOptionsText.setTextColor(black);
             colourPickerText.setTextColor(darkGrey);
 
@@ -253,16 +249,16 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         title.setTextColor(white);
         subtitle.setHintTextColor(offWhite);
         subtitle.setTextColor(white);
-        subtitleIndicator.setBackground(defaultSubtitleIndicator);
+        subtitleIndicator.setBackground(lightBlue);
         content.setHintTextColor(offWhite);
         content.setTextColor(white);
         dateTime.setTextColor(white);
         webURL.setLinkTextColor(darkModeAccent);
-        noteOptionsLayout.setBackground(noteOptionsDefaultBG);
+        noteOptionsLayout.setBackground(dark);
         noteOptionsText.setTextColor(white);
         colourPickerText.setTextColor(offWhite);
 
-        for (int i = 0; i < colourButtonsDBG.length; i++) {
+        for (int i = 0; i < noteColourButtons.length; i++) {
             noteColourButtons[i].setBackground(colourButtonsDBG[i]);
         }
     }
@@ -585,6 +581,8 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     public void onClick(View view) {
         final LinearLayout noteOptionsLayout = findViewById(R.id.noteOptionsLayout);
         final BottomSheetBehavior<LinearLayout> options = BottomSheetBehavior.from(noteOptionsLayout);
+        final boolean galleryAccessIsNotGranted = ContextCompat.checkSelfPermission(getApplicationContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
 
         switch (view.getId()) {
             // Simple 1-line implementations
@@ -600,19 +598,15 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
             case R.id.deleteBtn: options.setState(BottomSheetBehavior.STATE_COLLAPSED); deleteNote(); break;
             case R.id.cancelDeleteNote: deleteNoteDialog.dismiss(); break;
 
-            case R.id.addImage:   // Ask the user for permission to access the gallery
-                if (ContextCompat.checkSelfPermission(getApplicationContext(),
-                        Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            case R.id.addImage: if (galleryAccessIsNotGranted) {
+                                    ActivityCompat.requestPermissions(
+                                        CreateNote.this,
+                                        new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
+                                        STORAGE_PERMISSION
+                                    );
+                                } else { selectImage(); } break;
 
-                    ActivityCompat.requestPermissions(
-                            CreateNote.this,
-                            new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
-                            STORAGE_PERMISSION
-                    );
-                } else { selectImage(); } break;
-
-            case R.id.deleteImage:   // Delete the image from the note
-                image.setImageBitmap(null); image.setVisibility(View.GONE);
+            case R.id.deleteImage: image.setImageBitmap(null); image.setVisibility(View.GONE);
                 findViewById(R.id.deleteImage).setVisibility(View.GONE); selectedImagePath = ""; break;
 
             case R.id.deleteNote:   // Delete the note, then throw a toast message to confirm this

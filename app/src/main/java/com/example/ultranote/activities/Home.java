@@ -225,22 +225,19 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
             @Override @SuppressLint("NotifyDataSetChanged")
             protected void onPostExecute(List<Note> notes) {
                 super.onPostExecute(notes);
+                switch (requestCode) {
+                    case SHOW_NOTES: noteList.addAll(notes);
+                        notesAdapter.notifyDataSetChanged(); break;
 
-                if (requestCode == SHOW_NOTES) {
-                    noteList.addAll(notes);
-                    notesAdapter.notifyDataSetChanged();
-                } else if (requestCode == ADD_NOTE) {
-                    noteList.add(0, notes.get(0));
-                    notesAdapter.notifyItemInserted(0);
-                    notesRecyclerView.smoothScrollToPosition(0);
-                } else if (requestCode == UPDATE_NOTE) {
-                    noteList.remove(noteClickedPosition);
+                    case ADD_NOTE: noteList.add(0, notes.get(0));
+                        notesAdapter.notifyItemInserted(0); break;
 
-                    if (noteIsDeleted) { notesAdapter.notifyItemRemoved(noteClickedPosition); }
-                    else {
-                        noteList.add(noteClickedPosition, notes.get(noteClickedPosition));
-                        notesAdapter.notifyItemChanged(noteClickedPosition);
-                    }
+                    case UPDATE_NOTE: noteList.remove(noteClickedPosition);
+                        if (noteIsDeleted) { notesAdapter.notifyItemRemoved(noteClickedPosition); }
+                        else {
+                            noteList.add(noteClickedPosition, notes.get(noteClickedPosition));
+                            notesAdapter.notifyItemChanged(noteClickedPosition);
+                        } break;
                 }
             }
         }
@@ -352,22 +349,22 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
 
     @Override @SuppressLint("NonConstantResourceId")
     public void onClick(View view) {
+        final boolean galleryAccessIsNotGranted = ContextCompat.checkSelfPermission(getApplicationContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
+
         switch (view.getId()) {
             // Simple 1-line implementations
             case R.id.backButton: onBackPressed(); break;
             case R.id.quickAddURL: quickAddURL(); break;
             case R.id.cancelAddURL: addURLDialog.dismiss(); break;
 
-            case R.id.quickAddImage:   // Ask the user for permission to access the gallery
-                if (ContextCompat.checkSelfPermission(getApplicationContext(),
-                        Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-                    ActivityCompat.requestPermissions(
-                            Home.this,
-                            new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
-                            STORAGE_PERMISSION
-                    );
-                } else { selectImage(); } break;
+            case R.id.quickAddImage: if (galleryAccessIsNotGranted) {
+                                        ActivityCompat.requestPermissions(
+                                            Home.this,
+                                            new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
+                                            STORAGE_PERMISSION
+                                        );
+                                     } else { selectImage(); } break;
         }
     }
 }
