@@ -47,13 +47,14 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     private Note existingNote;
     final Note note = new Note();
     private EditText title, subtitle, content;
-    private TextView dateTime, webURL, createNoteText, noteOptionsText, colourPickerText;
-    private View colourIndicator, subtitleIndicator;
+    private TextView dateTime, webURL, createNoteText, noteOptionsText, colourPickerText, multiLineDate;
+    private View colourIndicator, subtitleIndicator, addURLView;
     private View[] noteColourButtons;
     private ImageView image, backBtn, addURL, addImg, saveBtn, removeTitle, removeSubtitle, removeContent;
     private ImageView[] colours;
     private Drawable[] colourButtonsDBG, colourButtonsLBG;
     private String selectedImagePath;
+    private BottomSheetBehavior options;
     private LinearLayout webURLLayout, noteOptionsLayout;
     private CoordinatorLayout createNoteView;
     private AlertDialog addURLDialog, deleteNoteDialog;
@@ -65,6 +66,10 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     // Request codes
     private static final int STORAGE_PERMISSION = 1;
     private static final int SELECT_IMAGE = 2;
+
+    // States
+    private static final int EXPANDED = BottomSheetBehavior.STATE_EXPANDED;
+    private static final int COLLAPSED = BottomSheetBehavior.STATE_COLLAPSED;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,6 +147,11 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         noteOptionsLayout = findViewById(R.id.noteOptionsLayout);
         noteOptionsText = findViewById(R.id.noteOptionsText);
         colourPickerText = findViewById(R.id.colourPickerText);
+        options = BottomSheetBehavior.from(noteOptionsLayout);
+        addURLView = LayoutInflater.from(this).inflate(
+                R.layout.add_url_layout,
+                findViewById(R.id.addURLLayout)
+        );
 
         // Note colour buttons and list
         final View grey = findViewById(R.id.viewColour1);
@@ -264,8 +274,9 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     }
 
     private void saveNote() {
-        final LinearLayout noteOptionsLayout = findViewById(R.id.noteOptionsLayout);
-        final BottomSheetBehavior<LinearLayout> options = BottomSheetBehavior.from(noteOptionsLayout);
+        multiLineDate = findViewById(R.id.textDateTime);
+        multiLineDate.setText(new SimpleDateFormat("EEEE dd MMMM yyyy \nHH:mm a",
+                Locale.getDefault()).format((new Date())));
 
         if (title.getText().toString().trim().isEmpty()) {
             Toast.makeText(this, "Note title is empty!", Toast.LENGTH_SHORT).show(); return;
@@ -276,8 +287,8 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
 
         if (webURLLayout.getVisibility() == View.VISIBLE) { note.setWebLink(webURL.getText().toString()); }
         if (existingNote != null) { note.setId(existingNote.getId()); }
-        if (options.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-            options.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        if (options.getState() == EXPANDED) {
+            options.setState(COLLAPSED);
         }
 
         @SuppressLint("StaticFieldLeak")
@@ -300,10 +311,6 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
             }
         }
 
-        TextView multiLineDate = findViewById(R.id.textDateTime);
-        multiLineDate.setText(new SimpleDateFormat("EEEE dd MMMM yyyy \nHH:mm a",
-                Locale.getDefault()).format((new Date())));
-
         note.setTitle(title.getText().toString());
         note.setSubtitle(subtitle.getText().toString());
         note.setNoteText(content.getText().toString());
@@ -313,7 +320,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         new SaveNoteTask().execute();
     }
 
-    private void deleteNote() {
+    private void showDeleteNoteDialog() {
         if (deleteNoteDialog == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(CreateNote.this);
             View view = LayoutInflater.from(this).inflate(
@@ -412,10 +419,10 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     }
 
     private void toggleNoteOptions(BottomSheetBehavior<LinearLayout> bsb) {
-        if (bsb.getState() != BottomSheetBehavior.STATE_EXPANDED) {
-            bsb.setState(BottomSheetBehavior.STATE_EXPANDED);
+        if (bsb.getState() != EXPANDED) {
+            bsb.setState(EXPANDED);
         } else {
-            bsb.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            bsb.setState(COLLAPSED);
         }
     }
 
@@ -503,36 +510,15 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     private void addURL() {
         if (addURLDialog == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(CreateNote.this);
-            View view = LayoutInflater.from(this).inflate(
-                    R.layout.add_url_layout,
-                    findViewById(R.id.addURLLayout)
-            );
-            builder.setView(view);
+            builder.setView(addURLView);
             addURLDialog = builder.create();
 
             if (addURLDialog.getWindow() != null) {
                 addURLDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
             }
 
-            final EditText inputURL = view.findViewById(R.id.inputURL);
-            inputURL.requestFocus();
-
-            view.findViewById(R.id.confirmAddURL).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (inputURL.getText().toString().trim().isEmpty()) {
-                        Toast.makeText(CreateNote.this, "Empty URL!", Toast.LENGTH_SHORT).show();
-                    } else if (!Patterns.WEB_URL.matcher(inputURL.getText().toString()).matches()) {
-                        Toast.makeText(CreateNote.this, "Invalid URL!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        webURL.setText(inputURL.getText().toString());
-                        webURLLayout.setVisibility(View.VISIBLE);
-                        addURLDialog.dismiss();
-                    }
-                }
-            });
-
-            view.findViewById(R.id.cancelAddURL).setOnClickListener(this);
+            addURLView.findViewById(R.id.confirmAddURL).setOnClickListener(this);
+            addURLView.findViewById(R.id.cancelAddURL).setOnClickListener(this);
         }
 
         addURLDialog.show();
@@ -579,8 +565,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
 
     @Override @SuppressLint("NonConstantResourceId")
     public void onClick(View view) {
-        final LinearLayout noteOptionsLayout = findViewById(R.id.noteOptionsLayout);
-        final BottomSheetBehavior<LinearLayout> options = BottomSheetBehavior.from(noteOptionsLayout);
+        final EditText inputURL = addURLView.findViewById(R.id.inputURL);
         final boolean galleryAccessIsNotGranted = ContextCompat.checkSelfPermission(getApplicationContext(),
                 Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
 
@@ -595,8 +580,19 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
             case R.id.cancelAddURL: addURLDialog.dismiss(); break;
             case R.id.deleteURL: webURL.setText(null); webURLLayout.setVisibility(View.GONE); break;
             case R.id.colourIndicator: case R.id.noteOptionsText: toggleNoteOptions(options); break;
-            case R.id.deleteBtn: options.setState(BottomSheetBehavior.STATE_COLLAPSED); deleteNote(); break;
+            case R.id.deleteBtn: options.setState(COLLAPSED); showDeleteNoteDialog(); break;
             case R.id.cancelDeleteNote: deleteNoteDialog.dismiss(); break;
+
+            case R.id.confirmAddURL: inputURL.requestFocus();
+                if (inputURL.getText().toString().trim().isEmpty()) {
+                    Toast.makeText(CreateNote.this,"Empty URL!", Toast.LENGTH_SHORT).show();
+                } else if (!Patterns.WEB_URL.matcher(inputURL.getText().toString()).matches()) {
+                    Toast.makeText(CreateNote.this,"Invalid URL!", Toast.LENGTH_SHORT).show();
+                } else {
+                    webURL.setText(inputURL.getText().toString());
+                    webURLLayout.setVisibility(View.VISIBLE);
+                    addURLDialog.dismiss();
+                } break;
 
             case R.id.addImage: if (galleryAccessIsNotGranted) {
                                     ActivityCompat.requestPermissions(
