@@ -47,17 +47,18 @@ import settings.UserSettings;
  */
 public class Home extends AppCompatActivity implements NotesListener, View.OnClickListener,
                                                        TextWatcher, TextView.OnEditorActionListener {
-    private View homeView;
-    private EditText searchInput, quickTitleInput;
+    private View homeView, addURLView;
+    private EditText searchInput, quickTitleInput, inputURL;
     private TextView homeText;
     private ImageView backBtn, createNoteBtn, settingsBtn, searchIcon, quickAddImageBtn, quickAddURLBtn;
     private RecyclerView notesRecyclerView;
     private LinearLayout searchLayout, quickActionsLayout;
-    private List<Note> noteList;
-    private NotesAdapter notesAdapter;
+    private List<Note> list;
+    private NotesAdapter adapter;
     private AlertDialog addURLDialog;
     private UserSettings settings;
     private int noteClickedPosition = -1;
+    private boolean galleryAccessIsNotGranted;
 
     // Request codes
     public static final int ADD_NOTE = 1;
@@ -73,21 +74,9 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         initComponents();
         updateView();
         getNotes(SHOW_NOTES, false);
-
-        noteList = new ArrayList<>();
-        notesAdapter = new NotesAdapter(noteList, this);
-        notesRecyclerView = findViewById(R.id.notesRecyclerView);
-        notesRecyclerView.setAdapter(notesAdapter);
-        notesRecyclerView.setLayoutManager(
-                new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        );
-
         findViewById(R.id.backButton).setOnClickListener(this);
         findViewById(R.id.quickAddImage).setOnClickListener(this);
         findViewById(R.id.quickAddURL).setOnClickListener(this);
-
-        searchInput.addTextChangedListener(this);
-        quickTitleInput.setOnEditorActionListener(this);
     }
 
     @Override
@@ -97,6 +86,13 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     }
 
     private void initComponents() {
+        list = new ArrayList<>();
+        adapter = new NotesAdapter(list, this);
+        notesRecyclerView = findViewById(R.id.notesRecyclerView);
+        notesRecyclerView.setAdapter(adapter);
+        notesRecyclerView.setLayoutManager(
+                new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        );
         settings = (UserSettings) getApplication();
         homeText = findViewById(R.id.homeText);
         backBtn = findViewById(R.id.backButton);
@@ -104,12 +100,21 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         settingsBtn = findViewById(R.id.settingsBtn);
         searchLayout = findViewById(R.id.searchLayout);
         searchInput = findViewById(R.id.searchNotesInput);
+        searchInput.addTextChangedListener(this);
         searchIcon = findViewById(R.id.searchIcon);
         quickActionsLayout = findViewById(R.id.quickActions);
         quickAddImageBtn = findViewById(R.id.quickAddImage);
         quickAddURLBtn = findViewById(R.id.quickAddURL);
         homeView = findViewById(R.id.homeView);
         quickTitleInput = findViewById(R.id.quickTitleInput);
+        quickTitleInput.setOnEditorActionListener(this);
+        addURLView = LayoutInflater.from(this).inflate(
+                R.layout.add_url_layout,
+                (ViewGroup) findViewById(R.id.addURLLayout)
+        );
+        inputURL = addURLView.findViewById(R.id.inputURL);
+        galleryAccessIsNotGranted = ContextCompat.checkSelfPermission(getApplicationContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
     }
 
     private void updateView() {
@@ -118,10 +123,10 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         final int offWhite = ContextCompat.getColor(this, R.color.offWhite);
         final int black = ContextCompat.getColor(this, R.color.black);
         final int white = ContextCompat.getColor(this, R.color.white);
-        final Drawable defaultAddNoteButtonBG = ContextCompat.getDrawable(this, R.drawable.add_note_button);
-        final Drawable lightModeAddNoteButtonBG = ContextCompat.getDrawable(this, R.drawable.add_note_button_light);
-        final Drawable quickTitleInputLightBG = ContextCompat.getDrawable(this, R.drawable.quick_note_light_background);
-        final Drawable defaultQuickTitleInputBG = ContextCompat.getDrawable(this, R.drawable.quick_note_background);
+        final Drawable lightBlue = ContextCompat.getDrawable(this, R.drawable.add_note_button);
+        final Drawable blue = ContextCompat.getDrawable(this, R.drawable.add_note_button_light);
+        final Drawable light = ContextCompat.getDrawable(this, R.drawable.quick_note_light_background);
+        final Drawable dark = ContextCompat.getDrawable(this, R.drawable.quick_note_background);
 
         if (settings.getCurrentTheme().equals(UserSettings.LIGHT_THEME)) {
             // Components are set to their specified light mode colours
@@ -129,13 +134,13 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
             backBtn.setColorFilter(black);
             homeView.setBackgroundColor(white);
             settingsBtn.setColorFilter(lightGrey);
-            createNoteBtn.setBackground(lightModeAddNoteButtonBG);
+            createNoteBtn.setBackground(blue);
             searchLayout.setBackgroundColor(offWhite);
             searchInput.setHintTextColor(black);
             searchInput.setTextColor(black);
             searchIcon.setColorFilter(darkGrey);
             quickActionsLayout.setBackgroundColor(offWhite);
-            quickTitleInput.setBackground(quickTitleInputLightBG);
+            quickTitleInput.setBackground(light);
             quickTitleInput.setTextColor(black);
             quickTitleInput.setHintTextColor(black);
             quickAddImageBtn.setColorFilter(lightGrey);
@@ -148,13 +153,13 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         backBtn.setColorFilter(white);
         homeView.setBackgroundColor(darkGrey);
         settingsBtn.setColorFilter(offWhite);
-        createNoteBtn.setBackground(defaultAddNoteButtonBG);
+        createNoteBtn.setBackground(lightBlue);
         searchLayout.setBackgroundColor(lightGrey);
         searchInput.setHintTextColor(offWhite);
         searchInput.setTextColor(white);
         searchIcon.setColorFilter(offWhite);
         quickActionsLayout.setBackgroundColor(lightGrey);
-        quickTitleInput.setBackground(defaultQuickTitleInputBG);
+        quickTitleInput.setBackground(dark);
         quickTitleInput.setTextColor(white);
         quickTitleInput.setHintTextColor(offWhite);
         quickAddImageBtn.setColorFilter(offWhite);
@@ -226,17 +231,14 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
             protected void onPostExecute(List<Note> notes) {
                 super.onPostExecute(notes);
                 switch (requestCode) {
-                    case SHOW_NOTES: noteList.addAll(notes);
-                        notesAdapter.notifyDataSetChanged(); break;
+                    case SHOW_NOTES: list.addAll(notes); adapter.notifyDataSetChanged(); break;
+                    case ADD_NOTE: list.add(0, notes.get(0)); adapter.notifyItemInserted(0); break;
 
-                    case ADD_NOTE: noteList.add(0, notes.get(0));
-                        notesAdapter.notifyItemInserted(0); break;
-
-                    case UPDATE_NOTE: noteList.remove(noteClickedPosition);
-                        if (noteIsDeleted) { notesAdapter.notifyItemRemoved(noteClickedPosition); }
+                    case UPDATE_NOTE: list.remove(noteClickedPosition);
+                        if (noteIsDeleted) { adapter.notifyItemRemoved(noteClickedPosition); }
                         else {
-                            noteList.add(noteClickedPosition, notes.get(noteClickedPosition));
-                            notesAdapter.notifyItemChanged(noteClickedPosition);
+                            Home.this.list.add(noteClickedPosition, notes.get(noteClickedPosition));
+                            adapter.notifyItemChanged(noteClickedPosition);
                         } break;
                 }
             }
@@ -282,39 +284,15 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     private void quickAddURL() {
         if (addURLDialog == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
-            View view = LayoutInflater.from(this).inflate(
-                    R.layout.add_url_layout,
-                    (ViewGroup) findViewById(R.id.addURLLayout)
-            );
-            builder.setView(view);
+            builder.setView(addURLView);
             addURLDialog = builder.create();
 
             if (addURLDialog.getWindow() != null) {
                 addURLDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
             }
 
-            final EditText inputURL = view.findViewById(R.id.inputURL);
-            inputURL.requestFocus();
-
-            view.findViewById(R.id.confirmAddURL).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (inputURL.getText().toString().trim().isEmpty()) {
-                        Toast.makeText(Home.this, "Enter a URL", Toast.LENGTH_SHORT).show();
-                    } else if (!Patterns.WEB_URL.matcher(inputURL.getText().toString()).matches()) {
-                        Toast.makeText(Home.this, "Enter a valid URL", Toast.LENGTH_SHORT).show();
-                    } else {
-                        addURLDialog.dismiss();
-                        Intent noteWithURL = new Intent(getApplicationContext(), CreateNote.class);
-                        noteWithURL.putExtra("isFromQuickActions", true);
-                        noteWithURL.putExtra("quickActionType", "URL");
-                        noteWithURL.putExtra("URL", inputURL.getText().toString());
-                        startActivityForResult(noteWithURL, ADD_NOTE);
-                    }
-                }
-            });
-
-            view.findViewById(R.id.cancelAddURL).setOnClickListener(this);
+            addURLView.findViewById(R.id.confirmAddURL).setOnClickListener(this);
+            addURLView.findViewById(R.id.cancelAddURL).setOnClickListener(this);
         }
 
         addURLDialog.show();
@@ -326,10 +304,10 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
      * subtitle and even content.
      */
     @Override
-    public void onTextChanged(CharSequence cs, int i, int i1, int i2) { notesAdapter.cancelTimer(); }
+    public void onTextChanged(CharSequence cs, int i, int i1, int i2) { adapter.cancelTimer(); }
     @Override
     public void afterTextChanged(Editable s) {
-        if (noteList.size() != 0) { notesAdapter.searchNotes(s.toString()); }
+        if (!list.isEmpty()) { adapter.searchNotes(s.toString()); }
     }
     public void beforeTextChanged(CharSequence cs, int i, int i1, int i2) {} // Method not required
 
@@ -349,14 +327,25 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
 
     @Override @SuppressLint("NonConstantResourceId")
     public void onClick(View view) {
-        final boolean galleryAccessIsNotGranted = ContextCompat.checkSelfPermission(getApplicationContext(),
-                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
-
         switch (view.getId()) {
             // Simple 1-line implementations
             case R.id.backButton: onBackPressed(); break;
             case R.id.quickAddURL: quickAddURL(); break;
             case R.id.cancelAddURL: addURLDialog.dismiss(); break;
+
+            case R.id.confirmAddURL: inputURL.requestFocus();
+                if (inputURL.getText().toString().trim().isEmpty()) {
+                    Toast.makeText(Home.this,"Enter a URL", Toast.LENGTH_SHORT).show();
+                } else if (!Patterns.WEB_URL.matcher(inputURL.getText().toString()).matches()) {
+                    Toast.makeText(Home.this,"Enter a valid URL", Toast.LENGTH_SHORT).show();
+                } else {
+                    addURLDialog.dismiss();
+                    Intent noteWithURL = new Intent(getApplicationContext(), CreateNote.class);
+                    noteWithURL.putExtra("isFromQuickActions", true);
+                    noteWithURL.putExtra("quickActionType", "URL");
+                    noteWithURL.putExtra("URL", inputURL.getText().toString());
+                    startActivityForResult(noteWithURL, ADD_NOTE);
+                } break;
 
             case R.id.quickAddImage: if (galleryAccessIsNotGranted) {
                                         ActivityCompat.requestPermissions(

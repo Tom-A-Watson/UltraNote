@@ -46,7 +46,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
 
     private Note existingNote;
     final Note note = new Note();
-    private EditText title, subtitle, content;
+    private EditText title, subtitle, content, inputURL;
     private TextView dateTime, webURL, createNoteText, noteOptionsText, colourPickerText, multiLineDate;
     private View colourIndicator, subtitleIndicator, addURLView;
     private View[] noteColourButtons;
@@ -54,7 +54,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     private ImageView[] colours;
     private Drawable[] colourButtonsDBG, colourButtonsLBG;
     private String selectedImagePath;
-    private BottomSheetBehavior options;
+    private BottomSheetBehavior<LinearLayout> options;
     private LinearLayout webURLLayout, noteOptionsLayout;
     private CoordinatorLayout createNoteView;
     private AlertDialog addURLDialog, deleteNoteDialog;
@@ -62,6 +62,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
             "EEEE dd MMMM yyyy HH:mm a", Locale.getDefault());
 
     private UserSettings settings;
+    private boolean galleryAccessIsNotGranted;
 
     // Request codes
     private static final int STORAGE_PERMISSION = 1;
@@ -152,6 +153,9 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
                 R.layout.add_url_layout,
                 findViewById(R.id.addURLLayout)
         );
+        inputURL = addURLView.findViewById(R.id.inputURL);
+        galleryAccessIsNotGranted = ContextCompat.checkSelfPermission(getApplicationContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
 
         // Note colour buttons and list
         final View grey = findViewById(R.id.viewColour1);
@@ -565,10 +569,6 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
 
     @Override @SuppressLint("NonConstantResourceId")
     public void onClick(View view) {
-        final EditText inputURL = addURLView.findViewById(R.id.inputURL);
-        final boolean galleryAccessIsNotGranted = ContextCompat.checkSelfPermission(getApplicationContext(),
-                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
-
         switch (view.getId()) {
             // Simple 1-line implementations
             case R.id.backButton: onBackPressed(); break;
