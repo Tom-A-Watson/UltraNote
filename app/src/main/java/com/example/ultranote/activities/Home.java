@@ -56,6 +56,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     private List<Note> list;
     private NotesAdapter adapter;
     private AlertDialog addURLDialog;
+    private AlertDialog.Builder builder;
     private UserSettings settings;
     private int noteClickedPosition = -1;
     private boolean galleryAccessIsNotGranted;
@@ -113,6 +114,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
                 (ViewGroup) findViewById(R.id.addURLLayout)
         );
         inputURL = addURLView.findViewById(R.id.inputURL);
+        builder = new AlertDialog.Builder(Home.this);
         galleryAccessIsNotGranted = ContextCompat.checkSelfPermission(getApplicationContext(),
                 Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
     }
@@ -218,7 +220,6 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     }
 
     private void getNotes(final int requestCode, final boolean noteIsDeleted) {
-
         @SuppressLint("StaticFieldLeak")
         class GetNotesTask extends AsyncTask<Void, Void, List<Note>>
         {
@@ -254,12 +255,12 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case ADD_NOTE: getNotes(ADD_NOTE, false); break;
-
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
                 case UPDATE_NOTE:
                     if (data != null) {
                         getNotes(UPDATE_NOTE, data.getBooleanExtra("isNoteDeleted", false));
                     } break;
-
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
                 case SELECT_IMAGE:
                     if (data != null) {
                         Uri selectedImageUri = data.getData();
@@ -283,7 +284,6 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
 
     private void quickAddURL() {
         if (addURLDialog == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
             builder.setView(addURLView);
             addURLDialog = builder.create();
 
@@ -332,7 +332,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
             case R.id.backButton: onBackPressed(); break;
             case R.id.quickAddURL: quickAddURL(); break;
             case R.id.cancelAddURL: addURLDialog.dismiss(); break;
-
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
             case R.id.confirmAddURL: inputURL.requestFocus();
                 if (inputURL.getText().toString().trim().isEmpty()) {
                     Toast.makeText(Home.this,"Enter a URL", Toast.LENGTH_SHORT).show();
@@ -346,7 +346,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
                     noteWithURL.putExtra("URL", inputURL.getText().toString());
                     startActivityForResult(noteWithURL, ADD_NOTE);
                 } break;
-
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
             case R.id.quickAddImage: if (galleryAccessIsNotGranted) {
                                         ActivityCompat.requestPermissions(
                                             Home.this,

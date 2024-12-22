@@ -48,8 +48,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     final Note note = new Note();
     private EditText title, subtitle, content, inputURL;
     private TextView dateTime, webURL, createNoteText, noteOptionsText, colourPickerText, multiLineDate;
-    private View colourIndicator, subtitleIndicator, addURLView;
-    private View[] noteColourButtons;
+    private View colourIndicator, subtitleIndicator, addURLView, deleteNoteView;
     private ImageView image, backBtn, addURL, addImg, saveBtn, removeTitle, removeSubtitle, removeContent;
     private ImageView[] colours;
     private Drawable[] colourButtonsDBG, colourButtonsLBG;
@@ -58,11 +57,16 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     private LinearLayout webURLLayout, noteOptionsLayout;
     private CoordinatorLayout createNoteView;
     private AlertDialog addURLDialog, deleteNoteDialog;
+    private AlertDialog.Builder builder;
     private final SimpleDateFormat singleLineDate = new SimpleDateFormat(
             "EEEE dd MMMM yyyy HH:mm a", Locale.getDefault());
 
     private UserSettings settings;
     private boolean galleryAccessIsNotGranted;
+
+    // Colours
+    private ImageView grey, red, orange, lightOrange, yellow, lightGreen, green, lightBlue, blue, indigo,
+    purple, violet, lightMaroon;
 
     // Request codes
     private static final int STORAGE_PERMISSION = 1;
@@ -76,8 +80,8 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.createnote);
-        initNoteOptions();
         initComponents();
+        initNoteOptions();
         updateView();
 
         dateTime.setText(singleLineDate.format(new Date()));
@@ -149,30 +153,29 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         noteOptionsText = findViewById(R.id.noteOptionsText);
         colourPickerText = findViewById(R.id.colourPickerText);
         options = BottomSheetBehavior.from(noteOptionsLayout);
+        builder = new AlertDialog.Builder(CreateNote.this);
+        galleryAccessIsNotGranted = ContextCompat.checkSelfPermission(getApplicationContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
         addURLView = LayoutInflater.from(this).inflate(
                 R.layout.add_url_layout,
                 findViewById(R.id.addURLLayout)
         );
+        deleteNoteView = LayoutInflater.from(this).inflate(
+                R.layout.delete_note_layout,
+                (ViewGroup) findViewById(R.id.deleteNoteLayout)
+        );
         inputURL = addURLView.findViewById(R.id.inputURL);
-        galleryAccessIsNotGranted = ContextCompat.checkSelfPermission(getApplicationContext(),
-                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
 
         // Note colour buttons and list
-        final View grey = findViewById(R.id.viewColour1);
-        final View red = findViewById(R.id.viewColour2);
-        final View orange = findViewById(R.id.viewColour3);
-        final View lightOrange = findViewById(R.id.viewColour4);
-        final View yellow = findViewById(R.id.viewColour5);
-        final View lightGreen = findViewById(R.id.viewColour6);
-        final View green = findViewById(R.id.viewColour7);
-        final View lightBlue = findViewById(R.id.viewColour8);
-        final View blue = findViewById(R.id.viewColour9);
-        final View indigo = findViewById(R.id.viewColour10);
-        final View purple = findViewById(R.id.viewColour11);
-        final View violet = findViewById(R.id.viewColour12);
-        final View maroon = findViewById(R.id.viewColour13);
-        noteColourButtons = new View[] { grey, red, orange, lightOrange, yellow, lightGreen, green,
-                lightBlue, blue, indigo, purple, violet, maroon };
+        grey = findViewById(R.id.imageColour1); red = findViewById(R.id.imageColour2);
+        orange = findViewById(R.id.imageColour3); lightOrange = findViewById(R.id.imageColour4);
+        yellow = findViewById(R.id.imageColour5); lightGreen = findViewById(R.id.imageColour6);
+        green = findViewById(R.id.imageColour7); lightBlue = findViewById(R.id.imageColour8);
+        blue = findViewById(R.id.imageColour9); indigo = findViewById(R.id.imageColour10);
+        purple = findViewById(R.id.imageColour11); violet = findViewById(R.id.imageColour12);
+        lightMaroon = findViewById(R.id.imageColour13);
+        colours = new ImageView[] { grey, red, orange, lightOrange, yellow, lightGreen,
+                green, lightBlue, blue, indigo, purple, violet, lightMaroon };
 
         // Colour buttons dark backgrounds and list:
         final Drawable greyDBG = ContextCompat.getDrawable(this, R.drawable.grey_note_btn);
@@ -245,8 +248,8 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
             noteOptionsText.setTextColor(black);
             colourPickerText.setTextColor(darkGrey);
 
-            for (int i = 0; i < noteColourButtons.length; i++) {
-                noteColourButtons[i].setBackground(colourButtonsLBG[i]);
+            for (int i = 0; i < colours.length; i++) {
+                colours[i].setBackground(colourButtonsLBG[i]);
             }
 
             return;
@@ -272,8 +275,8 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         noteOptionsText.setTextColor(white);
         colourPickerText.setTextColor(offWhite);
 
-        for (int i = 0; i < noteColourButtons.length; i++) {
-            noteColourButtons[i].setBackground(colourButtonsDBG[i]);
+        for (int i = 0; i < colours.length; i++) {
+            colours[i].setBackground(colourButtonsDBG[i]);
         }
     }
 
@@ -326,20 +329,15 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
 
     private void showDeleteNoteDialog() {
         if (deleteNoteDialog == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(CreateNote.this);
-            View view = LayoutInflater.from(this).inflate(
-                    R.layout.delete_note_layout,
-                    (ViewGroup) findViewById(R.id.deleteNoteLayout)
-            );
-            builder.setView(view);
+            builder.setView(deleteNoteView);
             deleteNoteDialog = builder.create();
 
             if (deleteNoteDialog.getWindow() != null) {
                 deleteNoteDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
             }
 
-            view.findViewById(R.id.deleteNote).setOnClickListener(this);
-            view.findViewById(R.id.cancelDeleteNote).setOnClickListener(this);
+            deleteNoteView.findViewById(R.id.deleteNote).setOnClickListener(this);
+            deleteNoteView.findViewById(R.id.cancelDeleteNote).setOnClickListener(this);
         }
 
         deleteNoteDialog.show();
@@ -348,20 +346,6 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     private void initNoteOptions() {
         findViewById(R.id.noteOptionsText).setOnClickListener(this);
         findViewById(R.id.colourIndicator).setOnClickListener(this);
-
-        final ImageView grey = findViewById(R.id.imageColour1);
-        final ImageView red = findViewById(R.id.imageColour2);
-        final ImageView orange = findViewById(R.id.imageColour3);
-        final ImageView lightOrange = findViewById(R.id.imageColour4);
-        final ImageView yellow = findViewById(R.id.imageColour5);
-        final ImageView lightGreen = findViewById(R.id.imageColour6);
-        final ImageView green = findViewById(R.id.imageColour7);
-        final ImageView lightBlue = findViewById(R.id.imageColour8);
-        final ImageView blue = findViewById(R.id.imageColour9);
-        final ImageView indigo = findViewById(R.id.imageColour10);
-        final ImageView purple = findViewById(R.id.imageColour11);
-        final ImageView violet = findViewById(R.id.imageColour12);
-        final ImageView lightMaroon = findViewById(R.id.imageColour13);
         colours = new ImageView[] { grey, red, orange, lightOrange, yellow, lightGreen,
                 green, lightBlue, blue, indigo, purple, violet, lightMaroon };
 
@@ -513,7 +497,6 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
 
     private void addURL() {
         if (addURLDialog == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(CreateNote.this);
             builder.setView(addURLView);
             addURLDialog = builder.create();
 
@@ -582,7 +565,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
             case R.id.colourIndicator: case R.id.noteOptionsText: toggleNoteOptions(options); break;
             case R.id.deleteBtn: options.setState(COLLAPSED); showDeleteNoteDialog(); break;
             case R.id.cancelDeleteNote: deleteNoteDialog.dismiss(); break;
-
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
             case R.id.confirmAddURL: inputURL.requestFocus();
                 if (inputURL.getText().toString().trim().isEmpty()) {
                     Toast.makeText(CreateNote.this,"Empty URL!", Toast.LENGTH_SHORT).show();
@@ -593,7 +576,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
                     webURLLayout.setVisibility(View.VISIBLE);
                     addURLDialog.dismiss();
                 } break;
-
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
             case R.id.addImage: if (galleryAccessIsNotGranted) {
                                     ActivityCompat.requestPermissions(
                                         CreateNote.this,
@@ -601,10 +584,10 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
                                         STORAGE_PERMISSION
                                     );
                                 } else { selectImage(); } break;
-
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
             case R.id.deleteImage: image.setImageBitmap(null); image.setVisibility(View.GONE);
                 findViewById(R.id.deleteImage).setVisibility(View.GONE); selectedImagePath = ""; break;
-
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
             case R.id.deleteNote:   // Delete the note, then throw a toast message to confirm this
                 class DeleteNoteTask extends AsyncTask<Void, Void, Void>
                 {

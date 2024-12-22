@@ -69,10 +69,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
 
     static class NoteViewHolder extends RecyclerView.ViewHolder
     {
-
+        int black;
         TextView textTitle, textSubtitle, textDateTime;
         LinearLayout widgetLayout;
-        RoundedImageView noteImage;
+        GradientDrawable gd;
+        RoundedImageView widgetImage;
 
         NoteViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -80,31 +81,38 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
             textSubtitle = itemView.findViewById(R.id.textSubtitle);
             textDateTime = itemView.findViewById(R.id.textDateTime);
             widgetLayout = itemView.findViewById(R.id.widgetLayout);
-            noteImage = itemView.findViewById(R.id.noteImage);
+            widgetImage = itemView.findViewById(R.id.widgetImage);
+            gd = (GradientDrawable) widgetLayout.getBackground();
+            black = Color.parseColor("#000000");
         }
 
         void setNote(Note note) {
             textTitle.setText(note.getTitle());
+            textDateTime.setText(note.getDateTime());
+
             if (note.getSubtitle().trim().isEmpty()) {
                 textSubtitle.setVisibility(View.GONE);
             } else {
                 textSubtitle.setText(note.getSubtitle());
             }
 
-            textDateTime.setText(note.getDateTime());
-
-            GradientDrawable gd = (GradientDrawable) widgetLayout.getBackground();
             if (note.getColour() != null) {
                 gd.setColor(Color.parseColor(note.getColour()));
+
+                if (note.getColour().equals("#FFE719") || note.getColour().equals("#8BC34A")) {
+                    textTitle.setTextColor(black);
+                    textSubtitle.setTextColor(black);
+                    textDateTime.setTextColor(black);
+                }
             } else {
                 gd.setColor(Color.parseColor("#333333"));
             }
 
             if (note.getImagePath() != null) {
-                noteImage.setImageBitmap(BitmapFactory.decodeFile(note.getImagePath()));
-                noteImage.setVisibility(View.VISIBLE);
+                widgetImage.setImageBitmap(BitmapFactory.decodeFile(note.getImagePath()));
+                widgetImage.setVisibility(View.VISIBLE);
             } else {
-                noteImage.setVisibility(View.GONE);
+                widgetImage.setVisibility(View.GONE);
             }
         }
     }
@@ -112,24 +120,23 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
     public void searchNotes(final String searchInput) {
         timer = new Timer();
         timer.schedule(new TimerTask() {
-
             @Override
             public void run() {
                 if (searchInput.trim().isEmpty()) {
                     notes = notesSource;
                 } else {
-                    ArrayList<Note> temp = new ArrayList<>();
+                    ArrayList<Note> searchResult = new ArrayList<>();
 
                     for (Note note : notesSource) {
                         if (note.getTitle().toLowerCase().contains(searchInput.toLowerCase())
                                 || note.getSubtitle().toLowerCase().contains(searchInput.toLowerCase())
                                 || note.getNoteText().toLowerCase().contains(searchInput.toLowerCase())) {
 
-                            temp.add(note);
+                            searchResult.add(note);
                         }
                     }
 
-                    notes = temp;
+                    notes = searchResult;
                 }
 
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -143,8 +150,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
     }
 
     public void cancelTimer() {
-        if (timer != null) {
-            timer.cancel();
-        }
+        if (timer != null) { timer.cancel(); }
     }
 }
