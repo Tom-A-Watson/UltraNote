@@ -75,9 +75,6 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         initComponents();
         updateView();
         getNotes(SHOW_NOTES, false);
-        findViewById(R.id.backButton).setOnClickListener(this);
-        findViewById(R.id.quickAddImage).setOnClickListener(this);
-        findViewById(R.id.quickAddURL).setOnClickListener(this);
     }
 
     @Override
@@ -117,6 +114,10 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         builder = new AlertDialog.Builder(Home.this);
         galleryAccessIsNotGranted = ContextCompat.checkSelfPermission(getApplicationContext(),
                 Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
+
+        findViewById(R.id.backButton).setOnClickListener(this);
+        findViewById(R.id.quickAddImage).setOnClickListener(this);
+        findViewById(R.id.quickAddURL).setOnClickListener(this);
     }
 
     private void updateView() {

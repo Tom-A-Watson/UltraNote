@@ -69,40 +69,42 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
 
     static class NoteViewHolder extends RecyclerView.ViewHolder
     {
-        int black;
-        TextView textTitle, textSubtitle, textDateTime;
+        int black = Color.parseColor("#000000");
+        String[] lightNoteColours = { "#FFE719", "#8BC34A", "#4CAF50", "#00BCD4", "#FF9800" };
+        TextView title, subtitle, dateTime;
         LinearLayout widgetLayout;
         GradientDrawable gd;
         RoundedImageView widgetImage;
 
         NoteViewHolder(@NonNull View itemView) {
             super(itemView);
-            textTitle = itemView.findViewById(R.id.textTitle);
-            textSubtitle = itemView.findViewById(R.id.textSubtitle);
-            textDateTime = itemView.findViewById(R.id.textDateTime);
+            title = itemView.findViewById(R.id.textTitle);
+            subtitle = itemView.findViewById(R.id.textSubtitle);
+            dateTime = itemView.findViewById(R.id.textDateTime);
             widgetLayout = itemView.findViewById(R.id.widgetLayout);
             widgetImage = itemView.findViewById(R.id.widgetImage);
             gd = (GradientDrawable) widgetLayout.getBackground();
-            black = Color.parseColor("#000000");
         }
 
         void setNote(Note note) {
-            textTitle.setText(note.getTitle());
-            textDateTime.setText(note.getDateTime());
+            title.setText(note.getTitle());
+            dateTime.setText(note.getDateTime());
 
             if (note.getSubtitle().trim().isEmpty()) {
-                textSubtitle.setVisibility(View.GONE);
+                subtitle.setVisibility(View.GONE);
             } else {
-                textSubtitle.setText(note.getSubtitle());
+                subtitle.setText(note.getSubtitle());
             }
 
             if (note.getColour() != null) {
                 gd.setColor(Color.parseColor(note.getColour()));
 
-                if (note.getColour().equals("#FFE719") || note.getColour().equals("#8BC34A")) {
-                    textTitle.setTextColor(black);
-                    textSubtitle.setTextColor(black);
-                    textDateTime.setTextColor(black);
+                for (String lightColour : lightNoteColours) {
+                    if (note.getColour().equals(lightColour)) {
+                        title.setTextColor(black);
+                        subtitle.setTextColor(black);
+                        dateTime.setTextColor(black);
+                    }
                 }
             } else {
                 gd.setColor(Color.parseColor("#333333"));
