@@ -131,7 +131,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         final Drawable light = ContextCompat.getDrawable(this, R.drawable.quick_note_light_background);
         final Drawable dark = ContextCompat.getDrawable(this, R.drawable.quick_note_background);
 
-        if (settings.getCurrentTheme().equals(UserSettings.LIGHT_THEME)) {
+        if (settings.theme().equals(UserSettings.LIGHT_THEME)) {
             // Components are set to their specified light mode colours
             homeText.setTextColor(black);
             backBtn.setColorFilter(black);
@@ -256,12 +256,12 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case ADD_NOTE: getNotes(ADD_NOTE, false); break;
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+            //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
                 case UPDATE_NOTE:
                     if (data != null) {
                         getNotes(UPDATE_NOTE, data.getBooleanExtra("isNoteDeleted", false));
                     } break;
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+            //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
                 case SELECT_IMAGE:
                     if (data != null) {
                         Uri selectedImageUri = data.getData();
@@ -333,7 +333,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
             case R.id.backButton: onBackPressed(); break;
             case R.id.quickAddURL: quickAddURL(); break;
             case R.id.cancelAddURL: addURLDialog.dismiss(); break;
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
             case R.id.confirmAddURL: inputURL.requestFocus();
                 if (inputURL.getText().toString().trim().isEmpty()) {
                     Toast.makeText(Home.this,"Enter a URL", Toast.LENGTH_SHORT).show();
@@ -347,7 +347,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
                     noteWithURL.putExtra("URL", inputURL.getText().toString());
                     startActivityForResult(noteWithURL, ADD_NOTE);
                 } break;
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
             case R.id.quickAddImage: if (galleryAccessIsNotGranted) {
                                         ActivityCompat.requestPermissions(
                                             Home.this,

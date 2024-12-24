@@ -1,7 +1,6 @@
 package com.example.ultranote.activities;
 
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -75,7 +74,7 @@ public class Settings extends AppCompatActivity implements View.OnClickListener 
         final int black = ContextCompat.getColor(this, R.color.black);
         final int white = ContextCompat.getColor(this, R.color.white);
 
-        if (settings.getCustomTheme().equals(UserSettings.LIGHT_THEME)) {
+        if (settings.theme().equals(UserSettings.LIGHT_THEME)) {
             backButton.setColorFilter(black);
             settingsText.setTextColor(black);
             displaySettingsText.setTextColor(darkGrey);

@@ -20,7 +20,7 @@ public class UserSettings extends Application {
         this.customTheme = customTheme;
     }
 
-    public String getCurrentTheme() {
+    public String theme() {
         SharedPreferences sharedPreferences = getSharedPreferences(UserSettings.PREFERENCES, MODE_PRIVATE);
         return sharedPreferences.getString(UserSettings.CUSTOM_THEME, UserSettings.DARK_THEME);
     }
