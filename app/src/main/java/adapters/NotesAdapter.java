@@ -67,6 +67,40 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
         return position;
     }
 
+    public void searchNotes(final String searchInput) {
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (searchInput.trim().isEmpty()) {
+                    notes = notesSource;
+                } else {
+                    ArrayList<Note> searchResult = new ArrayList<>();
+
+                    for (Note note : notesSource) {
+                        if (note.getTitle().toLowerCase().contains(searchInput.toLowerCase())
+                                || note.getSubtitle().toLowerCase().contains(searchInput.toLowerCase())
+                                || note.getNoteText().toLowerCase().contains(searchInput.toLowerCase())) {
+
+                            searchResult.add(note);
+                        }
+                    }
+
+                    notes = searchResult;
+                }
+
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override @SuppressLint("NotifyDataSetChanged")
+                    public void run() { notifyDataSetChanged(); }
+                });
+            }
+        }, 500);
+    }
+
+    public void cancelTimer() {
+        if (timer != null) { timer.cancel(); }
+    }
+
     static class NoteViewHolder extends RecyclerView.ViewHolder
     {
         int black = Color.parseColor("#000000");
@@ -117,41 +151,5 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
                 widgetImage.setVisibility(View.GONE);
             }
         }
-    }
-
-    public void searchNotes(final String searchInput) {
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (searchInput.trim().isEmpty()) {
-                    notes = notesSource;
-                } else {
-                    ArrayList<Note> searchResult = new ArrayList<>();
-
-                    for (Note note : notesSource) {
-                        if (note.getTitle().toLowerCase().contains(searchInput.toLowerCase())
-                                || note.getSubtitle().toLowerCase().contains(searchInput.toLowerCase())
-                                || note.getNoteText().toLowerCase().contains(searchInput.toLowerCase())) {
-
-                            searchResult.add(note);
-                        }
-                    }
-
-                    notes = searchResult;
-                }
-
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override @SuppressLint("NotifyDataSetChanged")
-                    public void run() {
-                        notifyDataSetChanged();
-                    }
-                });
-            }
-        }, 500);
-    }
-
-    public void cancelTimer() {
-        if (timer != null) { timer.cancel(); }
     }
 }

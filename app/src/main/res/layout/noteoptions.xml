@@ -317,7 +317,7 @@
                 android:id="@+id/viewColour13"
                 android:layout_width="@dimen/_35sdp"
                 android:layout_height="@dimen/_35sdp"
-                android:background="@drawable/maroon_btn" />
+                android:background="@drawable/lightmaroon_btn" />
 
             <ImageView
                 android:id="@+id/imageColour13"
