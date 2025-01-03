@@ -124,11 +124,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
             title.setText(note.getTitle());
             dateTime.setText(note.getDateTime());
 
-            if (note.getSubtitle().trim().isEmpty()) {
-                subtitle.setVisibility(View.GONE);
-            } else {
-                subtitle.setText(note.getSubtitle());
-            }
+            if (note.getSubtitle().trim().isEmpty()) { subtitle.setVisibility(View.GONE); }
+            else { subtitle.setText(note.getSubtitle()); }
 
             if (note.getColour() != null) {
                 gd.setColor(Color.parseColor(note.getColour()));
@@ -140,16 +137,13 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
                         dateTime.setTextColor(black);
                     }
                 }
-            } else {
-                gd.setColor(Color.parseColor("#333333"));
-            }
+            } else { gd.setColor(Color.parseColor("#333333")); }
 
             if (note.getImagePath() != null) {
                 widgetImage.setImageBitmap(BitmapFactory.decodeFile(note.getImagePath()));
                 widgetImage.setVisibility(View.VISIBLE);
-            } else {
-                widgetImage.setVisibility(View.GONE);
             }
+            else { widgetImage.setVisibility(View.GONE); }
         }
     }
 }

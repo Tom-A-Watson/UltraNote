@@ -17,7 +17,7 @@ import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -108,7 +108,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         quickTitleInput.setOnEditorActionListener(this);
         addURLView = LayoutInflater.from(this).inflate(
                 R.layout.add_url_layout,
-                (ViewGroup) findViewById(R.id.addURLLayout)
+                findViewById(R.id.addURLLayout)
         );
         inputURL = addURLView.findViewById(R.id.inputURL);
         builder = new AlertDialog.Builder(Home.this);
@@ -235,7 +235,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
                 switch (requestCode) {
                     case SHOW_NOTES: list.addAll(notes); adapter.notifyDataSetChanged(); break;
                     case ADD_NOTE: list.add(0, notes.get(0)); adapter.notifyItemInserted(0); break;
-
+                //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
                     case UPDATE_NOTE: list.remove(noteClickedPosition);
                         if (noteIsDeleted) { adapter.notifyItemRemoved(noteClickedPosition); }
                         else {
@@ -285,15 +285,13 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
 
     private void quickAddURL() {
         if (addURLDialog == null) {
-            builder.setView(addURLView);
-            addURLDialog = builder.create();
-
-            if (addURLDialog.getWindow() != null) {
-                addURLDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-            }
-
             addURLView.findViewById(R.id.confirmAddURL).setOnClickListener(this);
             addURLView.findViewById(R.id.cancelAddURL).setOnClickListener(this);
+            builder.setView(addURLView);
+            addURLDialog = builder.create();
+            Window addURLWindow = addURLDialog.getWindow();
+
+            if (addURLWindow != null) { addURLWindow.setBackgroundDrawable(new ColorDrawable(0)); }
         }
 
         addURLDialog.show();
