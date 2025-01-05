@@ -4,13 +4,10 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Patterns;
@@ -40,6 +37,7 @@ import database.NotesDatabase;
 import entities.Note;
 import listeners.NotesListener;
 import settings.UserSettings;
+import utilities.Utilities;
 
 /**
  * This class contains all functionality regarding user-interaction on the the Home page. Some of
@@ -47,19 +45,20 @@ import settings.UserSettings;
  */
 public class Home extends AppCompatActivity implements NotesListener, View.OnClickListener,
                                                        TextWatcher, TextView.OnEditorActionListener {
+    private int noteClickedPosition = -1;
+    private boolean galleryAccessIsNotGranted;
+    private UserSettings settings;
+    private Utilities u;
     private View homeView, addURLView;
-    private EditText searchInput, quickTitleInput, inputURL;
+    private EditText searchInput, qTitleInput, inputURL;
     private TextView homeText;
-    private ImageView backBtn, createNoteBtn, settingsBtn, searchIcon, quickAddImageBtn, quickAddURLBtn;
+    private ImageView backBtn, createNoteBtn, settingsBtn, searchIcon, qAddImgBtn, qAddURLBtn;
     private RecyclerView notesRecyclerView;
-    private LinearLayout searchLayout, quickActionsLayout;
+    private LinearLayout searchBar, qActions;
     private List<Note> list;
     private NotesAdapter adapter;
     private AlertDialog addURLDialog;
     private AlertDialog.Builder builder;
-    private UserSettings settings;
-    private int noteClickedPosition = -1;
-    private boolean galleryAccessIsNotGranted;
 
     // Request codes
     public static final int ADD_NOTE = 1;
@@ -67,6 +66,9 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     public static final int SHOW_NOTES = 3;
     public static final int SELECT_IMAGE = 4;
     public static final int STORAGE_PERMISSION = 5;
+
+    // States
+    private static final int GRANTED = PackageManager.PERMISSION_GRANTED;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +86,11 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     }
 
     private void initComponents() {
+        Utilities.initHomeDrawables(this);
+        Utilities.initGlobalColours(this);
+
+        settings = (UserSettings) getApplication();
+        u = new Utilities(getApplication());
         list = new ArrayList<>();
         adapter = new NotesAdapter(list, this);
         notesRecyclerView = findViewById(R.id.notesRecyclerView);
@@ -91,21 +98,20 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         notesRecyclerView.setLayoutManager(
                 new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         );
-        settings = (UserSettings) getApplication();
         homeText = findViewById(R.id.homeText);
         backBtn = findViewById(R.id.backButton);
         createNoteBtn = findViewById(R.id.createNoteBtn);
         settingsBtn = findViewById(R.id.settingsBtn);
-        searchLayout = findViewById(R.id.searchLayout);
+        searchBar = findViewById(R.id.searchLayout);
         searchInput = findViewById(R.id.searchNotesInput);
         searchInput.addTextChangedListener(this);
         searchIcon = findViewById(R.id.searchIcon);
-        quickActionsLayout = findViewById(R.id.quickActions);
-        quickAddImageBtn = findViewById(R.id.quickAddImage);
-        quickAddURLBtn = findViewById(R.id.quickAddURL);
+        qActions = findViewById(R.id.quickActionsLayout);
+        qAddImgBtn = findViewById(R.id.quickAddImage);
+        qAddURLBtn = findViewById(R.id.quickAddURL);
         homeView = findViewById(R.id.homeView);
-        quickTitleInput = findViewById(R.id.quickTitleInput);
-        quickTitleInput.setOnEditorActionListener(this);
+        qTitleInput = findViewById(R.id.quickTitleInput);
+        qTitleInput.setOnEditorActionListener(this);
         addURLView = LayoutInflater.from(this).inflate(
                 R.layout.add_url_layout,
                 findViewById(R.id.addURLLayout)
@@ -113,7 +119,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         inputURL = addURLView.findViewById(R.id.inputURL);
         builder = new AlertDialog.Builder(Home.this);
         galleryAccessIsNotGranted = ContextCompat.checkSelfPermission(getApplicationContext(),
-                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
+                Manifest.permission.READ_EXTERNAL_STORAGE) != GRANTED;
 
         findViewById(R.id.backButton).setOnClickListener(this);
         findViewById(R.id.quickAddImage).setOnClickListener(this);
@@ -121,52 +127,37 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     }
 
     private void updateView() {
-        final int darkGrey = ContextCompat.getColor(this, R.color.primaryColour);
-        final int lightGrey = ContextCompat.getColor(this, R.color.primaryColourLight);
-        final int offWhite = ContextCompat.getColor(this, R.color.offWhite);
-        final int black = ContextCompat.getColor(this, R.color.black);
-        final int white = ContextCompat.getColor(this, R.color.white);
-        final Drawable lightBlue = ContextCompat.getDrawable(this, R.drawable.add_note_button);
-        final Drawable blue = ContextCompat.getDrawable(this, R.drawable.add_note_button_light);
-        final Drawable light = ContextCompat.getDrawable(this, R.drawable.quick_note_light_background);
-        final Drawable dark = ContextCompat.getDrawable(this, R.drawable.quick_note_background);
+        if (settings.theme().equals(UserSettings.LIGHT_THEME)) {// Set components to light mode colours
+            homeText.setTextColor(Utilities.black);    qTitleInput.setTextColor(Utilities.black);
+            searchInput.setTextColor(Utilities.black);
+            //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+            backBtn.setColorFilter(Utilities.black);        settingsBtn.setColorFilter(Utilities.lightGrey);
+            qAddImgBtn.setColorFilter(Utilities.lightGrey); qAddURLBtn.setColorFilter(Utilities.lightGrey);
+            searchIcon.setColorFilter(Utilities.darkGrey);
+            //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+            homeView.setBackgroundColor(Utilities.white);    searchBar.setBackgroundColor(Utilities.offWhite);
+            qActions.setBackgroundColor(Utilities.offWhite);
+            //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+            createNoteBtn.setBackground(Utilities.blue); qTitleInput.setBackground(Utilities.lightInput);
+            //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+            searchInput.setHintTextColor(Utilities.black); qTitleInput.setHintTextColor(Utilities.black);
 
-        if (settings.theme().equals(UserSettings.LIGHT_THEME)) {
-            // Components are set to their specified light mode colours
-            homeText.setTextColor(black);
-            backBtn.setColorFilter(black);
-            homeView.setBackgroundColor(white);
-            settingsBtn.setColorFilter(lightGrey);
-            createNoteBtn.setBackground(blue);
-            searchLayout.setBackgroundColor(offWhite);
-            searchInput.setHintTextColor(black);
-            searchInput.setTextColor(black);
-            searchIcon.setColorFilter(darkGrey);
-            quickActionsLayout.setBackgroundColor(offWhite);
-            quickTitleInput.setBackground(light);
-            quickTitleInput.setTextColor(black);
-            quickTitleInput.setHintTextColor(black);
-            quickAddImageBtn.setColorFilter(lightGrey);
-            quickAddURLBtn.setColorFilter(lightGrey);
             return;
         }
-
-        // Components are reverted to their default colours
-        homeText.setTextColor(white);
-        backBtn.setColorFilter(white);
-        homeView.setBackgroundColor(darkGrey);
-        settingsBtn.setColorFilter(offWhite);
-        createNoteBtn.setBackground(lightBlue);
-        searchLayout.setBackgroundColor(lightGrey);
-        searchInput.setHintTextColor(offWhite);
-        searchInput.setTextColor(white);
-        searchIcon.setColorFilter(offWhite);
-        quickActionsLayout.setBackgroundColor(lightGrey);
-        quickTitleInput.setBackground(dark);
-        quickTitleInput.setTextColor(white);
-        quickTitleInput.setHintTextColor(offWhite);
-        quickAddImageBtn.setColorFilter(offWhite);
-        quickAddURLBtn.setColorFilter(offWhite);
+        // Revert components to their default colours
+        homeText.setTextColor(Utilities.white);    qTitleInput.setTextColor(Utilities.white);
+        searchInput.setTextColor(Utilities.white);
+        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        backBtn.setColorFilter(Utilities.white);       settingsBtn.setColorFilter(Utilities.offWhite);
+        searchIcon.setColorFilter(Utilities.offWhite); qAddURLBtn.setColorFilter(Utilities.offWhite);
+        qAddImgBtn.setColorFilter(Utilities.offWhite);
+        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        homeView.setBackgroundColor(Utilities.darkGrey);  searchBar.setBackgroundColor(Utilities.lightGrey);
+        qActions.setBackgroundColor(Utilities.lightGrey);
+        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        createNoteBtn.setBackground(Utilities.lightBlue); qTitleInput.setBackground(Utilities.darkInput);
+        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        searchInput.setHintTextColor(Utilities.offWhite); qTitleInput.setHintTextColor(Utilities.offWhite);
     }
 
     public void openCreateNote(View view) {
@@ -177,38 +168,14 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         Intent intent = new Intent(this, Settings.class); startActivity(intent);
     }
 
-    private void selectImage() {
-        Intent selectedImg = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
-        if (selectedImg.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(selectedImg, SELECT_IMAGE);
-        }
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] perms, @NonNull int[] results) {
         super.onRequestPermissionsResult(requestCode, perms, results);
 
         if (requestCode == STORAGE_PERMISSION && results.length > 0) {
-            if (results[0] == PackageManager.PERMISSION_GRANTED) { selectImage(); }
+            if (results[0] == GRANTED) { u.selectImage(this, SELECT_IMAGE); }
             else { Toast.makeText(this, "Permission Denied!", Toast.LENGTH_SHORT).show(); }
         }
-    }
-
-    private String getPath(Uri contentUri) {
-        String filePath;
-        Cursor cursor = getContentResolver()
-                .query(contentUri, null, null, null, null);
-
-        if (cursor == null) { filePath = contentUri.getPath(); }
-        else {
-            cursor.moveToFirst();
-            int index = cursor.getColumnIndex("_data");
-            filePath = cursor.getString(index);
-            cursor.close();
-        }
-
-        return filePath;
     }
 
     @Override
@@ -239,7 +206,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
                     case UPDATE_NOTE: list.remove(noteClickedPosition);
                         if (noteIsDeleted) { adapter.notifyItemRemoved(noteClickedPosition); }
                         else {
-                            Home.this.list.add(noteClickedPosition, notes.get(noteClickedPosition));
+                            list.add(noteClickedPosition, notes.get(noteClickedPosition));
                             adapter.notifyItemChanged(noteClickedPosition);
                         } break;
                 }
@@ -252,31 +219,21 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        assert data != null;
+        Uri uri = data.getData();
 
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case ADD_NOTE: getNotes(ADD_NOTE, false); break;
             //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
                 case UPDATE_NOTE:
-                    if (data != null) {
-                        getNotes(UPDATE_NOTE, data.getBooleanExtra("isNoteDeleted", false));
-                    } break;
+                    getNotes(UPDATE_NOTE, data.getBooleanExtra("isNoteDeleted", false)); break;
             //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
                 case SELECT_IMAGE:
-                    if (data != null) {
-                        Uri selectedImageUri = data.getData();
-
-                        if (selectedImageUri != null) {
-                            try {
-                                String selectedImagePath = getPath(selectedImageUri);
-                                Intent noteWithImage = new Intent(getApplicationContext(), CreateNote.class);
-                                noteWithImage.putExtra("isFromQuickActions", true);
-                                noteWithImage.putExtra("quickActionType", "image");
-                                noteWithImage.putExtra("imagePath", selectedImagePath);
-                                startActivityForResult(noteWithImage, ADD_NOTE);
-                            } catch (Exception e) {
-                                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
+                    if (uri != null) {
+                        try { u.buildNoteWithImage(uri, getApplicationContext(), this, ADD_NOTE); }
+                        catch (Exception e) {
+                            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     } break;
             }
@@ -298,9 +255,8 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     }
 
     /**
-     * TextWatcher Implementations. In this class I only need 'onTextChanged' and 'afterTextChanged' for
-     * the search notes functionality. Notes can be searched by words/ letters located in any title,
-     * subtitle and even content.
+     * TextWatcher Implementations. Only 'onTextChanged' and 'afterTextChanged' are required for the search
+     * feature. Notes can be searched by words/ letters located in any title, subtitle and even content :)
      */
     @Override
     public void onTextChanged(CharSequence cs, int i, int i1, int i2) { adapter.cancelTimer(); }
@@ -317,7 +273,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
             Intent noteWithTitle = new Intent(getApplicationContext(), CreateNote.class);
             noteWithTitle.putExtra("isFromQuickActions", true);
             noteWithTitle.putExtra("quickActionType", "title");
-            noteWithTitle.putExtra("quickTitle", quickTitleInput.getText().toString().trim());
+            noteWithTitle.putExtra("quickTitle", qTitleInput.getText().toString().trim());
             startActivityForResult(noteWithTitle, ADD_NOTE);
         }
 
@@ -352,7 +308,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
                                             new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
                                             STORAGE_PERMISSION
                                         );
-                                     } else { selectImage(); } break;
+                                     } else { u.selectImage(this, SELECT_IMAGE); } break;
         }
     }
 }
