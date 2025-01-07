@@ -10,7 +10,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,7 +49,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     private UserSettings settings;
     private Utilities u;
     private View homeView, addURLView;
-    private EditText searchInput, qTitleInput, inputURL;
+    private EditText searchInput, qTitleInput, urlInput;
     private TextView homeText;
     private ImageView backBtn, createNoteBtn, settingsBtn, searchIcon, qAddImgBtn, qAddURLBtn;
     private RecyclerView notesRecyclerView;
@@ -66,9 +65,11 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     public static final int SHOW_NOTES = 3;
     public static final int SELECT_IMAGE = 4;
     public static final int STORAGE_PERMISSION = 5;
+    public static final int VERIFY_URL = 6;
 
     // States
     private static final int GRANTED = PackageManager.PERMISSION_GRANTED;
+    private static final int VERTICAL = StaggeredGridLayoutManager.VERTICAL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,9 +96,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         adapter = new NotesAdapter(list, this);
         notesRecyclerView = findViewById(R.id.notesRecyclerView);
         notesRecyclerView.setAdapter(adapter);
-        notesRecyclerView.setLayoutManager(
-                new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        );
+        notesRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, VERTICAL));
         homeText = findViewById(R.id.homeText);
         backBtn = findViewById(R.id.backButton);
         createNoteBtn = findViewById(R.id.createNoteBtn);
@@ -116,7 +115,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
                 R.layout.add_url_layout,
                 findViewById(R.id.addURLLayout)
         );
-        inputURL = addURLView.findViewById(R.id.inputURL);
+        urlInput = addURLView.findViewById(R.id.inputURL);
         builder = new AlertDialog.Builder(Home.this);
         galleryAccessIsNotGranted = ContextCompat.checkSelfPermission(getApplicationContext(),
                 Manifest.permission.READ_EXTERNAL_STORAGE) != GRANTED;
@@ -287,20 +286,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
             case R.id.backButton: onBackPressed(); break;
             case R.id.quickAddURL: quickAddURL(); break;
             case R.id.cancelAddURL: addURLDialog.dismiss(); break;
-        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
-            case R.id.confirmAddURL: inputURL.requestFocus();
-                if (inputURL.getText().toString().trim().isEmpty()) {
-                    Toast.makeText(Home.this,"Enter a URL", Toast.LENGTH_SHORT).show();
-                } else if (!Patterns.WEB_URL.matcher(inputURL.getText().toString()).matches()) {
-                    Toast.makeText(Home.this,"Enter a valid URL", Toast.LENGTH_SHORT).show();
-                } else {
-                    addURLDialog.dismiss();
-                    Intent noteWithURL = new Intent(getApplicationContext(), CreateNote.class);
-                    noteWithURL.putExtra("isFromQuickActions", true);
-                    noteWithURL.putExtra("quickActionType", "URL");
-                    noteWithURL.putExtra("URL", inputURL.getText().toString());
-                    startActivityForResult(noteWithURL, ADD_NOTE);
-                } break;
+            case R.id.confirmAddURL: u.verifyURLIsValid(this, urlInput, addURLDialog, VERIFY_URL); break;
         //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
             case R.id.quickAddImage: if (galleryAccessIsNotGranted) {
                                         ActivityCompat.requestPermissions(

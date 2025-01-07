@@ -8,19 +8,29 @@ import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.text.TextWatcher;
 import android.util.Patterns;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import com.example.ultranote.R;
 import com.example.ultranote.activities.CreateNote;
+import entities.Note;
 
 public class Utilities {
+
+    Application app;
 
     public static int darkGrey, lightGrey, offWhite, black, white, lightModeAccent, darkModeAccent;
     public static Drawable lightBlue, blue, lightInput, darkInput, saveBtnLight, saveBtnDark, light, dark;
 
-    Application app;
+    // States
+    private static final int VISIBLE = View.VISIBLE;
 
     public Utilities(Application app) { 
         this.app = app;
@@ -50,6 +60,22 @@ public class Utilities {
         blue = ContextCompat.getDrawable(context, R.drawable.add_note_button_light);
         lightInput = ContextCompat.getDrawable(context, R.drawable.quick_note_light_background);
         darkInput = ContextCompat.getDrawable(context, R.drawable.quick_note_background);
+    }
+
+    public static void initListeners(Activity a, View.OnClickListener listener, TextWatcher watcher) {
+        EditText title = a.findViewById(R.id.noteTitleInput);
+        EditText subtitle = a.findViewById(R.id.noteSubtitleInput);
+        EditText content = a.findViewById(R.id.noteContent);
+        a.findViewById(R.id.backButton).setOnClickListener(listener);
+        a.findViewById(R.id.saveButton).setOnClickListener(listener);
+        a.findViewById(R.id.removeTitle).setOnClickListener(listener);
+        a.findViewById(R.id.addURL).setOnClickListener(listener);
+        a.findViewById(R.id.deleteURL).setOnClickListener(listener);
+        a.findViewById(R.id.addImage).setOnClickListener(listener);
+        a.findViewById(R.id.deleteImage).setOnClickListener(listener);
+        title.addTextChangedListener(watcher);
+        subtitle.addTextChangedListener(watcher);
+        content.addTextChangedListener(watcher);
     }
 
     public static ImageView[] initColourButtons(Activity a) {
@@ -100,6 +126,52 @@ public class Utilities {
         };
     }
 
+    public void setNoteColourToSelected(CreateNote cn) {
+        ImageView[] colours = initColourButtons(cn);
+
+        for (int i = 0; i < colours.length; i++) {
+            final int j = i;
+            colours[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    cn.selectColour(colours, j + 1);
+                    switch (j) {
+                      case 0: cn.setColourTo("#333333"); break;  case 1: cn.setColourTo("#FF2929"); break;
+                      case 2: cn.setColourTo("#FF5722"); break;  case 3: cn.setColourTo("#FF9800"); break;
+                      case 4: cn.setColourTo("#FFE719"); break;  case 5: cn.setColourTo("#8BC34A"); break;
+                      case 6: cn.setColourTo("#4CAF50"); break;  case 7: cn.setColourTo("#00BCD4"); break;
+                      case 8: cn.setColourTo("#2196F3"); break;  case 9: cn.setColourTo("#3F51B5"); break;
+                      case 10: cn.setColourTo("#673AB7"); break; case 11: cn.setColourTo("#9C27B0"); break;
+                      case 12: cn.setColourTo("#E91E63"); break;
+                    }
+                }
+            });
+        }
+    }
+
+    public void initColourPickerFor(Note note, CreateNote activity) {
+        boolean existingNoteHasAColour = note != null && note.getColour() != null
+                && !note.getColour().trim().isEmpty();
+
+        if (existingNoteHasAColour) {
+            switch (note.getColour()) {
+                case "#333333": activity.setColourTo("#333333"); activity.switchTickToBtn(0); break;
+                case "#FF2929": activity.setColourTo("#FF2929"); activity.switchTickToBtn(1); break;
+                case "#FF5722": activity.setColourTo("#FF5722"); activity.switchTickToBtn(2); break;
+                case "#FF9800": activity.setColourTo("#FF9800"); activity.switchTickToBtn(3); break;
+                case "#FFE719": activity.setColourTo("#FFE719"); activity.switchTickToBtn(4); break;
+                case "#8BC34A": activity.setColourTo("#8BC34A"); activity.switchTickToBtn(5); break;
+                case "#4CAF50": activity.setColourTo("#4CAF50"); activity.switchTickToBtn(6); break;
+                case "#00BCD4": activity.setColourTo("#00BCD4"); activity.switchTickToBtn(7); break;
+                case "#2196F3": activity.setColourTo("#2196F3"); activity.switchTickToBtn(8); break;
+                case "#3F51B5": activity.setColourTo("#3F51B5"); activity.switchTickToBtn(9); break;
+                case "#673AB7": activity.setColourTo("#673AB7"); activity.switchTickToBtn(10); break;
+                case "#9C27B0": activity.setColourTo("#9C27B0"); activity.switchTickToBtn(11); break;
+                case "#E91E63": activity.setColourTo("#E91E63"); activity.switchTickToBtn(12); break;
+            }
+        }
+    }
+
     public void selectImage(Activity activity, int requestCode) {
         Intent selectedImg = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
@@ -117,7 +189,7 @@ public class Utilities {
         activity.startActivityForResult(noteWithImage, requestCode);
     }
 
-    public boolean compareToURLRegex(EditText e) {
+    public boolean inputDoesNotMatchURLRegex(EditText e) {
         return !Patterns.WEB_URL.matcher(e.getText().toString()).matches();
     }
 
@@ -135,5 +207,29 @@ public class Utilities {
         }
 
         return filePath;
+    }
+
+    public void verifyURLIsValid(Activity a, EditText e, AlertDialog dialog, int requestCode) {
+        final TextView url = a.findViewById(R.id.webUrl);
+        final LinearLayout urlBox = a.findViewById(R.id.webUrlLayout);
+        final Intent noteWithURL = new Intent(a.getApplicationContext(), CreateNote.class);
+        e.requestFocus();
+
+        if (e.getText().toString().trim().isEmpty()) {
+            Toast.makeText(a,"Empty URL!", Toast.LENGTH_SHORT).show(); return;
+        }
+        if (inputDoesNotMatchURLRegex(e)) {
+            Toast.makeText(a,"Invalid URL!", Toast.LENGTH_SHORT).show(); return;
+        }
+
+        if (requestCode == 3) {// Perform URL embedding from within CreateNote
+            url.setText(e.getText().toString()); urlBox.setVisibility(VISIBLE); dialog.dismiss(); return;
+        }
+
+        dialog.dismiss();
+        noteWithURL.putExtra("isFromQuickActions", true);
+        noteWithURL.putExtra("quickActionType", "URL");
+        noteWithURL.putExtra("URL", e.getText().toString());
+        a.startActivityForResult(noteWithURL, requestCode);
     }
 }
