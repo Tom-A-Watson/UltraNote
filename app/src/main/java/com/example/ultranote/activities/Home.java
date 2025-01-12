@@ -46,7 +46,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     private boolean galleryAccessIsNotGranted;
     private UserSettings settings;
     private Utilities u;
-    private View homeView, addURLView;
+    private View homeView, urlView;
     private EditText searchInput, qTitleInput, urlInput;
     private TextView homeText;
     private ImageView backBtn, createNoteBtn, settingsBtn, searchIcon, qAddImgBtn, qAddURLBtn;
@@ -105,22 +105,22 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         searchIcon = findViewById(R.id.searchIcon);
         qActions = findViewById(R.id.quickActionsLayout);
         qAddImgBtn = findViewById(R.id.quickAddImage);
-        qAddURLBtn = findViewById(R.id.quickAddURL);
+        qAddURLBtn = findViewById(R.id.qAddURL);
         homeView = findViewById(R.id.homeView);
         qTitleInput = findViewById(R.id.quickTitleInput);
         qTitleInput.setOnEditorActionListener(this);
-        addURLView = LayoutInflater.from(this).inflate(
+        urlView = LayoutInflater.from(this).inflate(
                 R.layout.add_url_layout,
                 findViewById(R.id.addURLLayout)
         );
-        urlInput = addURLView.findViewById(R.id.inputURL);
+        urlInput = urlView.findViewById(R.id.inputURL);
         builder = new AlertDialog.Builder(Home.this);
         galleryAccessIsNotGranted = ContextCompat.checkSelfPermission(getApplicationContext(),
                 Manifest.permission.READ_EXTERNAL_STORAGE) != GRANTED;
 
         findViewById(R.id.backButton).setOnClickListener(this);
         findViewById(R.id.quickAddImage).setOnClickListener(this);
-        findViewById(R.id.quickAddURL).setOnClickListener(this);
+        findViewById(R.id.qAddURL).setOnClickListener(this);
     }
 
     private void updateView() {
@@ -270,9 +270,9 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         switch (view.getId()) {
             // Simple 1-line implementations
             case R.id.backButton: onBackPressed(); break;
-            case R.id.quickAddURL: Utilities.urlDialog = Utilities.showDialog(addURLView, builder, this); break;
+            case R.id.qAddURL: Utilities.urlDialog = Utilities.showDialog(urlView, builder, this); break;
             case R.id.cancelAddURL: Utilities.urlDialog.dismiss(); break;
-            case R.id.confirmAddURL: Utilities.validateURL(this, urlInput, Utilities.urlDialog, VERIFY_URL); break;
+            case R.id.confirmAddURL: Utilities.validateURL(this, urlInput, Utilities.urlDialog); break;
         //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
             case R.id.quickAddImage: if (galleryAccessIsNotGranted) {
                                         ActivityCompat.requestPermissions(

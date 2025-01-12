@@ -229,7 +229,7 @@ public class Utilities {
         return urlDialog;
     }
 
-    public static void validateURL(Activity a, EditText e, AlertDialog dialog, int requestCode) {
+    public static void validateURL(Activity a, EditText e, AlertDialog dialog) {
         final TextView url = a.findViewById(R.id.webUrl);
         final LinearLayout urlLayout = a.findViewById(R.id.urlLayout);
         final Intent noteWithURL = new Intent(a.getApplicationContext(), CreateNote.class);
@@ -244,7 +244,7 @@ public class Utilities {
 
         dialog.dismiss();
 
-        if (requestCode == 3) { // Perform URL embedding from within CreateNote
+        if (a.getLocalClassName().equals("activities.CreateNote")) { // Embed URL from within CreateNote
             url.setText(e.getText().toString()); urlLayout.setVisibility(VISIBLE); return;
         }
 
@@ -252,6 +252,6 @@ public class Utilities {
         noteWithURL.putExtra("isFromQuickActions", true);
         noteWithURL.putExtra("quickActionType", "URL");
         noteWithURL.putExtra("URL", e.getText().toString());
-        a.startActivityForResult(noteWithURL, requestCode);
+        a.startActivityForResult(noteWithURL, 1);
     }
 }

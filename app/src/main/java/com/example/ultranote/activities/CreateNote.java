@@ -65,7 +65,6 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     // Request codes
     private static final int STORAGE_PERMISSION = 1;
     private static final int SELECT_IMAGE = 2;
-    private static final int VERIFY_URL = 3;
 
     // States
     private static final int EXPANDED = BottomSheetBehavior.STATE_EXPANDED;
@@ -366,7 +365,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
             case R.id.removeContent: content.getText().clear(); break;
             case R.id.addURL: Utilities.urlDialog = Utilities.showDialog(urlView, builder, this); break;
             case R.id.cancelAddURL: Utilities.urlDialog.dismiss(); break;
-            case R.id.confirmAddURL: Utilities.validateURL(this, input, Utilities.urlDialog, VERIFY_URL); break;
+            case R.id.confirmAddURL: Utilities.validateURL(this, input, Utilities.urlDialog); break;
             case R.id.deleteURL: url.setText(null); input.setText(""); urlBox.setVisibility(GONE); break;
             case R.id.colourIndicator: case R.id.noteOptionsText: toggleNoteOptions(options); break;
             case R.id.deleteBtnLayout: options.setState(COLLAPSED); showDeleteNoteDialog(); break;
