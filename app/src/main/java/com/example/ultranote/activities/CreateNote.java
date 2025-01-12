@@ -13,7 +13,7 @@ import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.graphics.drawable.Drawable;
 import java.io.InputStream;
-import android.view.Window;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -42,14 +42,14 @@ import utilities.Utilities;
 
 public class CreateNote extends AppCompatActivity implements View.OnClickListener, TextWatcher {
 
-    private boolean galleryAccessIsNotGranted, inputDoesNotMatchURLRegex;
+    private boolean galleryAccessIsNotGranted;
     private Note existingNote;
     final Note note = new Note();
     private UserSettings settings;
     private Utilities u;
-    private EditText title, subtitle, content, urlInput;
+    private EditText title, subtitle, content, input;
     private TextView dateTime, url, createNoteText, noteOptionsText, colourPickerText;
-    private View colourIndicator, sIndicator, addURLView, deleteNoteView;
+    private View colourIndicator, urlView, sIndicator, deleteNoteView;
     private ImageView image, backBtn, addURL, addImg, saveBtn, removeTitle, removeSubtitle, removeContent;
     private ImageView[] colours;
     private Drawable[] darkBGColours, lightBGColours;
@@ -58,7 +58,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     private BottomSheetBehavior<LinearLayout> options;
     private LinearLayout urlBox, noteOptions, deleteBtn;
     private CoordinatorLayout createNoteView;
-    private AlertDialog addURLDialog, deleteNoteDialog;
+    private AlertDialog deleteNoteDialog;
     private AlertDialog.Builder builder;
     private String selectedImagePath, type, singleLineDate, multiLineDate;
 
@@ -98,6 +98,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         Utilities.initListeners(this, this, this);
         Utilities.initCreateNoteDrawables(this);
         Utilities.initGlobalColours(this);
+        Utilities.urlDialog = null;
 
         settings = (UserSettings) getApplication();
         u = new Utilities(getApplication());
@@ -117,7 +118,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         colourIndicator = findViewById(R.id.colourIndicator);
         image = findViewById(R.id.noteImage);
         url = findViewById(R.id.webUrl);
-        urlBox = findViewById(R.id.webUrlLayout);
+        urlBox = findViewById(R.id.urlLayout);
         removeTitle = findViewById(R.id.removeTitle);
         removeSubtitle = findViewById(R.id.removeSubtitle);
         removeContent = findViewById(R.id.removeContent);
@@ -126,7 +127,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         colourPickerText = findViewById(R.id.colourPickerText);
         options = BottomSheetBehavior.from(noteOptions);
         builder = new AlertDialog.Builder(CreateNote.this);
-        addURLView = LayoutInflater.from(this).inflate(
+        urlView = LayoutInflater.from(this).inflate(
                 R.layout.add_url_layout,
                 findViewById(R.id.addURLLayout)
         );
@@ -134,7 +135,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
                 R.layout.delete_note_layout,
                 findViewById(R.id.deleteNoteLayout)
         );
-        urlInput = addURLView.findViewById(R.id.inputURL);
+        input = urlView.findViewById(R.id.inputURL);
         singleLineDate = new SimpleDateFormat(
                 "EEEE dd MMMM yyyy HH:mm a", Locale.getDefault()).format(new Date());
         multiLineDate = new SimpleDateFormat(
@@ -338,20 +339,6 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         }
     }
 
-    private void addURL() {
-        if (addURLDialog == null) {
-            addURLView.findViewById(R.id.confirmAddURL).setOnClickListener(this);
-            addURLView.findViewById(R.id.cancelAddURL).setOnClickListener(this);
-            builder.setView(addURLView);
-            addURLDialog = builder.create();
-            Window addURLWindow = addURLDialog.getWindow();
-
-            if (addURLWindow != null) { addURLWindow.setBackgroundDrawable(new ColorDrawable(0)); }
-        }
-
-        addURLDialog.show();
-    }
-
     /**
      * TextWatcher implementations. Only 'onTextChanged()' is required, for empty field checks :)
      */
@@ -377,10 +364,10 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
             case R.id.removeTitle: title.getText().clear(); break;
             case R.id.removeSubtitle: subtitle.getText().clear(); break;
             case R.id.removeContent: content.getText().clear(); break;
-            case R.id.addURL: addURL(); break;
-            case R.id.cancelAddURL: addURLDialog.dismiss(); break;
-            case R.id.confirmAddURL: u.verifyURLIsValid(this, urlInput, addURLDialog, VERIFY_URL); break;
-            case R.id.deleteURL: url.setText(null); urlInput.setText(null); urlBox.setVisibility(GONE); break;
+            case R.id.addURL: Utilities.urlDialog = Utilities.showDialog(urlView, builder, this); break;
+            case R.id.cancelAddURL: Utilities.urlDialog.dismiss(); break;
+            case R.id.confirmAddURL: Utilities.validateURL(this, input, Utilities.urlDialog, VERIFY_URL); break;
+            case R.id.deleteURL: url.setText(null); input.setText(""); urlBox.setVisibility(GONE); break;
             case R.id.colourIndicator: case R.id.noteOptionsText: toggleNoteOptions(options); break;
             case R.id.deleteBtnLayout: options.setState(COLLAPSED); showDeleteNoteDialog(); break;
             case R.id.cancelDeleteNote: deleteNoteDialog.dismiss(); break;

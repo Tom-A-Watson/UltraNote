@@ -5,12 +5,14 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,6 +30,8 @@ public class Utilities {
 
     public static int darkGrey, lightGrey, offWhite, black, white, lightModeAccent, darkModeAccent;
     public static Drawable lightBlue, blue, lightInput, darkInput, saveBtnLight, saveBtnDark, light, dark;
+
+    public static AlertDialog urlDialog;
 
     // States
     private static final int VISIBLE = View.VISIBLE;
@@ -189,7 +193,7 @@ public class Utilities {
         activity.startActivityForResult(noteWithImage, requestCode);
     }
 
-    public boolean inputDoesNotMatchURLRegex(EditText e) {
+    public static boolean inputDoesNotMatchURLRegex(EditText e) {
         return !Patterns.WEB_URL.matcher(e.getText().toString()).matches();
     }
 
@@ -209,9 +213,25 @@ public class Utilities {
         return filePath;
     }
 
-    public void verifyURLIsValid(Activity a, EditText e, AlertDialog dialog, int requestCode) {
+    public static AlertDialog showDialog(View view, AlertDialog.Builder builder, View.OnClickListener listener) {
+        view.findViewById(R.id.confirmAddURL).setOnClickListener(listener);
+        view.findViewById(R.id.cancelAddURL).setOnClickListener(listener);
+
+        if (urlDialog == null) {
+            builder.setView(view);
+            urlDialog = builder.create();
+            final Window addURLWindow = urlDialog.getWindow();
+
+            if (addURLWindow != null) { addURLWindow.setBackgroundDrawable(new ColorDrawable(0)); }
+        }
+
+        urlDialog.show();
+        return urlDialog;
+    }
+
+    public static void validateURL(Activity a, EditText e, AlertDialog dialog, int requestCode) {
         final TextView url = a.findViewById(R.id.webUrl);
-        final LinearLayout urlBox = a.findViewById(R.id.webUrlLayout);
+        final LinearLayout urlLayout = a.findViewById(R.id.urlLayout);
         final Intent noteWithURL = new Intent(a.getApplicationContext(), CreateNote.class);
         e.requestFocus();
 
@@ -222,11 +242,13 @@ public class Utilities {
             Toast.makeText(a,"Invalid URL!", Toast.LENGTH_SHORT).show(); return;
         }
 
-        if (requestCode == 3) {// Perform URL embedding from within CreateNote
-            url.setText(e.getText().toString()); urlBox.setVisibility(VISIBLE); dialog.dismiss(); return;
+        dialog.dismiss();
+
+        if (requestCode == 3) { // Perform URL embedding from within CreateNote
+            url.setText(e.getText().toString()); urlLayout.setVisibility(VISIBLE); return;
         }
 
-        dialog.dismiss();
+        // Otherwise do it from Home via Intent
         noteWithURL.putExtra("isFromQuickActions", true);
         noteWithURL.putExtra("quickActionType", "URL");
         noteWithURL.putExtra("URL", e.getText().toString());
