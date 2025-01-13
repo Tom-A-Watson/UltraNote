@@ -32,18 +32,20 @@ public class Utilities {
 
     Application app;
 
+    private static String readExtStoragePerm;
+
     public static int darkGrey, lightGrey, offWhite, black, white, lightModeAccent, darkModeAccent;
     public static Drawable lightBlue, blue, lightInput, darkInput, saveBtnLight, saveBtnDark, light, dark;
 
     public static AlertDialog urlDialog, deleteDialog;
     public static AlertDialog.Builder builder;
-    public static TextView url;
 
     // States
     private static final int VISIBLE = View.VISIBLE;
 
     public Utilities(Application app) { 
         this.app = app;
+        readExtStoragePerm = Manifest.permission.READ_EXTERNAL_STORAGE;
     }
 
     public static void initGlobalColours(Context context) {
@@ -204,16 +206,14 @@ public class Utilities {
     }
 
     public static boolean galleryAccessIsNotGranted(Context c) {
-        return ContextCompat.checkSelfPermission(c, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED;
+        return ContextCompat.checkSelfPermission(c, readExtStoragePerm) != PackageManager.PERMISSION_GRANTED;
     }
 
-    public void reqAccessOrSelectImg(Activity a, Context c, int code1, int code2) {
+    public void reqPermOrSelectImg(Activity a, Context c, int storagePermCode, int selectImgCode) {
         if (galleryAccessIsNotGranted(c)) {
-            ActivityCompat.requestPermissions(
-                    a, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, code1
-            );
-        } else { selectImage(a, code2); }
+            ActivityCompat.requestPermissions(a, new String[] {readExtStoragePerm}, storagePermCode);
+        }
+        else { selectImage(a, selectImgCode); }
     }
 
     public String getPath(Uri contentUri) {
@@ -232,11 +232,11 @@ public class Utilities {
         return filePath;
     }
 
-    public static AlertDialog showDialog(Context c, View.OnClickListener listener, View view,
+    public static AlertDialog showDialog(Context c, View.OnClickListener l, View view,
                                          BottomSheetBehavior<LinearLayout> noteOptions) {
         if (deleteDialog == null) {
-            view.findViewById(R.id.confirmDeleteNote).setOnClickListener(listener);
-            view.findViewById(R.id.cancelDeleteNote).setOnClickListener(listener);
+            view.findViewById(R.id.confirmDeleteNote).setOnClickListener(l);
+            view.findViewById(R.id.cancelDeleteNote).setOnClickListener(l);
             builder = new AlertDialog.Builder(c);
             builder.setView(view);
             deleteDialog = builder.create();
@@ -250,13 +250,13 @@ public class Utilities {
         return deleteDialog;
     }
 
-    public static AlertDialog showDialog(Activity a, View.OnClickListener listener, View view,
-                                         AlertDialog.Builder builder) {
+    public static AlertDialog showDialog(Activity a, Context c, View.OnClickListener l, View view) {
         if (urlDialog == null) {
-            EditText urlInput = view.findViewById(R.id.inputURL);
-            view.findViewById(R.id.confirmAddURL).setOnClickListener(listener);
-            view.findViewById(R.id.cancelAddURL).setOnClickListener(listener);
-            url = a.findViewById(R.id.webUrl);
+            final EditText urlInput = view.findViewById(R.id.inputURL);
+            final TextView url = a.findViewById(R.id.webUrl);
+            view.findViewById(R.id.confirmAddURL).setOnClickListener(l);
+            view.findViewById(R.id.cancelAddURL).setOnClickListener(l);
+            builder = new AlertDialog.Builder(c);
             builder.setView(view);
             urlDialog = builder.create();
             final Window addURLWindow = urlDialog.getWindow();

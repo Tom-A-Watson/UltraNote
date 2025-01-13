@@ -46,7 +46,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     private UserSettings settings;
     private Utilities u;
     private Context appContext;
-    private View homeView, urlView;
+    private View homeView, urlV;
     private EditText searchInput, qTitleInput, urlInput;
     private TextView homeText;
     private ImageView backBtn, createNoteBtn, settingsBtn, searchIcon, qAddImgBtn, qAddURLBtn;
@@ -54,14 +54,13 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     private LinearLayout searchBar, qActions;
     private List<Note> list;
     private NotesAdapter adapter;
-    private AlertDialog.Builder builder;
 
     // Request codes
     public static final int ADD_NOTE = 1;
     public static final int UPDATE_NOTE = 2;
     public static final int SHOW_NOTES = 3;
     public static final int SELECT_IMAGE = 4;
-    public static final int STORAGE_PERMISSION = 5;
+    public static final int STORAGE_PERM = 5;
 
     // States
     private static final int GRANTED = PackageManager.PERMISSION_GRANTED;
@@ -109,12 +108,11 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         homeView = findViewById(R.id.homeView);
         qTitleInput = findViewById(R.id.quickTitleInput);
         qTitleInput.setOnEditorActionListener(this);
-        urlView = LayoutInflater.from(this).inflate(
+        urlV = LayoutInflater.from(this).inflate(
                 R.layout.add_url_layout,
                 findViewById(R.id.addURLLayout)
         );
-        urlInput = urlView.findViewById(R.id.inputURL);
-        builder = new AlertDialog.Builder(Home.this);
+        urlInput = urlV.findViewById(R.id.inputURL);
 
         findViewById(R.id.backButton).setOnClickListener(this);
         findViewById(R.id.qaddImg).setOnClickListener(this);
@@ -169,7 +167,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     public void onRequestPermissionsResult(int reqCode, @NonNull String[] perms, @NonNull int[] results) {
         super.onRequestPermissionsResult(reqCode, perms, results);
 
-        if (reqCode == STORAGE_PERMISSION && results.length > 0) {
+        if (reqCode == STORAGE_PERM && results.length > 0) {
             if (results[0] == GRANTED) { u.selectImage(this, SELECT_IMAGE); }
             else { Toast.makeText(this, "Permission Denied!", Toast.LENGTH_SHORT).show(); }
         }
@@ -267,10 +265,10 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.backButton: onBackPressed(); break;
-            case R.id.addURL: Utilities.urlDialog = Utilities.showDialog(this, this, urlView, builder); break;
+            case R.id.addURL: Utilities.urlDialog = Utilities.showDialog(this, this, this, urlV); break;
             case R.id.cancelAddURL: Utilities.urlDialog.dismiss(); break;
             case R.id.confirmAddURL: Utilities.validateURL(this, urlInput, Utilities.urlDialog); break;
-            case R.id.qaddImg: u.reqAccessOrSelectImg(this, appContext, STORAGE_PERMISSION, SELECT_IMAGE); break;
+            case R.id.qaddImg: u.reqPermOrSelectImg(this, appContext, STORAGE_PERM, SELECT_IMAGE); break;
         }
     }
 }

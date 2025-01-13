@@ -13,16 +13,12 @@ import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.graphics.drawable.Drawable;
 import java.io.InputStream;
-
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -41,8 +37,8 @@ import utilities.Utilities;
 
 public class CreateNote extends AppCompatActivity implements View.OnClickListener, TextWatcher {
 
-    private Note existingNote;
     final Note note = new Note();
+    private Note existingNote;
     private UserSettings settings;
     private Utilities u;
     private EditText title, subtitle, content, input;
@@ -57,12 +53,10 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     private BottomSheetBehavior<LinearLayout> o;
     private LinearLayout urlBox, noteOptions, deleteBtn;
     private CoordinatorLayout createNoteView;
-    private AlertDialog deleteNoteDialog;
-    private AlertDialog.Builder builder;
     private String selectedImagePath, type, singleLineDate, multiLineDate;
 
     // Request codes
-    private static final int STORAGE_PERMISSION = 1;
+    private static final int STORAGE_PERM = 1;
     private static final int SELECT_IMAGE = 2;
 
     // States
@@ -124,7 +118,6 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         noteOptionsText = findViewById(R.id.noteOptionsText);
         colourPickerText = findViewById(R.id.colourPickerText);
         o = BottomSheetBehavior.from(noteOptions);
-        builder = new AlertDialog.Builder(CreateNote.this);
         urlV = LayoutInflater.from(this).inflate(
                 R.layout.add_url_layout,
                 findViewById(R.id.addURLLayout)
@@ -292,7 +285,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     public void onRequestPermissionsResult(int reqCode, @NonNull String[] perms, @NonNull int[] results) {
         super.onRequestPermissionsResult(reqCode, perms, results);
 
-        if (reqCode == STORAGE_PERMISSION && results.length > 0) {
+        if (reqCode == STORAGE_PERM && results.length > 0) {
             if (results[0] == GRANTED) { u.selectImage(this, SELECT_IMAGE); }
             else { Toast.makeText(this, "Permission Denied!", Toast.LENGTH_SHORT).show(); }
         }
@@ -342,7 +335,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
             case R.id.removeTitle: title.getText().clear(); break;
             case R.id.removeSubtitle: subtitle.getText().clear(); break;
             case R.id.removeContent: content.getText().clear(); break;
-            case R.id.addURL: Utilities.urlDialog = Utilities.showDialog(this, this, urlV, builder); break;
+            case R.id.addURL: Utilities.urlDialog = Utilities.showDialog(this, this, this, urlV); break;
             case R.id.cancelAddURL: Utilities.urlDialog.dismiss(); break;
             case R.id.confirmAddURL: Utilities.validateURL(this, input, Utilities.urlDialog); break;
             case R.id.deleteURL: url.setText(null); input.setText(""); urlBox.setVisibility(GONE); break;
@@ -350,7 +343,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
             case R.id.delete: Utilities.deleteDialog = Utilities.showDialog(this, this, deleteV, o); break;
             case R.id.cancelDeleteNote: Utilities.deleteDialog.dismiss(); break;
             case R.id.confirmDeleteNote: new DeleteNoteTask().execute(); break;
-            case R.id.addImage: u.reqAccessOrSelectImg(this, appContext, STORAGE_PERMISSION, SELECT_IMAGE); break;
+            case R.id.addImage: u.reqPermOrSelectImg(this, appContext, STORAGE_PERM, SELECT_IMAGE); break;
             case R.id.deleteImage: image.setImageBitmap(null); image.setVisibility(GONE);
                 findViewById(R.id.deleteImage).setVisibility(GONE); selectedImagePath = ""; break;
         }
