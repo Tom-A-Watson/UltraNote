@@ -1,11 +1,12 @@
 package com.example.ultranote.activities;
 
-import android.Manifest;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.annotation.SuppressLint;
 import listeners.NotesListener;
 import java.util.List;
+
+import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
 import database.NotesDatabase;
@@ -25,8 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.example.ultranote.R;
@@ -46,6 +45,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     private boolean galleryAccessIsNotGranted;
     private UserSettings settings;
     private Utilities u;
+    private Context appContext;
     private View homeView, urlView;
     private EditText searchInput, qTitleInput, urlInput;
     private TextView homeText;
@@ -62,7 +62,6 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     public static final int SHOW_NOTES = 3;
     public static final int SELECT_IMAGE = 4;
     public static final int STORAGE_PERMISSION = 5;
-    public static final int VERIFY_URL = 6;
 
     // States
     private static final int GRANTED = PackageManager.PERMISSION_GRANTED;
@@ -90,6 +89,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
 
         settings = (UserSettings) getApplication();
         u = new Utilities(getApplication());
+        appContext = getApplicationContext();
         list = new ArrayList<>();
         adapter = new NotesAdapter(list, this);
         notesRecyclerView = findViewById(R.id.notesRecyclerView);
@@ -104,8 +104,8 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         searchInput.addTextChangedListener(this);
         searchIcon = findViewById(R.id.searchIcon);
         qActions = findViewById(R.id.quickActionsLayout);
-        qAddImgBtn = findViewById(R.id.quickAddImage);
-        qAddURLBtn = findViewById(R.id.qAddURL);
+        qAddImgBtn = findViewById(R.id.qaddImg);
+        qAddURLBtn = findViewById(R.id.addURL);
         homeView = findViewById(R.id.homeView);
         qTitleInput = findViewById(R.id.quickTitleInput);
         qTitleInput.setOnEditorActionListener(this);
@@ -115,29 +115,27 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         );
         urlInput = urlView.findViewById(R.id.inputURL);
         builder = new AlertDialog.Builder(Home.this);
-        galleryAccessIsNotGranted = ContextCompat.checkSelfPermission(getApplicationContext(),
-                Manifest.permission.READ_EXTERNAL_STORAGE) != GRANTED;
 
         findViewById(R.id.backButton).setOnClickListener(this);
-        findViewById(R.id.quickAddImage).setOnClickListener(this);
-        findViewById(R.id.qAddURL).setOnClickListener(this);
+        findViewById(R.id.qaddImg).setOnClickListener(this);
+        findViewById(R.id.addURL).setOnClickListener(this);
     }
 
     private void updateView() {
         if (settings.theme().equals(UserSettings.LIGHT_THEME)) {// Set components to light mode colours
             homeText.setTextColor(Utilities.black);    qTitleInput.setTextColor(Utilities.black);
             searchInput.setTextColor(Utilities.black);
-            //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
             backBtn.setColorFilter(Utilities.black);        settingsBtn.setColorFilter(Utilities.lightGrey);
             qAddImgBtn.setColorFilter(Utilities.lightGrey); qAddURLBtn.setColorFilter(Utilities.lightGrey);
             searchIcon.setColorFilter(Utilities.darkGrey);
-            //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
             homeView.setBackgroundColor(Utilities.white);
             searchBar.setBackgroundColor(Utilities.offWhite);
             qActions.setBackgroundColor(Utilities.offWhite);
-            //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
             createNoteBtn.setBackground(Utilities.blue); qTitleInput.setBackground(Utilities.lightInput);
-            //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
             searchInput.setHintTextColor(Utilities.black); qTitleInput.setHintTextColor(Utilities.black);
 
             return;
@@ -180,7 +178,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     @Override
     public void onNoteClicked(Note note, int position) {
         noteClickedPosition = position;
-        Intent intent = new Intent(getApplicationContext(), CreateNote.class);
+        Intent intent = new Intent(appContext, CreateNote.class);
         intent.putExtra("isViewOrUpdate", true);
         intent.putExtra("note", note);
         startActivityForResult(intent, UPDATE_NOTE);
@@ -192,7 +190,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         {
             @Override
             protected List<Note> doInBackground(Void... voids) {
-                return NotesDatabase.getDatabase(getApplicationContext()).noteDao().getAllNotes();
+                return NotesDatabase.getDatabase(appContext).noteDao().getAllNotes();
             }
 
             @Override @SuppressLint("NotifyDataSetChanged")
@@ -230,7 +228,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
                 case SELECT_IMAGE:
                     Uri uri = data.getData();
                     if (uri != null) {
-                        try { u.buildNoteWithImage(uri, getApplicationContext(), this, ADD_NOTE); }
+                        try { u.buildNoteWithImage(uri, appContext, this, ADD_NOTE); }
                         catch (Exception e) {
                             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
@@ -268,19 +266,11 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     @Override @SuppressLint("NonConstantResourceId")
     public void onClick(View view) {
         switch (view.getId()) {
-            // Simple 1-line implementations
             case R.id.backButton: onBackPressed(); break;
-            case R.id.qAddURL: Utilities.urlDialog = Utilities.showDialog(urlView, builder, this); break;
+            case R.id.addURL: Utilities.urlDialog = Utilities.showDialog(this, this, urlView, builder); break;
             case R.id.cancelAddURL: Utilities.urlDialog.dismiss(); break;
             case R.id.confirmAddURL: Utilities.validateURL(this, urlInput, Utilities.urlDialog); break;
-        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
-            case R.id.quickAddImage: if (galleryAccessIsNotGranted) {
-                                        ActivityCompat.requestPermissions(
-                                            Home.this,
-                                            new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
-                                            STORAGE_PERMISSION
-                                        );
-                                     } else { u.selectImage(this, SELECT_IMAGE); } break;
+            case R.id.qaddImg: u.reqAccessOrSelectImg(this, appContext, STORAGE_PERMISSION, SELECT_IMAGE); break;
         }
     }
 }

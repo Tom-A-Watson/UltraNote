@@ -145,7 +145,7 @@
             android:textSize="@dimen/_14ssp" />
 
         <ImageView
-            android:id="@+id/quickAddImage"
+            android:id="@+id/qaddImg"
             android:layout_width="@dimen/_26sdp"
             android:layout_height="@dimen/_26sdp"
             android:layout_marginStart="@dimen/_15sdp"
@@ -154,7 +154,7 @@
             app:tint="@color/offWhite"/>
 
         <ImageView
-            android:id="@+id/qAddURL"
+            android:id="@+id/addURL"
             android:layout_width="@dimen/_26sdp"
             android:layout_height="@dimen/_26sdp"
             android:layout_marginStart="@dimen/_15sdp"

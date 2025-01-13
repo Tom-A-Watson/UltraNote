@@ -1,9 +1,11 @@
 package utilities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -19,9 +21,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.example.ultranote.R;
 import com.example.ultranote.activities.CreateNote;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import entities.Note;
 
 public class Utilities {
@@ -31,7 +35,9 @@ public class Utilities {
     public static int darkGrey, lightGrey, offWhite, black, white, lightModeAccent, darkModeAccent;
     public static Drawable lightBlue, blue, lightInput, darkInput, saveBtnLight, saveBtnDark, light, dark;
 
-    public static AlertDialog urlDialog;
+    public static AlertDialog urlDialog, deleteDialog;
+    public static AlertDialog.Builder builder;
+    public static TextView url;
 
     // States
     private static final int VISIBLE = View.VISIBLE;
@@ -197,6 +203,19 @@ public class Utilities {
         return !Patterns.WEB_URL.matcher(e.getText().toString()).matches();
     }
 
+    public static boolean galleryAccessIsNotGranted(Context c) {
+        return ContextCompat.checkSelfPermission(c, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED;
+    }
+
+    public void reqAccessOrSelectImg(Activity a, Context c, int code1, int code2) {
+        if (galleryAccessIsNotGranted(c)) {
+            ActivityCompat.requestPermissions(
+                    a, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, code1
+            );
+        } else { selectImage(a, code2); }
+    }
+
     public String getPath(Uri contentUri) {
         String filePath;
         Cursor cursor = app.getContentResolver()
@@ -213,14 +232,38 @@ public class Utilities {
         return filePath;
     }
 
-    public static AlertDialog showDialog(View view, AlertDialog.Builder builder, View.OnClickListener listener) {
-        view.findViewById(R.id.confirmAddURL).setOnClickListener(listener);
-        view.findViewById(R.id.cancelAddURL).setOnClickListener(listener);
+    public static AlertDialog showDialog(Context c, View.OnClickListener listener, View view,
+                                         BottomSheetBehavior<LinearLayout> noteOptions) {
+        if (deleteDialog == null) {
+            view.findViewById(R.id.confirmDeleteNote).setOnClickListener(listener);
+            view.findViewById(R.id.cancelDeleteNote).setOnClickListener(listener);
+            builder = new AlertDialog.Builder(c);
+            builder.setView(view);
+            deleteDialog = builder.create();
+            final Window deleteNoteWindow = deleteDialog.getWindow();
 
+            if (deleteNoteWindow != null) { deleteNoteWindow.setBackgroundDrawable(new ColorDrawable(0)); }
+        }
+
+        noteOptions.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        deleteDialog.show();
+        return deleteDialog;
+    }
+
+    public static AlertDialog showDialog(Activity a, View.OnClickListener listener, View view,
+                                         AlertDialog.Builder builder) {
         if (urlDialog == null) {
+            EditText urlInput = view.findViewById(R.id.inputURL);
+            view.findViewById(R.id.confirmAddURL).setOnClickListener(listener);
+            view.findViewById(R.id.cancelAddURL).setOnClickListener(listener);
+            url = a.findViewById(R.id.webUrl);
             builder.setView(view);
             urlDialog = builder.create();
             final Window addURLWindow = urlDialog.getWindow();
+
+            if (a.getLocalClassName().equals("activities.CreateNote")) {
+                if (!url.getText().toString().isEmpty()) { urlInput.setText(url.getText().toString()); }
+            }
 
             if (addURLWindow != null) { addURLWindow.setBackgroundDrawable(new ColorDrawable(0)); }
         }

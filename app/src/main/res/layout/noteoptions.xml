@@ -332,7 +332,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/deleteBtnLayout"
+        android:id="@+id/delete"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_35sdp"
         android:layout_marginStart="@dimen/_10sdp"
