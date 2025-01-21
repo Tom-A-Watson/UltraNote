@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 import android.annotation.SuppressLint;
 import listeners.NotesListener;
 import java.util.List;
-
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,10 +12,10 @@ import database.NotesDatabase;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.view.LayoutInflater;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -24,7 +23,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -41,19 +39,18 @@ import utilities.Utilities;
  */
 public class Home extends AppCompatActivity implements NotesListener, View.OnClickListener,
                                                        TextWatcher, TextView.OnEditorActionListener {
-    private int noteClickedPosition = -1;
-    private boolean galleryAccessIsNotGranted;
     private UserSettings settings;
     private Utilities u;
     private Context appContext;
     private View homeView, urlV;
-    private EditText searchInput, qTitleInput, urlInput;
+    private EditText searchInput, qTitleInput, input;
     private TextView homeText;
     private ImageView backBtn, createNoteBtn, settingsBtn, searchIcon, qAddImgBtn, qAddURLBtn;
     private RecyclerView notesRecyclerView;
     private LinearLayout searchBar, qActions;
     private List<Note> list;
-    private NotesAdapter adapter;
+    private NotesAdapter a;
+    private int noteIndex = -1;
 
     // Request codes
     public static final int ADD_NOTE = 1;
@@ -82,6 +79,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     }
 
     private void initComponents() {
+        Utilities.initHomeListeners(this, this, this);
         Utilities.initHomeDrawables(this);
         Utilities.initGlobalColours(this);
         Utilities.urlDialog = null;
@@ -90,9 +88,9 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         u = new Utilities(getApplication());
         appContext = getApplicationContext();
         list = new ArrayList<>();
-        adapter = new NotesAdapter(list, this);
+        a = new NotesAdapter(list, this);
         notesRecyclerView = findViewById(R.id.notesRecyclerView);
-        notesRecyclerView.setAdapter(adapter);
+        notesRecyclerView.setAdapter(a);
         notesRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, VERTICAL));
         homeText = findViewById(R.id.homeText);
         backBtn = findViewById(R.id.backButton);
@@ -103,55 +101,49 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         searchInput.addTextChangedListener(this);
         searchIcon = findViewById(R.id.searchIcon);
         qActions = findViewById(R.id.quickActionsLayout);
-        qAddImgBtn = findViewById(R.id.qaddImg);
+        qAddImgBtn = findViewById(R.id.qAddImg);
         qAddURLBtn = findViewById(R.id.addURL);
         homeView = findViewById(R.id.homeView);
         qTitleInput = findViewById(R.id.quickTitleInput);
         qTitleInput.setOnEditorActionListener(this);
-        urlV = LayoutInflater.from(this).inflate(
-                R.layout.add_url_layout,
-                findViewById(R.id.addURLLayout)
-        );
-        urlInput = urlV.findViewById(R.id.inputURL);
-
-        findViewById(R.id.backButton).setOnClickListener(this);
-        findViewById(R.id.qaddImg).setOnClickListener(this);
-        findViewById(R.id.addURL).setOnClickListener(this);
+        urlV = LayoutInflater.from(this).inflate(R.layout.addurl, findViewById(R.id.urlLayout));
+        input = urlV.findViewById(R.id.inputURL);
     }
 
     private void updateView() {
         if (settings.theme().equals(UserSettings.LIGHT_THEME)) {// Set components to light mode colours
+        //-|Text Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
             homeText.setTextColor(Utilities.black);    qTitleInput.setTextColor(Utilities.black);
             searchInput.setTextColor(Utilities.black);
-        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        //-|Icon Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
             backBtn.setColorFilter(Utilities.black);        settingsBtn.setColorFilter(Utilities.lightGrey);
             qAddImgBtn.setColorFilter(Utilities.lightGrey); qAddURLBtn.setColorFilter(Utilities.lightGrey);
             searchIcon.setColorFilter(Utilities.darkGrey);
-        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        //-|Component Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
             homeView.setBackgroundColor(Utilities.white);
             searchBar.setBackgroundColor(Utilities.offWhite);
             qActions.setBackgroundColor(Utilities.offWhite);
-        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        //-|Component Backgrounds|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
             createNoteBtn.setBackground(Utilities.blue); qTitleInput.setBackground(Utilities.lightInput);
-        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        //-|EditText Placeholder Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
             searchInput.setHintTextColor(Utilities.black); qTitleInput.setHintTextColor(Utilities.black);
 
             return;
-        }
-        // Revert components to their default colours
+        }                                           // Revert components to their default colours \\
+    //-|Text Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -||
         homeText.setTextColor(Utilities.white);    qTitleInput.setTextColor(Utilities.white);
         searchInput.setTextColor(Utilities.white);
-        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+    //-|Icon Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -||
         backBtn.setColorFilter(Utilities.white);       settingsBtn.setColorFilter(Utilities.offWhite);
         searchIcon.setColorFilter(Utilities.offWhite); qAddURLBtn.setColorFilter(Utilities.offWhite);
         qAddImgBtn.setColorFilter(Utilities.offWhite);
-        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+    //-|Component Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ||
         homeView.setBackgroundColor(Utilities.darkGrey);
         searchBar.setBackgroundColor(Utilities.lightGrey);
         qActions.setBackgroundColor(Utilities.lightGrey);
-        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+    //-|Component Backgrounds|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ||
         createNoteBtn.setBackground(Utilities.lightBlue); qTitleInput.setBackground(Utilities.darkInput);
-        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+    //-|EditText Placeholder Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
         searchInput.setHintTextColor(Utilities.offWhite); qTitleInput.setHintTextColor(Utilities.offWhite);
     }
 
@@ -174,15 +166,15 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     }
 
     @Override
-    public void onNoteClicked(Note note, int position) {
-        noteClickedPosition = position;
+    public void onNoteClicked(Note note, int clickedPosition) {
+        noteIndex = clickedPosition;
         Intent intent = new Intent(appContext, CreateNote.class);
-        intent.putExtra("isViewOrUpdate", true);
+        intent.putExtra("viewExisting", true);
         intent.putExtra("note", note);
         startActivityForResult(intent, UPDATE_NOTE);
     }
 
-    private void getNotes(final int requestCode, final boolean noteIsDeleted) {
+    private void getNotes(final int requestCode, final boolean deleted) {
         @SuppressLint("StaticFieldLeak")
         class GetNotesTask extends AsyncTask<Void, Void, List<Note>>
         {
@@ -195,15 +187,9 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
             protected void onPostExecute(List<Note> notes) {
                 super.onPostExecute(notes);
                 switch (requestCode) {
-                    case SHOW_NOTES: list.addAll(notes); adapter.notifyDataSetChanged(); break;
-                    case ADD_NOTE: list.add(0, notes.get(0)); adapter.notifyItemInserted(0); break;
-                //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
-                    case UPDATE_NOTE: list.remove(noteClickedPosition);
-                        if (noteIsDeleted) { adapter.notifyItemRemoved(noteClickedPosition); }
-                        else {
-                            list.add(noteClickedPosition, notes.get(noteClickedPosition));
-                            adapter.notifyItemChanged(noteClickedPosition);
-                        } break;
+                    case SHOW_NOTES: list.addAll(notes); a.notifyDataSetChanged(); break;
+                    case ADD_NOTE: list.add(0, notes.get(0)); a.notifyItemInserted(0); break;
+                    case UPDATE_NOTE: u.notifyAdapterOfUpdateOrDelete(a, list, notes, deleted, noteIndex); break;
                 }
             }
         }
@@ -240,10 +226,10 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
      * feature. Notes can be searched by words/ letters located in any title, subtitle and even content :)
      */
     @Override
-    public void onTextChanged(CharSequence cs, int i, int i1, int i2) { adapter.cancelTimer(); }
+    public void onTextChanged(CharSequence cs, int i, int i1, int i2) { a.cancelTimer(); }
     @Override
     public void afterTextChanged(Editable s) {
-        if (!list.isEmpty()) { adapter.searchNotes(s.toString()); }
+        if (!list.isEmpty()) { a.searchNotes(s.toString()); }
     }
     public void beforeTextChanged(CharSequence cs, int i, int i1, int i2) {} // Method not required
 
@@ -267,8 +253,8 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
             case R.id.backButton: onBackPressed(); break;
             case R.id.addURL: Utilities.urlDialog = Utilities.showDialog(this, this, this, urlV); break;
             case R.id.cancelAddURL: Utilities.urlDialog.dismiss(); break;
-            case R.id.confirmAddURL: Utilities.validateURL(this, urlInput, Utilities.urlDialog); break;
-            case R.id.qaddImg: u.reqPermOrSelectImg(this, appContext, STORAGE_PERM, SELECT_IMAGE); break;
+            case R.id.confirmAddURL: Utilities.validateURL(this, input, Utilities.urlDialog); break;
+            case R.id.qAddImg: u.reqPermOrSelectImg(this, appContext, STORAGE_PERM, SELECT_IMAGE); break;
         }
     }
 }

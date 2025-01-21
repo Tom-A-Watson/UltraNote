@@ -28,9 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.example.ultranote.R;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+
 import entities.Note;
 import settings.UserSettings;
 import utilities.Utilities;
@@ -44,16 +42,16 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     private EditText title, subtitle, content, input;
     private TextView dateTime, url, createNoteText, noteOptionsText, colourPickerText;
     private View colourIndicator, urlV, sIndicator, deleteV;
-    private ImageView image, backBtn, addURL, addImg, saveBtn, clearTitle, clearSubtitle, clearContent;
+    private ImageView image, backBtn, addURL, addImg, saveBtn, clearTBtn, clearSBtn, clearCBtn;
     private ImageView[] colours;
     private Context appContext;
     private Drawable[] darkBGColours, lightBGColours;
     private InputStream inputStream;
     private Bitmap bitmap;
     private BottomSheetBehavior<LinearLayout> o;
-    private LinearLayout urlBox, noteOptions, deleteBtn;
-    private CoordinatorLayout createNoteView;
-    private String selectedImagePath, type, singleLineDate, multiLineDate;
+    private LinearLayout noteURL, noteOptions, deleteBtn;
+    private CoordinatorLayout createNoteBG;
+    private String selectedImagePath, type;
 
     // Request codes
     private static final int STORAGE_PERM = 1;
@@ -80,13 +78,12 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     @Override
     protected void onResume() {
         super.onResume();
-        dateTime.setText(singleLineDate);
         initNoteOptions();
         updateView();
     }
 
     private void initComponents() {
-        Utilities.initListeners(this, this, this);
+        Utilities.initCreateNoteListeners(this, this, this);
         Utilities.initCreateNoteDrawables(this);
         Utilities.initGlobalColours(this);
         Utilities.urlDialog = null; Utilities.deleteDialog = null;
@@ -94,7 +91,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         settings = (UserSettings) getApplication();
         u = new Utilities(getApplication());
         appContext = getApplicationContext();
-        createNoteView = findViewById(R.id.createNoteView);
+        createNoteBG = findViewById(R.id.createNoteView);
         createNoteText = findViewById(R.id.createNoteText);
         backBtn = findViewById(R.id.backButton);
         addURL = findViewById(R.id.addURL);
@@ -106,31 +103,20 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         sIndicator = findViewById(R.id.subtitleIndicator);
         content = findViewById(R.id.noteContent);
         dateTime = findViewById(R.id.textDateTime);
-        dateTime.setText(singleLineDate);
         colourIndicator = findViewById(R.id.colourIndicator);
         image = findViewById(R.id.noteImage);
         url = findViewById(R.id.webUrl);
-        urlBox = findViewById(R.id.urlLayout);
-        clearTitle = findViewById(R.id.removeTitle);
-        clearSubtitle = findViewById(R.id.removeSubtitle);
-        clearContent = findViewById(R.id.removeContent);
+        noteURL = findViewById(R.id.noteURL);
+        clearTBtn = findViewById(R.id.removeTitle);
+        clearSBtn = findViewById(R.id.removeSubtitle);
+        clearCBtn = findViewById(R.id.removeContent);
         noteOptions = findViewById(R.id.noteOptionsLayout);
         noteOptionsText = findViewById(R.id.noteOptionsText);
         colourPickerText = findViewById(R.id.colourPickerText);
         o = BottomSheetBehavior.from(noteOptions);
-        urlV = LayoutInflater.from(this).inflate(
-                R.layout.add_url_layout,
-                findViewById(R.id.addURLLayout)
-        );
-        deleteV = LayoutInflater.from(this).inflate(
-                R.layout.delete_note_layout,
-                findViewById(R.id.deleteNoteLayout)
-        );
+        urlV = LayoutInflater.from(this).inflate(R.layout.addurl, findViewById(R.id.urlLayout));
+        deleteV = LayoutInflater.from(this).inflate(R.layout.delete, findViewById(R.id.deleteLayout));
         input = urlV.findViewById(R.id.inputURL);
-        singleLineDate = new SimpleDateFormat(
-                "EEEE dd MMMM yyyy HH:mm a", Locale.getDefault()).format(new Date());
-        multiLineDate = new SimpleDateFormat(
-                "EEEE dd MMMM yyyy \nHH:mm a", Locale.getDefault()).format(new Date());
         type = getIntent().getStringExtra("quickActionType");
 
         // List of note colour buttons + accompanying lists of light & dark theme Drawables
@@ -140,55 +126,54 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     }
 
     private void updateView() {
+        dateTime.setText(Utilities.singleLine);
+
         if (settings.theme().equals(UserSettings.LIGHT_THEME)) {// Set components to light mode colours
-            createNoteView.setBackgroundColor(Utilities.white);
-        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        //-|Component Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+            createNoteBG.setBackgroundColor(Utilities.white);
+        //-|Text Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
             title.setTextColor(Utilities.darkGrey);    createNoteText.setTextColor(Utilities.black);
             subtitle.setTextColor(Utilities.darkGrey); noteOptionsText.setTextColor(Utilities.black);
             content.setTextColor(Utilities.black);     colourPickerText.setTextColor(Utilities.darkGrey);
-            dateTime.setTextColor(Utilities.black);
-        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+            dateTime.setTextColor(Utilities.black);    url.setLinkTextColor(Utilities.lightModeAccent);
+        //-|Icon Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
             backBtn.setColorFilter(Utilities.black);    addURL.setColorFilter(Utilities.lightGrey);
             addImg.setColorFilter(Utilities.lightGrey);
-        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        //-|Component Backgrounds|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
             saveBtn.setBackground(Utilities.saveBtnLight); sIndicator.setBackground(Utilities.blue);
             noteOptions.setBackground(Utilities.light);
 
             for (int i = 0; i < colours.length; i++) { colours[i].setBackground(lightBGColours[i]); }
-        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        //-|EditText Placeholder Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
             title.setHintTextColor(Utilities.darkGrey); subtitle.setHintTextColor(Utilities.darkGrey);
             content.setHintTextColor(Utilities.black);
-        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
-            url.setLinkTextColor(Utilities.lightModeAccent);
 
             return;
-        }
-        // Revert components to their default colours
-        createNoteView.setBackgroundColor(Utilities.darkGrey);
-        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+    }                                               // Revert components to their default colours \\
+    //-|Component Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ||
+        createNoteBG.setBackgroundColor(Utilities.darkGrey);
+    //-|Text Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -||
         title.setTextColor(Utilities.white);    createNoteText.setTextColor(Utilities.white);
         subtitle.setTextColor(Utilities.white); noteOptionsText.setTextColor(Utilities.white);
         content.setTextColor(Utilities.white);  colourPickerText.setTextColor(Utilities.offWhite);
-        dateTime.setTextColor(Utilities.white);
-        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        dateTime.setTextColor(Utilities.white); url.setLinkTextColor(Utilities.darkModeAccent);
+    //-|Icon Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -||
         backBtn.setColorFilter(Utilities.white);   addURL.setColorFilter(Utilities.offWhite);
         addImg.setColorFilter(Utilities.offWhite);
-        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+    //-|Component Backgrounds|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ||
         saveBtn.setBackground(Utilities.saveBtnDark); sIndicator.setBackground(Utilities.lightBlue);
         noteOptions.setBackground(Utilities.dark);
 
         for (int i = 0; i < colours.length; i++) { colours[i].setBackground(darkBGColours[i]); }
-        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+    //-|EditText Placeholder Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
         title.setHintTextColor(Utilities.offWhite);   subtitle.setHintTextColor(Utilities.offWhite);
         content.setHintTextColor(Utilities.offWhite);
-        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
-        url.setLinkTextColor(Utilities.darkModeAccent);
     }
 
     private void loadPotentialNoteData() {
-        if (getIntent().getBooleanExtra("isViewOrUpdate", false)) {
+        if (getIntent().getBooleanExtra("viewExisting", false)) {
             existingNote = (Note) getIntent().getSerializableExtra("note");
-            viewOrUpdateNote();
+            loadAllNoteData();
         }
 
         if (getIntent().getBooleanExtra("isFromQuickActions", false)) {
@@ -202,13 +187,13 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
                                   findViewById(R.id.deleteImage).setVisibility(VISIBLE); break;
                 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
                     case "URL": url.setText(getIntent().getStringExtra("URL"));
-                                urlBox.setVisibility(VISIBLE); break;
+                                noteURL.setVisibility(VISIBLE); break;
                 }
             }
         }
     }
 
-    private void viewOrUpdateNote() {
+    private void loadAllNoteData() {
         title.setText(existingNote.getTitle());      subtitle.setText(existingNote.getSubtitle());
         content.setText(existingNote.getNoteText()); dateTime.setText(existingNote.getDateTime());
 
@@ -221,7 +206,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
 
         if (existingNote.getWebLink() != null && !existingNote.getWebLink().trim().isEmpty()) {
             url.setText(existingNote.getWebLink());
-            urlBox.setVisibility(VISIBLE);
+            noteURL.setVisibility(VISIBLE);
         }
     }
 
@@ -232,13 +217,13 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         if (content.getText().toString().trim().isEmpty()) {
             Toast.makeText(this, "The note has no content!", Toast.LENGTH_SHORT).show(); return;
         }
-        if (urlBox.getVisibility() == VISIBLE) { note.setWebLink(url.getText().toString()); }
+        if (noteURL.getVisibility() == VISIBLE) { note.setWebLink(url.getText().toString()); }
         if (existingNote != null) { note.setId(existingNote.getId()); }
         if (o.getState() == EXPANDED) { o.setState(COLLAPSED); }
 
         note.setTitle(title.getText().toString());      note.setSubtitle(subtitle.getText().toString());
         note.setNoteText(content.getText().toString()); note.setDateTime(dateTime.getText().toString());
-        note.setImagePath(selectedImagePath);           dateTime.setText(multiLineDate);
+        note.setImagePath(selectedImagePath);           dateTime.setText(Utilities.multiLineDate);
 
         new SaveNoteTask().execute();
     }
@@ -247,7 +232,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         if (existingNote == null) { setColourTo("#333333"); switchTickToBtn(0); }
         else { deleteBtn.setVisibility(VISIBLE); deleteBtn.setOnClickListener(this); }
 
-        // Loop fixes duplicate tick bug by nullifying all colour buttons' ticks upon the activity resuming
+        // Loop solves duplicate tick bug by removing all coloured buttons' ticks when the activity resumes.
         // Index starts at 1 so that the default button's tick is not removed when creating a new note.
         for (int i = 1; i < colours.length; i++) { colours[i].setImageResource(0); }
 
@@ -317,14 +302,14 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
      */
     @Override
     public void onTextChanged(CharSequence cs, int i, int i1, int i2) {
-        checkIfEmpty(title, clearTitle); checkIfEmpty(subtitle, clearSubtitle); checkIfEmpty(content, clearContent);
+        checkIfEmpty(title, clearTBtn); checkIfEmpty(subtitle, clearSBtn); checkIfEmpty(content, clearCBtn);
     }
     public void beforeTextChanged(CharSequence cs, int i, int i1, int i2) {} // Method not required
     public void afterTextChanged(Editable s) {}                              // Method not required
 
-    public void checkIfEmpty(EditText field, ImageView clearBtn) {
-        if (!field.getText().toString().trim().isEmpty())  { clearBtn.setVisibility(VISIBLE); }
-        else { clearBtn.setVisibility(GONE); }
+    public void checkIfEmpty(EditText field, ImageView clearTextBtn) {
+        if (!field.getText().toString().trim().isEmpty())  { clearTextBtn.setVisibility(VISIBLE); }
+        else { clearTextBtn.setVisibility(GONE); }
     }
 
     @Override @SuppressLint("NonConstantResourceId")
@@ -338,8 +323,8 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
             case R.id.addURL: Utilities.urlDialog = Utilities.showDialog(this, this, this, urlV); break;
             case R.id.cancelAddURL: Utilities.urlDialog.dismiss(); break;
             case R.id.confirmAddURL: Utilities.validateURL(this, input, Utilities.urlDialog); break;
-            case R.id.deleteURL: url.setText(null); input.setText(""); urlBox.setVisibility(GONE); break;
-            case R.id.colourIndicator: case R.id.noteOptionsText: toggleNoteOptions(o); break;
+            case R.id.deleteURL: url.setText(""); input.setText(""); noteURL.setVisibility(GONE); break;
+            case R.id.colourIndicator: case R.id.noteOptionsText: toggleNoteOptions(o); break;  // 2 cases
             case R.id.delete: Utilities.deleteDialog = Utilities.showDialog(this, this, deleteV, o); break;
             case R.id.cancelDeleteNote: Utilities.deleteDialog.dismiss(); break;
             case R.id.confirmDeleteNote: new DeleteNoteTask().execute(); break;

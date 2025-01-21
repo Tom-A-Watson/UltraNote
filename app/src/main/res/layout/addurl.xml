@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/deleteNoteLayout"
+    android:id="@+id/urlLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
@@ -9,13 +9,13 @@
     android:background="@drawable/dialog_background">
 
     <ImageView
-        android:id="@+id/deleteNoteIcon"
+        android:id="@+id/addURLIcon"
         android:layout_width="@dimen/_26sdp"
         android:layout_height="@dimen/_26sdp"
         android:layout_marginStart="@dimen/_8sdp"
         android:layout_marginTop="@dimen/_8sdp"
         android:contentDescription="@string/app_name"
-        android:src="@drawable/ic_deletenote"
+        android:src="@drawable/ic_weblink"
         app:tint="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -27,55 +27,57 @@
         android:layout_marginEnd="@dimen/_8sdp"
         android:includeFontPadding="false"
         android:fontFamily="@font/ubuntu_bold"
-        android:text="@string/delete_note"
+        android:text="@string/add_url"
         android:textColor="@color/white"
         android:textSize="@dimen/_14ssp"
-        app:layout_constraintTop_toTopOf="@id/deleteNoteIcon"
-        app:layout_constraintBottom_toBottomOf="@id/deleteNoteIcon"
-        app:layout_constraintStart_toEndOf="@id/deleteNoteIcon"
+        app:layout_constraintTop_toTopOf="@id/addURLIcon"
+        app:layout_constraintBottom_toBottomOf="@id/addURLIcon"
+        app:layout_constraintStart_toEndOf="@id/addURLIcon"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <TextView
-        android:id="@+id/deleteNoteMessage"
+    <EditText
+        android:id="@+id/inputURL"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/_35sdp"
         android:layout_marginStart="@dimen/_8sdp"
-        android:layout_marginTop="@dimen/_8sdp"
         android:layout_marginEnd="@dimen/_8sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:background="@null"
         android:fontFamily="@font/ubuntu_regular"
         android:gravity="center_vertical"
+        android:hint="@string/enter_url_here"
+        android:textColorHint="@color/offWhite"
+        android:imeOptions="actionDone"
+        android:importantForAutofill="no"
         android:includeFontPadding="false"
+        android:inputType="textUri"
         android:paddingStart="@dimen/_8sdp"
         android:paddingEnd="@dimen/_8sdp"
-        android:text="@string/delete_confirmation_msg"
         android:textColor="@color/white"
-        android:textSize="@dimen/_12ssp"
-        app:layout_constraintTop_toBottomOf="@id/deleteNoteIcon" />
+        android:textSize="@dimen/_13ssp"
+        app:layout_constraintTop_toBottomOf="@id/addURLIcon" />
 
     <TextView
-        android:id="@+id/confirmDeleteNote"
+        android:id="@+id/confirmAddURL"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/_8sdp"
         android:layout_marginBottom="@dimen/_8sdp"
-        android:layout_marginTop="@dimen/_8sdp"
         android:includeFontPadding="false"
         android:fontFamily="@font/ubuntu_medium"
         android:padding="@dimen/_8sdp"
-        android:text="@string/delete_note"
-        android:textColor="@color/deleteColour"
+        android:text="@string/add"
+        android:textColor="@color/confirmColour"
         android:textSize="@dimen/_13ssp"
-        android:textAllCaps="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/deleteNoteMessage" />
+        app:layout_constraintTop_toBottomOf="@id/inputURL" />
 
     <TextView
-        android:id="@+id/cancelDeleteNote"
+        android:id="@+id/cancelAddURL"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/_8sdp"
-        android:layout_marginTop="@dimen/_8sdp"
         android:layout_marginBottom="@dimen/_8sdp"
         android:includeFontPadding="false"
         android:fontFamily="@font/ubuntu_medium"
@@ -84,7 +86,7 @@
         android:textColor="@color/revertColour"
         android:textSize="@dimen/_13ssp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/confirmDeleteNote"
-        app:layout_constraintTop_toBottomOf="@id/deleteNoteMessage" />
+        app:layout_constraintEnd_toStartOf="@id/confirmAddURL"
+        app:layout_constraintTop_toBottomOf="@id/inputURL" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

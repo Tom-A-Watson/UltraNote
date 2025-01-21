@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.TextWatcher;
 import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -26,12 +27,18 @@ import androidx.core.content.ContextCompat;
 import com.example.ultranote.R;
 import com.example.ultranote.activities.CreateNote;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import adapters.NotesAdapter;
 import entities.Note;
 
 public class Utilities {
 
     Application app;
 
+    public static String singleLine, multiLineDate;
     private static String readExtStoragePerm;
 
     public static int darkGrey, lightGrey, offWhite, black, white, lightModeAccent, darkModeAccent;
@@ -43,9 +50,13 @@ public class Utilities {
     // States
     private static final int VISIBLE = View.VISIBLE;
 
-    public Utilities(Application app) { 
+    public Utilities(Application app) {
         this.app = app;
         readExtStoragePerm = Manifest.permission.READ_EXTERNAL_STORAGE;
+        singleLine = new SimpleDateFormat(
+                "EEEE dd MMMM yyyy HH:mm a", Locale.getDefault()).format(new Date());
+        multiLineDate = new SimpleDateFormat(
+                "EEEE dd MMMM yyyy \nHH:mm a", Locale.getDefault()).format(new Date());
     }
 
     public static void initGlobalColours(Context context) {
@@ -74,20 +85,28 @@ public class Utilities {
         darkInput = ContextCompat.getDrawable(context, R.drawable.quick_note_background);
     }
 
-    public static void initListeners(Activity a, View.OnClickListener listener, TextWatcher watcher) {
+    public static void initCreateNoteListeners(Activity a, View.OnClickListener l, TextWatcher w) {
         EditText title = a.findViewById(R.id.noteTitleInput);
         EditText subtitle = a.findViewById(R.id.noteSubtitleInput);
         EditText content = a.findViewById(R.id.noteContent);
-        a.findViewById(R.id.backButton).setOnClickListener(listener);
-        a.findViewById(R.id.saveButton).setOnClickListener(listener);
-        a.findViewById(R.id.removeTitle).setOnClickListener(listener);
-        a.findViewById(R.id.addURL).setOnClickListener(listener);
-        a.findViewById(R.id.deleteURL).setOnClickListener(listener);
-        a.findViewById(R.id.addImage).setOnClickListener(listener);
-        a.findViewById(R.id.deleteImage).setOnClickListener(listener);
-        title.addTextChangedListener(watcher);
-        subtitle.addTextChangedListener(watcher);
-        content.addTextChangedListener(watcher);
+        a.findViewById(R.id.backButton).setOnClickListener(l);
+        a.findViewById(R.id.saveButton).setOnClickListener(l);
+        a.findViewById(R.id.removeTitle).setOnClickListener(l);
+        a.findViewById(R.id.addURL).setOnClickListener(l);
+        a.findViewById(R.id.deleteURL).setOnClickListener(l);
+        a.findViewById(R.id.addImage).setOnClickListener(l);
+        a.findViewById(R.id.deleteImage).setOnClickListener(l);
+        title.addTextChangedListener(w);
+        subtitle.addTextChangedListener(w);
+        content.addTextChangedListener(w);
+    }
+
+    public static void initHomeListeners(Activity a, View.OnClickListener l, TextWatcher w) {
+        EditText searchInput = a.findViewById(R.id.searchNotesInput);
+        a.findViewById(R.id.backButton).setOnClickListener(l);
+        a.findViewById(R.id.qAddImg).setOnClickListener(l);
+        a.findViewById(R.id.addURL).setOnClickListener(l);
+        searchInput.addTextChangedListener(w);
     }
 
     public static ImageView[] initColourButtons(Activity a) {
@@ -136,6 +155,16 @@ public class Utilities {
                 ContextCompat.getDrawable(context, R.drawable.violet_btn2),
                 ContextCompat.getDrawable(context, R.drawable.maroon_btn2)
         };
+    }
+
+    public void notifyAdapterOfUpdateOrDelete(NotesAdapter a, List<Note> list, List<Note> db,
+                                              boolean noteIsDeleted, int clickedNoteIndex) {
+        list.remove(clickedNoteIndex);
+        if (noteIsDeleted) { a.notifyItemRemoved(clickedNoteIndex); }
+        else {
+            list.add(clickedNoteIndex, db.get(clickedNoteIndex));
+            a.notifyItemChanged(clickedNoteIndex);
+        }
     }
 
     public void setNoteColourToSelected(CreateNote cn) {
@@ -250,6 +279,10 @@ public class Utilities {
         return deleteDialog;
     }
 
+    public View initURLView(Activity a, Context c) {
+        return LayoutInflater.from(c).inflate(R.layout.addurl, a.findViewById(R.id.urlLayout));
+    }
+
     public static AlertDialog showDialog(Activity a, Context c, View.OnClickListener l, View view) {
         if (urlDialog == null) {
             final EditText urlInput = view.findViewById(R.id.inputURL);
@@ -274,7 +307,7 @@ public class Utilities {
 
     public static void validateURL(Activity a, EditText e, AlertDialog dialog) {
         final TextView url = a.findViewById(R.id.webUrl);
-        final LinearLayout urlLayout = a.findViewById(R.id.urlLayout);
+        final LinearLayout urlLayout = a.findViewById(R.id.noteURL);
         final Intent noteWithURL = new Intent(a.getApplicationContext(), CreateNote.class);
         e.requestFocus();
 
