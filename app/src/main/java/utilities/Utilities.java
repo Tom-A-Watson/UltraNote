@@ -1,5 +1,6 @@
 package utilities;
 
+import static com.example.ultranote.activities.Home.ADD_NOTE;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
@@ -7,12 +8,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.TextWatcher;
 import android.util.Patterns;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -21,18 +25,23 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.example.ultranote.R;
 import com.example.ultranote.activities.CreateNote;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import adapters.NotesAdapter;
 import entities.Note;
+import settings.UserSettings;
 
 public class Utilities {
 
@@ -47,8 +56,16 @@ public class Utilities {
     public static AlertDialog urlDialog, deleteDialog;
     public static AlertDialog.Builder builder;
 
-    // States
-    private static final int VISIBLE = View.VISIBLE;
+    // Application constants
+    public static final int GRANTED = PackageManager.PERMISSION_GRANTED;
+    public static final int VISIBLE = View.VISIBLE;
+    public static final int GONE = View.GONE;
+    public static final int VERTICAL = StaggeredGridLayoutManager.VERTICAL;
+    public static final int SHORT  = Toast.LENGTH_SHORT;
+    public static final int LONG  = Toast.LENGTH_LONG;
+    public static final int EXPANDED = BottomSheetBehavior.STATE_EXPANDED;
+    public static final int COLLAPSED = BottomSheetBehavior.STATE_COLLAPSED;
+    public static final int ENTER = KeyEvent.KEYCODE_ENTER;
 
     public Utilities(Application app) {
         this.app = app;
@@ -213,22 +230,7 @@ public class Utilities {
         }
     }
 
-    public void selectImage(Activity activity, int requestCode) {
-        Intent selectedImg = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
-        if (selectedImg.resolveActivity(activity.getPackageManager()) != null) {
-            activity.startActivityForResult(selectedImg, requestCode);
-        }
-    }
-
-    public void buildNoteWithImage(Uri uri, Context context, Activity activity, int requestCode) {
-        String path = getPath(uri);
-        Intent noteWithImage = new Intent(context, CreateNote.class);
-        noteWithImage.putExtra("isFromQuickActions", true);
-        noteWithImage.putExtra("quickActionType", "image");
-        noteWithImage.putExtra("imagePath", path);
-        activity.startActivityForResult(noteWithImage, requestCode);
-    }
+    public boolean appThemeIsLightTheme(UserSettings s) {return s.theme().equals(UserSettings.LIGHT_THEME);}
 
     public static boolean inputDoesNotMatchURLRegex(EditText e) {
         return !Patterns.WEB_URL.matcher(e.getText().toString()).matches();
@@ -236,6 +238,14 @@ public class Utilities {
 
     public static boolean galleryAccessIsNotGranted(Context c) {
         return ContextCompat.checkSelfPermission(c, readExtStoragePerm) != PackageManager.PERMISSION_GRANTED;
+    }
+
+    public void selectImage(Activity activity, int requestCode) {
+        Intent selectedImg = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+        if (selectedImg.resolveActivity(activity.getPackageManager()) != null) {
+            activity.startActivityForResult(selectedImg, requestCode);
+        }
     }
 
     public void reqPermOrSelectImg(Activity a, Context c, int storagePermCode, int selectImgCode) {
@@ -259,6 +269,38 @@ public class Utilities {
         }
 
         return filePath;
+    }
+
+    public void attemptEmbedImage(Activity activity, Context context, Uri uri, ImageView image) {
+        try {
+            InputStream inputStream = app.getContentResolver().openInputStream(uri);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            image.setImageBitmap(bitmap); image.setVisibility(VISIBLE);
+            CreateNote.selectedImagePath = getPath(uri);
+            activity.findViewById(R.id.deleteImage).setVisibility(VISIBLE);
+        } catch (Exception e) { Toast.makeText(context, e.getMessage(), LONG).show(); }
+    }
+
+    public void buildNoteWithImage(Uri uri, Context context, Activity activity, int requestCode) {
+        CreateNote.selectedImagePath = getPath(uri);
+        Intent noteWithImage = new Intent(context, CreateNote.class);
+        noteWithImage.putExtra("isFromQuickActions", true);
+        noteWithImage.putExtra("quickActionType", "image");
+        noteWithImage.putExtra("imagePath", CreateNote.selectedImagePath);
+        activity.startActivityForResult(noteWithImage, requestCode);
+    }
+
+    public void attemptBuildNoteWithImg(@Nullable Intent data, Activity activity, Context context) {
+        assert data != null;
+        Uri uri = data.getData();
+
+        try { buildNoteWithImage(uri, context, activity, ADD_NOTE); }
+        catch (Exception e) { Toast.makeText(context, e.getMessage(), LONG).show(); }
+    }
+
+    public void removeImage(Activity a, ImageView image) {
+        image.setImageBitmap(null); image.setVisibility(GONE);
+        a.findViewById(R.id.deleteImage).setVisibility(GONE); CreateNote.selectedImagePath = "";
     }
 
     public static AlertDialog showDialog(Context c, View.OnClickListener l, View view,
@@ -305,7 +347,7 @@ public class Utilities {
         return urlDialog;
     }
 
-    public static void validateURL(Activity a, EditText e, AlertDialog dialog) {
+    public static void validateURL(Activity a, EditText e) {
         final TextView url = a.findViewById(R.id.webUrl);
         final LinearLayout urlLayout = a.findViewById(R.id.noteURL);
         final Intent noteWithURL = new Intent(a.getApplicationContext(), CreateNote.class);
@@ -318,7 +360,7 @@ public class Utilities {
             Toast.makeText(a,"Invalid URL!", Toast.LENGTH_SHORT).show(); return;
         }
 
-        dialog.dismiss();
+        urlDialog.dismiss();
 
         if (a.getLocalClassName().equals("activities.CreateNote")) { // Embed URL from within CreateNote
             url.setText(e.getText().toString()); urlLayout.setVisibility(VISIBLE); return;

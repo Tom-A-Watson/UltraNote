@@ -1,22 +1,25 @@
 package com.example.ultranote.activities;
 
+import static utilities.Utilities.COLLAPSED;
+import static utilities.Utilities.EXPANDED;
+import static utilities.Utilities.GONE;
+import static utilities.Utilities.GRANTED;
+import static utilities.Utilities.LONG;
+import static utilities.Utilities.VISIBLE;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.content.Context;
 import database.NotesDatabase;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.graphics.drawable.Drawable;
-import java.io.InputStream;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -28,7 +31,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.example.ultranote.R;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-
 import entities.Note;
 import settings.UserSettings;
 import utilities.Utilities;
@@ -46,23 +48,14 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     private ImageView[] colours;
     private Context appContext;
     private Drawable[] darkBGColours, lightBGColours;
-    private InputStream inputStream;
-    private Bitmap bitmap;
     private BottomSheetBehavior<LinearLayout> o;
     private LinearLayout noteURL, noteOptions, deleteBtn;
     private CoordinatorLayout createNoteBG;
-    private String selectedImagePath, type;
+    public static String selectedImagePath, type;
 
     // Request codes
     private static final int STORAGE_PERM = 1;
     private static final int SELECT_IMAGE = 2;
-
-    // States
-    private static final int EXPANDED = BottomSheetBehavior.STATE_EXPANDED;
-    private static final int COLLAPSED = BottomSheetBehavior.STATE_COLLAPSED;
-    private static final int GONE = View.GONE;
-    private static final int VISIBLE = View.VISIBLE;
-    private static final int GRANTED = PackageManager.PERMISSION_GRANTED;
 
 
     @Override
@@ -111,7 +104,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         clearSBtn = findViewById(R.id.removeSubtitle);
         clearCBtn = findViewById(R.id.removeContent);
         noteOptions = findViewById(R.id.noteOptionsLayout);
-        noteOptionsText = findViewById(R.id.noteOptionsText);
+        noteOptionsText = findViewById(R.id.noteOptions);
         colourPickerText = findViewById(R.id.colourPickerText);
         o = BottomSheetBehavior.from(noteOptions);
         urlV = LayoutInflater.from(this).inflate(R.layout.addurl, findViewById(R.id.urlLayout));
@@ -128,18 +121,18 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
     private void updateView() {
         dateTime.setText(Utilities.singleLine);
 
-        if (settings.theme().equals(UserSettings.LIGHT_THEME)) {// Set components to light mode colours
-        //-|Component Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        if (u.appThemeIsLightTheme(settings)) {           // Set components to light mode colours \\
+        //-|Component Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ||
             createNoteBG.setBackgroundColor(Utilities.white);
-        //-|Text Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
+        //-|Text Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -||
             title.setTextColor(Utilities.darkGrey);    createNoteText.setTextColor(Utilities.black);
             subtitle.setTextColor(Utilities.darkGrey); noteOptionsText.setTextColor(Utilities.black);
             content.setTextColor(Utilities.black);     colourPickerText.setTextColor(Utilities.darkGrey);
             dateTime.setTextColor(Utilities.black);    url.setLinkTextColor(Utilities.lightModeAccent);
-        //-|Icon Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
+        //-|Icon Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -||
             backBtn.setColorFilter(Utilities.black);    addURL.setColorFilter(Utilities.lightGrey);
             addImg.setColorFilter(Utilities.lightGrey);
-        //-|Component Backgrounds|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        //-|Component Backgrounds|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ||
             saveBtn.setBackground(Utilities.saveBtnLight); sIndicator.setBackground(Utilities.blue);
             noteOptions.setBackground(Utilities.light);
 
@@ -180,12 +173,12 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
             if (type != null) {
                 switch (type) {
                     case "title": title.setText((getIntent().getStringExtra("quickTitle"))); break;
-                //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+                //- = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = //
                     case "image": selectedImagePath = getIntent().getStringExtra("imagePath");
                                   image.setImageBitmap(BitmapFactory.decodeFile(selectedImagePath));
                                   image.setVisibility(VISIBLE);
                                   findViewById(R.id.deleteImage).setVisibility(VISIBLE); break;
-                //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+                //- = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = //
                     case "URL": url.setText(getIntent().getStringExtra("URL"));
                                 noteURL.setVisibility(VISIBLE); break;
                 }
@@ -238,7 +231,7 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
 
         u.initColourPickerFor(existingNote, this);
         u.setNoteColourToSelected(this);
-        findViewById(R.id.noteOptionsText).setOnClickListener(this);
+        findViewById(R.id.noteOptions).setOnClickListener(this);
         findViewById(R.id.colourIndicator).setOnClickListener(this);
     }
 
@@ -283,22 +276,12 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         Uri uri = data.getData();
 
         if (requestCode == SELECT_IMAGE && resultCode == RESULT_OK) {
-            if (uri != null) {
-                try {
-                    inputStream = getContentResolver().openInputStream(uri);
-                    bitmap = BitmapFactory.decodeStream(inputStream);
-                    image.setImageBitmap(bitmap); image.setVisibility(VISIBLE);
-                    selectedImagePath = u.getPath(uri);
-                    findViewById(R.id.deleteImage).setVisibility(VISIBLE);
-                } catch (Exception e) {
-                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            }
+            if (uri != null) { u.attemptEmbedImage(this, this, uri, image); }
         }
     }
 
-    /**
-     * TextWatcher implementations. Only 'onTextChanged()' is required, for empty field checks :)
+    /** TextWatcher Implementations
+     * Only 'onTextChanged()' is required, for empty field checks :)
      */
     @Override
     public void onTextChanged(CharSequence cs, int i, int i1, int i2) {
@@ -322,15 +305,14 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
             case R.id.removeContent: content.getText().clear(); break;
             case R.id.addURL: Utilities.urlDialog = Utilities.showDialog(this, this, this, urlV); break;
             case R.id.cancelAddURL: Utilities.urlDialog.dismiss(); break;
-            case R.id.confirmAddURL: Utilities.validateURL(this, input, Utilities.urlDialog); break;
+            case R.id.confirmAddURL: Utilities.validateURL(this, input); break;
             case R.id.deleteURL: url.setText(""); input.setText(""); noteURL.setVisibility(GONE); break;
-            case R.id.colourIndicator: case R.id.noteOptionsText: toggleNoteOptions(o); break;  // 2 cases
+            case R.id.colourIndicator:/* AND */case R.id.noteOptions: toggleNoteOptions(o); break;
             case R.id.delete: Utilities.deleteDialog = Utilities.showDialog(this, this, deleteV, o); break;
             case R.id.cancelDeleteNote: Utilities.deleteDialog.dismiss(); break;
             case R.id.confirmDeleteNote: new DeleteNoteTask().execute(); break;
             case R.id.addImage: u.reqPermOrSelectImg(this, appContext, STORAGE_PERM, SELECT_IMAGE); break;
-            case R.id.deleteImage: image.setImageBitmap(null); image.setVisibility(GONE);
-                findViewById(R.id.deleteImage).setVisibility(GONE); selectedImagePath = ""; break;
+            case R.id.deleteImage: u.removeImage(this, image); break;
         }
     }
 
@@ -361,10 +343,10 @@ public class CreateNote extends AppCompatActivity implements View.OnClickListene
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             Intent intent = new Intent();
-            intent.putExtra("isNoteDeleted", true);
+            intent.putExtra("isDeleted", true);
             setResult(RESULT_OK, intent);
-            Toast.makeText(CreateNote.this, "'" + existingNote.getTitle() + "'"
-                    + " deleted", Toast.LENGTH_LONG).show(); finish();
+            Toast.makeText(appContext, "'"+ existingNote.getTitle() +"'" + " deleted", LONG).show();
+            finish();
         }
     }
 }

@@ -26,6 +26,8 @@
     <string name="quick_note">Quick note…</string>
     <string name="new_notes_will_appear_here">New notes will appear here!</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="qtitle_error">Cannot create note, field was left empty!</string>
+    <string name="denied">Permission denied!</string>
 
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>

@@ -1,5 +1,9 @@
 package com.example.ultranote.activities;
 
+import static utilities.Utilities.ENTER;
+import static utilities.Utilities.GRANTED;
+import static utilities.Utilities.SHORT;
+import static utilities.Utilities.VERTICAL;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.annotation.SuppressLint;
@@ -9,15 +13,12 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
 import database.NotesDatabase;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -58,10 +59,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     public static final int SHOW_NOTES = 3;
     public static final int SELECT_IMAGE = 4;
     public static final int STORAGE_PERM = 5;
-
-    // States
-    private static final int GRANTED = PackageManager.PERMISSION_GRANTED;
-    private static final int VERTICAL = StaggeredGridLayoutManager.VERTICAL;
+    public static final int ACTION_DONE = 6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,19 +109,19 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     }
 
     private void updateView() {
-        if (settings.theme().equals(UserSettings.LIGHT_THEME)) {// Set components to light mode colours
-        //-|Text Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
+        if (u.appThemeIsLightTheme(settings)) {           // Set components to light mode colours \\
+        //-|Text Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -||
             homeText.setTextColor(Utilities.black);    qTitleInput.setTextColor(Utilities.black);
             searchInput.setTextColor(Utilities.black);
-        //-|Icon Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
+        //-|Icon Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -||
             backBtn.setColorFilter(Utilities.black);        settingsBtn.setColorFilter(Utilities.lightGrey);
             qAddImgBtn.setColorFilter(Utilities.lightGrey); qAddURLBtn.setColorFilter(Utilities.lightGrey);
             searchIcon.setColorFilter(Utilities.darkGrey);
-        //-|Component Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        //-|Component Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ||
             homeView.setBackgroundColor(Utilities.white);
             searchBar.setBackgroundColor(Utilities.offWhite);
             qActions.setBackgroundColor(Utilities.offWhite);
-        //-|Component Backgrounds|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        //-|Component Backgrounds|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ||
             createNoteBtn.setBackground(Utilities.blue); qTitleInput.setBackground(Utilities.lightInput);
         //-|EditText Placeholder Colours|- - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
             searchInput.setHintTextColor(Utilities.black); qTitleInput.setHintTextColor(Utilities.black);
@@ -147,6 +145,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
         searchInput.setHintTextColor(Utilities.offWhite); qTitleInput.setHintTextColor(Utilities.offWhite);
     }
 
+    //TODO: Attempt to implement global method for opening activities in Utilities, using switch view.getId()
     public void openCreateNote(View view) {
         Intent intent = new Intent(this, CreateNote.class); startActivity(intent);
     }
@@ -161,13 +160,19 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
 
         if (reqCode == STORAGE_PERM && results.length > 0) {
             if (results[0] == GRANTED) { u.selectImage(this, SELECT_IMAGE); }
-            else { Toast.makeText(this, "Permission Denied!", Toast.LENGTH_SHORT).show(); }
+            else { Toast.makeText(this, getString(R.string.denied), SHORT).show(); }
         }
     }
 
+    /**                           -=-= NotesListener Implementation =-=-
+     * When a note is clicked, its object representation and index are obtained. The object is sent to CreateNote
+     * for data-mapping. The index is passed to the adapter so that it knows which note widget to update.
+     * @param note - The note that was clicked
+     * @param clickedIndex - The note's index in the collection
+     */
     @Override
-    public void onNoteClicked(Note note, int clickedPosition) {
-        noteIndex = clickedPosition;
+    public void onNoteClicked(Note note, int clickedIndex) {
+        noteIndex = clickedIndex;
         Intent intent = new Intent(appContext, CreateNote.class);
         intent.putExtra("viewExisting", true);
         intent.putExtra("note", note);
@@ -201,29 +206,20 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         assert data != null;
+        boolean deleteBool = data.getBooleanExtra("isDeleted", false);
 
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case ADD_NOTE: getNotes(ADD_NOTE, false); break;
-            //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
-                case UPDATE_NOTE:
-                    getNotes(UPDATE_NOTE, data.getBooleanExtra("isNoteDeleted", false)); break;
-            //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
-                case SELECT_IMAGE:
-                    Uri uri = data.getData();
-                    if (uri != null) {
-                        try { u.buildNoteWithImage(uri, appContext, this, ADD_NOTE); }
-                        catch (Exception e) {
-                            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    } break;
+                case UPDATE_NOTE: getNotes(UPDATE_NOTE, deleteBool); break;
+                case SELECT_IMAGE: u.attemptBuildNoteWithImg(data, this, this); break;
             }
         }
     }
 
-    /**
-     * TextWatcher Implementations. Only 'onTextChanged' and 'afterTextChanged' are required for the search
-     * feature. Notes can be searched by words/ letters located in any title, subtitle and even content :)
+    /**                           -=-= TextWatcher Implementations =-=-
+     * Only 'onTextChanged' and 'afterTextChanged' are required for the search feature. Notes can be
+     * searched by words/ letters located in any title, subtitle and even content :)
      */
     @Override
     public void onTextChanged(CharSequence cs, int i, int i1, int i2) { a.cancelTimer(); }
@@ -235,16 +231,17 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
 
     @Override
     public boolean onEditorAction(TextView textView, int a, KeyEvent evt) {
-        if ((evt != null && (a == EditorInfo.IME_ACTION_DONE ||
-                evt.getKeyCode() == KeyEvent.KEYCODE_ENTER))) {
-            Intent noteWithTitle = new Intent(getApplicationContext(), CreateNote.class);
+        String trimmedTitle = qTitleInput.getText().toString().trim();
+
+        if (!trimmedTitle.isEmpty() && (a == ACTION_DONE || evt.getKeyCode() == ENTER)) {
+            Intent noteWithTitle = new Intent(appContext, CreateNote.class);
             noteWithTitle.putExtra("isFromQuickActions", true);
             noteWithTitle.putExtra("quickActionType", "title");
-            noteWithTitle.putExtra("quickTitle", qTitleInput.getText().toString().trim());
-            startActivityForResult(noteWithTitle, ADD_NOTE);
+            noteWithTitle.putExtra("quickTitle", trimmedTitle);
+            startActivityForResult(noteWithTitle, ADD_NOTE); return true;
         }
 
-        return true;
+        Toast.makeText(this, getString(R.string.qtitle_error), SHORT).show(); return false;
     }
 
     @Override @SuppressLint("NonConstantResourceId")
@@ -253,7 +250,7 @@ public class Home extends AppCompatActivity implements NotesListener, View.OnCli
             case R.id.backButton: onBackPressed(); break;
             case R.id.addURL: Utilities.urlDialog = Utilities.showDialog(this, this, this, urlV); break;
             case R.id.cancelAddURL: Utilities.urlDialog.dismiss(); break;
-            case R.id.confirmAddURL: Utilities.validateURL(this, input, Utilities.urlDialog); break;
+            case R.id.confirmAddURL: Utilities.validateURL(this, input); break;
             case R.id.qAddImg: u.reqPermOrSelectImg(this, appContext, STORAGE_PERM, SELECT_IMAGE); break;
         }
     }
